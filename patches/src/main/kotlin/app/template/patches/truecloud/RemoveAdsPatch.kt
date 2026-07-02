@@ -1,19 +1,27 @@
-package app.template.patches.example
+package app.template.patches.truecloud
 
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.patch.bytecodePatch
 import app.template.patches.shared.Constants.COMPATIBILITY_TRUECLOUD
 
 @Suppress("unused")
-val removeCloudBootPatch = bytecodePatch(
-    name = "Remove Cloud Boot Page",
-    description = "Removes the cloud storage ad and startup statistics page",
+val removeAdsPatch = bytecodePatch(
+    name = "Remove Ads",
+    description = "Removes ads from TrueCloud",
     default = true
 ) {
     compatibleWith(COMPATIBILITY_TRUECLOUD)
 
     execute {
-        CloudBootPageHelperFingerprint.method.addInstructions(
+        AdServiceObtainFingerprint.method.addInstructions(
+            0,
+            """
+                const/4 v0, 0x0
+                return-object v0
+            """
+        )
+
+        AdServiceObtain3ArgFingerprint.method.addInstructions(
             0,
             """
                 const/4 v0, 0x0

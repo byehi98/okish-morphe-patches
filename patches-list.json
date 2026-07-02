@@ -53,6 +53,32 @@
         }
       ],
       "options": []
+    },
+    {
+      "name": "Remove Event Cloud Popup",
+      "description": "Removes the upgrade cloud storage popup when opening the Event tab",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.generalcomp.truecloud",
+          "name": "TrueCloud",
+          "description": null,
+          "apkFileType": "APK",
+          "appIconColor": "#FF0045",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "4.6.5.13",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
     }
   ]
 }

@@ -1,4 +1,4 @@
-package app.template.patches.example
+package app.template.patches.truecloud
 
 import app.morphe.patcher.Fingerprint
 import com.android.tools.smali.dexlib2.AccessFlags
