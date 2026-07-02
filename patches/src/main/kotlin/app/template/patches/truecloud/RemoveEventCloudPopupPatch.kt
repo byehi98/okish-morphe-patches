@@ -70,6 +70,88 @@ object EventControlUpgradeTips : Fingerprint(
     custom = { _, classDef -> classDef.type == "Lcom/zasko/modulemain/mvpdisplay/fragment/EventControlFragment;" }
 )
 
+// Banners
+
+object X35EventControlShowCloudBannerAd : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    returnType = "V",
+    parameters = listOf("Landroid/view/View;", "Landroid/view/View;"),
+    name = "showCloudBannerAd",
+    custom = { _, classDef -> classDef.type == "Lcom/zasko/modulemain/mvpdisplay/fragment/X35EventControlFragment;" }
+)
+
+object X35EventControlShowCloudBannerMiddleAd : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    returnType = "V",
+    parameters = listOf("Landroid/widget/ImageView;"),
+    name = "showCloudBannerMiddleAd",
+    custom = { _, classDef -> classDef.type == "Lcom/zasko/modulemain/mvpdisplay/fragment/X35EventControlFragment;" }
+)
+
+object X35EventControlShowTFBannerAd : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    returnType = "V",
+    parameters = listOf("Landroid/view/View;", "Landroid/view/View;"),
+    name = "showTFBannerAd",
+    custom = { _, classDef -> classDef.type == "Lcom/zasko/modulemain/mvpdisplay/fragment/X35EventControlFragment;" }
+)
+
+object X35EventControlShowCloudDisplayBuyBanner : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.SYNTHETIC),
+    returnType = "V",
+    parameters = emptyList(),
+    name = "showCloudDisplayBuyBanner",
+    custom = { _, classDef -> classDef.type == "Lcom/zasko/modulemain/mvpdisplay/fragment/X35EventControlFragment;" }
+)
+
+object CloudEventDisplayShowCloudBuyBannerLayout : Fingerprint(
+    accessFlags = listOf(AccessFlags.PRIVATE),
+    returnType = "V",
+    parameters = listOf("Z"),
+    name = "showCloudBuyBannerLayout",
+    custom = { _, classDef -> classDef.type == "Lcom/zasko/modulemain/mvpdisplay/fragment/CloudEventDisplayFragment;" }
+)
+
+object CloudEventDisplayShowCloudDisplayBuyBanner : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    returnType = "V",
+    parameters = emptyList(),
+    name = "showCloudDisplayBuyBanner",
+    custom = { _, classDef -> classDef.type == "Lcom/zasko/modulemain/mvpdisplay/fragment/CloudEventDisplayFragment;" }
+)
+
+object EventControlShowCloudBannerAd : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    returnType = "V",
+    parameters = listOf("Landroid/view/View;", "Landroid/view/View;"),
+    name = "showCloudBannerAd",
+    custom = { _, classDef -> classDef.type == "Lcom/zasko/modulemain/mvpdisplay/fragment/EventControlFragment;" }
+)
+
+object EventControlShowCloudBannerMiddleAd : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.SYNTHETIC),
+    returnType = "V",
+    parameters = listOf("Landroid/widget/ImageView;"),
+    name = "showCloudBannerMiddleAd",
+    custom = { _, classDef -> classDef.type == "Lcom/zasko/modulemain/mvpdisplay/fragment/EventControlFragment;" }
+)
+
+object EventControlShowCloudDisplayBuyBanner : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.SYNTHETIC),
+    returnType = "V",
+    parameters = emptyList(),
+    name = "showCloudDisplayBuyBanner",
+    custom = { _, classDef -> classDef.type == "Lcom/zasko/modulemain/mvpdisplay/fragment/EventControlFragment;" }
+)
+
+object EventControlShowTFBannerAd : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    returnType = "V",
+    parameters = listOf("Landroid/view/View;", "Landroid/view/View;"),
+    name = "showTFBannerAd",
+    custom = { _, classDef -> classDef.type == "Lcom/zasko/modulemain/mvpdisplay/fragment/EventControlFragment;" }
+)
+
 @Suppress("unused")
 val removeEventCloudPopupPatch = bytecodePatch(
     name = "Remove Event Cloud Popup",
@@ -91,5 +173,17 @@ val removeEventCloudPopupPatch = bytecodePatch(
         X35EventControlUpgradeTips.method.addInstructions(0, returnVoidInsns)
         X35EventControlUpgradeTipsFloat.method.addInstructions(0, returnVoidInsns)
         EventControlUpgradeTips.method.addInstructions(0, returnVoidInsns)
+        
+        // Disable all banner methods
+        X35EventControlShowCloudBannerAd.method.addInstructions(0, returnVoidInsns)
+        X35EventControlShowCloudBannerMiddleAd.method.addInstructions(0, returnVoidInsns)
+        X35EventControlShowTFBannerAd.method.addInstructions(0, returnVoidInsns)
+        X35EventControlShowCloudDisplayBuyBanner.method.addInstructions(0, returnVoidInsns)
+        CloudEventDisplayShowCloudBuyBannerLayout.method.addInstructions(0, returnVoidInsns)
+        CloudEventDisplayShowCloudDisplayBuyBanner.method.addInstructions(0, returnVoidInsns)
+        EventControlShowCloudBannerAd.method.addInstructions(0, returnVoidInsns)
+        EventControlShowCloudBannerMiddleAd.method.addInstructions(0, returnVoidInsns)
+        EventControlShowCloudDisplayBuyBanner.method.addInstructions(0, returnVoidInsns)
+        EventControlShowTFBannerAd.method.addInstructions(0, returnVoidInsns)
     }
 }
