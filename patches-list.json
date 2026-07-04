@@ -3,60 +3,8 @@
   "version": "1.0.0",
   "patches": [
     {
-      "name": "Remove Ads",
-      "description": "Removes ads from TrueCloud",
-      "default": true,
-      "dependencies": [],
-      "compatiblePackages": [
-        {
-          "packageName": "com.generalcomp.truecloud",
-          "name": "TrueCloud",
-          "description": null,
-          "apkFileType": "APK",
-          "appIconColor": "#FF0045",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "4.6.5.13",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Remove Cloud Boot Page",
-      "description": "Removes the cloud storage ad and startup statistics page",
-      "default": true,
-      "dependencies": [],
-      "compatiblePackages": [
-        {
-          "packageName": "com.generalcomp.truecloud",
-          "name": "TrueCloud",
-          "description": null,
-          "apkFileType": "APK",
-          "appIconColor": "#FF0045",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "4.6.5.13",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Remove Event Cloud Popup",
-      "description": "Removes the upgrade cloud storage popup when opening the Event tab",
+      "name": "TrueCloud Ad Removal",
+      "description": "Consolidated patch to remove all ads, boot pages, cloud popups, and the help center robot.",
       "default": true,
       "dependencies": [],
       "compatiblePackages": [

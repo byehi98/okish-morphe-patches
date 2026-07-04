@@ -1,4 +1,10 @@
-rootProject.name = "morphe-patches-template"
+rootProject.name = "okish-morphe-patches"
+
+buildCache {
+    local {
+        isEnabled = !System.getenv().containsKey("CI")
+    }
+}
 
 pluginManagement {
     repositories {
@@ -18,4 +24,10 @@ pluginManagement {
 
 plugins {
     id("app.morphe.patches") version "1.3.2"
+}
+
+settings {
+    extensions {
+        defaultNamespace = "app.morphe.extension"
+    }
 }
