@@ -1,4 +1,4 @@
-package app.truecloud.patches
+package app.truecloud.patches.ad
 
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
