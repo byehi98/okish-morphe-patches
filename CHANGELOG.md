@@ -1,3 +1,9 @@
+## [1.4.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.3.0...v1.4.0) (2026-08-01)
+
+### ✨ New Features
+
+* add Jetpack Joyride billing bypass patch ([b239380](https://github.com/byehi98/okish-morphe-patches/commit/b2393809b931fb02815dff8c45ca7bf03a8ed0b5))
+
 ## [1.4.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.3.0...v1.4.0-dev.1) (2026-08-01)
 
 ### ✨ New Features
