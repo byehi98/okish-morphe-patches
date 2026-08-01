@@ -1,3 +1,5 @@
+## [1.3.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.2.0...v1.3.0) (2026-08-01)
+
 ## [1.3.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.2.0...v1.3.0-dev.1) (2026-08-01)
 
 ## [1.2.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.1.0...v1.2.0) (2026-07-31)
