@@ -1,3 +1,9 @@
+## [1.5.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.4.0...v1.5.0-dev.1) (2026-08-02)
+
+### ✨ New Features
+
+* add Doodle Jump billing bypass patch ([019dd8f](https://github.com/byehi98/okish-morphe-patches/commit/019dd8f576d7479d59db797b2c974799c79cfd4f))
+
 ## [1.4.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.3.0...v1.4.0) (2026-08-01)
 
 ### ✨ New Features

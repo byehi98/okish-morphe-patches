@@ -10,7 +10,22 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.4.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.4.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;6 patches total
+> **[v1.5.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.5.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;7 patches total
+<details open>
+<summary>📦 Doodle Jump&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 3.11.38 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Doodle Jump Billing Bypass](#doodle-jump-billing-bypass) | Unlocks the full game by bypassing Google Play billing. |  |
+
+</details>
+
 <details open>
 <summary>📦 FreeJobAlert&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
