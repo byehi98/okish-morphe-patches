@@ -1,3 +1,9 @@
+## [1.6.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.5.0...v1.6.0) (2026-08-06)
+
+### ✨ New Features
+
+* add Dr. Driving patches (ad removal, unlimited gold, unlimited coins) ([7148309](https://github.com/byehi98/okish-morphe-patches/commit/71483091e9d59c3ac9833caabf66469adb8c7e78))
+
 ## [1.6.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.5.0...v1.6.0-dev.1) (2026-08-06)
 
 ### ✨ New Features
