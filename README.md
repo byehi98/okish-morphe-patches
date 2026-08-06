@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.5.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.5.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;7 patches total
+> **[v1.6.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.6.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;10 patches total
 <details open>
 <summary>📦 Doodle Jump&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
@@ -23,6 +23,23 @@ TODO: Update this about section with a brief introduction/summary about this rep
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Doodle Jump Billing Bypass](#doodle-jump-billing-bypass) | Unlocks the full game by bypassing Google Play billing. |  |
+
+</details>
+
+<details open>
+<summary>📦 Dr. Driving&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.73 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Dr. Driving Ad Removal](#dr-driving-ad-removal) | Removes all Google AdMob ads (banner, interstitial, rewarded). |  |
+| [Dr. Driving Unlimited Coins](#dr-driving-unlimited-coins) | Coins inflated to 1,000,000,000 on save load; purchases, upgrades, rentals and repairs never cost coins. |  |
+| [Dr. Driving Unlimited Gold](#dr-driving-unlimited-gold) | Gold is inflated to 1,000,000,000 on save load; gold packs in the store also grant gold. |  |
 
 </details>
 
