@@ -1,3 +1,9 @@
+## [1.7.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.6.0...v1.7.0) (2026-08-09)
+
+### ✨ New Features
+
+* add Hill Climb Racing patches (ad removal, rewarded video, free store) ([346ddea](https://github.com/byehi98/okish-morphe-patches/commit/346ddea89640e6ebd95761a1881bd685cc5584e7))
+
 ## [1.7.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.6.0...v1.7.0-dev.1) (2026-08-09)
 
 ### ✨ New Features
