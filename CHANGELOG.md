@@ -1,3 +1,10 @@
+## [1.8.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.7.0...v1.8.0) (2026-08-13)
+
+### ✨ New Features
+
+* add Into the Dead 2.9.3 patches (free IAP, instant rewards, remove ads incl. app open) ([5e4528c](https://github.com/byehi98/okish-morphe-patches/commit/5e4528c884ddbf67916c359059f4ef066dcfa50b))
+* consolidate Into the Dead patches into Ad Removal + Billing Bypass ([11c486d](https://github.com/byehi98/okish-morphe-patches/commit/11c486d8e4625a52c2811df4fb81e8c86857e26b))
+
 ## [1.8.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.8.0-dev.1...v1.8.0-dev.2) (2026-08-13)
 
 ### ✨ New Features
