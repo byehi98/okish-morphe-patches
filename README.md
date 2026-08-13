@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.7.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.7.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;13 patches total
+> **[v1.8.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.8.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;20 patches total
 <details open>
 <summary>📦 Doodle Jump&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
@@ -73,6 +73,27 @@ TODO: Update this about section with a brief introduction/summary about this rep
 | [Hill Climb Racing Ad Removal](#hill-climb-racing-ad-removal) | Completely removes ads: banners and interstitials can never be displayed (CFirebaseAds.showBanners/showInterstitial become no-ops) and ad-free is granted once per app start — loadStore() seeds mAdFree = 1, the native engine's poll grants it and the store's own reset (inappPurchasesProcessed) zeroes the field, so no repeated purchase popups. |  |
 | [Hill Climb Racing Free Store](#hill-climb-racing-free-store) | Every store item is granted instantly and free: coins, gems, paints, ad-skips, ad-free and bundles, without launching Google Play billing. |  |
 | [Hill Climb Racing Instant Rewarded Video Rewards](#hill-climb-racing-instant-rewarded-video-rewards) | Rewarded video ads grant their reward instantly without playing the ad: the native engine receives onVideoStartedSuccess + onVideoCompletedSuccess on the GL thread, exactly as if the video had been watched and completed. |  |
+
+</details>
+
+<details open>
+<summary>📦 Into the Dead&nbsp;&nbsp;•&nbsp;&nbsp;7 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 2.9.3 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Into the Dead Free IAP](#into-the-dead-free-iap) | Unlocks all in-app purchases for free: every store item is granted instantly without launching the Google Play payment dialog. |  |
+| [Into the Dead Instant Rewards](#into-the-dead-instant-rewards) | Skips rewarded video ads (legacy IronSource path): the reward is granted immediately without showing the ad. |  |
+| [Into the Dead Instant Rewards (LevelPlay)](#into-the-dead-instant-rewards-levelplay) | Skips rewarded video ads (new LevelPlayRewardedAd API): the reward is granted immediately without showing the ad. |  |
+| [Into the Dead Remove Ads](#into-the-dead-remove-ads) | Removes interstitial, launch and banner ads (legacy IronSource bridge): the C# interstitial-ready signal is killed, readiness polls return false, explicit loads are no-ops, and any show call completes the C# lifecycle instantly without displaying an ad. |  |
+| [Into the Dead Remove Ads (LevelPlay)](#into-the-dead-remove-ads-levelplay) | Safety nets for the new LevelPlay API: InterstitialAd.loadAd/showAd and BannerAd.load/showAd become no-ops and isAdReady returns false, so no interstitial or banner can ever display through the new API. |  |
+| [Into the Dead Remove App Open Ad](#into-the-dead-remove-app-open-ad) | Removes the AdMob App Open full-screen ad (the one shown on the second launch): the load, show, pollAd preloader and lifecycle-trigger entry points on the com.google.unity.ads bridge all become no-ops, so an app open ad can never load or display. |  |
+| [Into the Dead Verify Bypass](#into-the-dead-verify-bypass) | Bypasses SHA1withRSA purchase receipt verification so fabricated purchase receipts are accepted. |  |
 
 </details>
 
