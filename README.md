@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.8.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.8.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;20 patches total
+> **[v1.8.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.8.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;15 patches total
 <details open>
 <summary>📦 Doodle Jump&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
@@ -77,7 +77,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 </details>
 
 <details open>
-<summary>📦 Into the Dead&nbsp;&nbsp;•&nbsp;&nbsp;7 patches</summary>
+<summary>📦 Into the Dead&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -87,13 +87,8 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Into the Dead Free IAP](#into-the-dead-free-iap) | Unlocks all in-app purchases for free: every store item is granted instantly without launching the Google Play payment dialog. |  |
-| [Into the Dead Instant Rewards](#into-the-dead-instant-rewards) | Skips rewarded video ads (legacy IronSource path): the reward is granted immediately without showing the ad. |  |
-| [Into the Dead Instant Rewards (LevelPlay)](#into-the-dead-instant-rewards-levelplay) | Skips rewarded video ads (new LevelPlayRewardedAd API): the reward is granted immediately without showing the ad. |  |
-| [Into the Dead Remove Ads](#into-the-dead-remove-ads) | Removes interstitial, launch and banner ads (legacy IronSource bridge): the C# interstitial-ready signal is killed, readiness polls return false, explicit loads are no-ops, and any show call completes the C# lifecycle instantly without displaying an ad. |  |
-| [Into the Dead Remove Ads (LevelPlay)](#into-the-dead-remove-ads-levelplay) | Safety nets for the new LevelPlay API: InterstitialAd.loadAd/showAd and BannerAd.load/showAd become no-ops and isAdReady returns false, so no interstitial or banner can ever display through the new API. |  |
-| [Into the Dead Remove App Open Ad](#into-the-dead-remove-app-open-ad) | Removes the AdMob App Open full-screen ad (the one shown on the second launch): the load, show, pollAd preloader and lifecycle-trigger entry points on the com.google.unity.ads bridge all become no-ops, so an app open ad can never load or display. |  |
-| [Into the Dead Verify Bypass](#into-the-dead-verify-bypass) | Bypasses SHA1withRSA purchase receipt verification so fabricated purchase receipts are accepted. |  |
+| [Into the Dead Ad Removal](#into-the-dead-ad-removal) | Removes all ads and grants rewarded-video rewards instantly: rewarded videos (legacy IronSource and LevelPlay), interstitials, launch, banner and AdMob App Open ads are all eliminated. |  |
+| [Into the Dead Billing Bypass](#into-the-dead-billing-bypass) | Unlocks all in-app purchases for free and bypasses SHA1withRSA receipt verification: every store item is granted instantly without launching the Google Play payment dialog, and any fabricated receipt is accepted. |  |
 
 </details>
 
