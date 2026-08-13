@@ -34,6 +34,38 @@ object ShowRewardedVideoFingerprint : Fingerprint(
 )
 
 /**
+ * com.ironsource.unity.androidbridge.AndroidBridge.showRewardedVideo()V — public (parameterless).
+ *
+ * The no-placement legacy show entry (`IronSource.Agent.ShowRewardedVideo()` with no
+ * placement — the game uses it for flows where the placement string is optional). It simply
+ * forwards to the SDK: `invoke-static {}, IronSource.showRewardedVideo()V`. Patched exactly
+ * like the String variant, but the placement name is always "REWARDED_VIDEO" (a real constant
+ * in the game's handler match list).
+ *
+ * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:1609
+ * (.registers 1 — p0 only, ZERO locals, so the patch expands registers via
+ * cloneMutable(additionalRegisters = 4) → registers 5: v0-v3 locals + p0).
+ *
+ * Filter with parameters = listOf() disambiguates the parameterless overload: it calls
+ * IronSource.showRewardedVideo()V (no-arg), while showRewardedVideo(String)V calls the
+ * String overload.
+ */
+object ShowRewardedVideoNoArgFingerprint : Fingerprint(
+    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
+    name = "showRewardedVideo",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    parameters = listOf(),
+    filters = listOf(
+        methodCall(
+            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
+            name = "showRewardedVideo",
+            parameters = listOf(),
+        )
+    )
+)
+
+/**
  * com.ironsource.unity.androidbridge.RewardedAd.showAd(String)V — public.
  *
  * NEW-API show entry (`LevelPlayRewardedAd.ShowAd(placementName)` in C#). It forwards to
