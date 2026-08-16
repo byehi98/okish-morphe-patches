@@ -1,4 +1,4 @@
-package app.paresh.patches.com.yodo1.rodeo.safari.shared
+package app.rodeosafari.patches.shared
 
 import app.morphe.patcher.patch.ApkFileType
 import app.morphe.patcher.patch.AppTarget

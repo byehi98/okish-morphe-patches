@@ -1,4 +1,4 @@
-package app.paresh.patches.com.yodo1.rodeo.safari.ads
+package app.rodeosafari.patches.ads
 
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.methodCall

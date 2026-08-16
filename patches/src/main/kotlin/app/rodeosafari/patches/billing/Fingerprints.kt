@@ -1,4 +1,4 @@
-package app.paresh.patches.com.yodo1.rodeo.safari.billing
+package app.rodeosafari.patches.billing
 
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.string

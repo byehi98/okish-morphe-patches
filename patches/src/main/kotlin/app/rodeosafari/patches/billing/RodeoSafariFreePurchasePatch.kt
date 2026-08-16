@@ -1,8 +1,8 @@
-package app.paresh.patches.com.yodo1.rodeo.safari.billing
+package app.rodeosafari.patches.billing
 
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
 import app.morphe.patcher.patch.bytecodePatch
-import app.paresh.patches.com.yodo1.rodeo.safari.shared.Constants.COMPATIBILITY_RODEO
+import app.rodeosafari.patches.shared.Constants.COMPATIBILITY_RODEO
 
 /**
  * EXPERIMENTAL — R1 free-purchase spoof. See risk summary at the bottom.

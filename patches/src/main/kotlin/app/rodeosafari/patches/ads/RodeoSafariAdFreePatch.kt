@@ -1,9 +1,9 @@
-package app.paresh.patches.com.yodo1.rodeo.safari.ads
+package app.rodeosafari.patches.ads
 
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.util.cloneParameters
-import app.paresh.patches.com.yodo1.rodeo.safari.shared.Constants.COMPATIBILITY_RODEO
+import app.rodeosafari.patches.shared.Constants.COMPATIBILITY_RODEO
 
 /**
  * T1 — Rodeo Stampede Ad-Free (Ads blocked + instant rewards).
