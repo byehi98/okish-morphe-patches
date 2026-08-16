@@ -1,3 +1,9 @@
+## [1.9.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.8.0...v1.9.0) (2026-08-16)
+
+### ✨ New Features
+
+* add Rodeo Stampede Safari patches (free purchase + ad-free) ([da9a1b0](https://github.com/byehi98/okish-morphe-patches/commit/da9a1b0dccd168cd580339787204dd0e399ea22d))
+
 ## [1.9.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.8.0...v1.9.0-dev.1) (2026-08-16)
 
 ### ✨ New Features
