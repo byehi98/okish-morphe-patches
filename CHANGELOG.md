@@ -1,3 +1,9 @@
+## [1.11.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.10.0...v1.11.0) (2026-08-17)
+
+### ✨ New Features
+
+* add Earn to Die 2 patches (free IAP, no ads + instant rewards, Play check bypass) ([fc18531](https://github.com/byehi98/okish-morphe-patches/commit/fc185319923082577fe275d9a8489a0befdac6e3))
+
 ## [1.11.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.10.0...v1.11.0-dev.1) (2026-08-17)
 
 ### ✨ New Features
