@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.10.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.10.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;21 patches total
+> **[v1.11.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.11.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;24 patches total
 <details open>
 <summary>📦 Big Hunter&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -58,6 +58,23 @@ TODO: Update this about section with a brief introduction/summary about this rep
 | [Dr. Driving Ad Removal](#dr-driving-ad-removal) | Removes all Google AdMob ads (banner, interstitial, rewarded). |  |
 | [Dr. Driving Unlimited Coins](#dr-driving-unlimited-coins) | Coins inflated to 1,000,000,000 on save load; purchases, upgrades, rentals and repairs never cost coins. |  |
 | [Dr. Driving Unlimited Gold](#dr-driving-unlimited-gold) | Gold is inflated to 1,000,000,000 on save load; gold packs in the store also grant gold. |  |
+
+</details>
+
+<details open>
+<summary>📦 Earn to Die 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.4.58 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Earn to Die 2 Free IAP](#earn-to-die-2-free-iap) | Intercepts all in-app purchases and reports instant success to the game engine, unlocking paid content (cash doubler) for free. |  |
+| [Earn to Die 2 No Ads + Instant Rewards](#earn-to-die-2-no-ads-instant-rewards) | Removes interstitial and rewarded ads, and grants rewarded-video rewards instantly by firing the native callbacks. |  |
+| [Earn to Die 2 Remove Google Play Check](#earn-to-die-2-remove-google-play-check) | Bypasses the native Google Play distribution checks (installer package + signing signature) so the app runs when sideloaded. |  |
 
 </details>
 
