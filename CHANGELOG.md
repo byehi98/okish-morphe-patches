@@ -1,3 +1,10 @@
+## [1.12.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.11.0...v1.12.0) (2026-08-19)
+
+### ✨ New Features
+
+* add missiles patches (ad removal, billing bypass, Pairip license bypass) ([5511dbc](https://github.com/byehi98/okish-morphe-patches/commit/5511dbc42b0f91ba39fa78e43f1b8e19e8cbefde))
+* add moviebox patches (ad removal, premium unlock, download unlock, parallel downloads, update bypass) ([44f7424](https://github.com/byehi98/okish-morphe-patches/commit/44f742443ea5bf42bc9551e6272a722f6af76fd9))
+
 ## [1.12.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.12.0-dev.1...v1.12.0-dev.2) (2026-08-19)
 
 ### ✨ New Features
