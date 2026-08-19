@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.12.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.12.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;27 patches total
+> **[v1.12.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.12.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;32 patches total
 <details open>
 <summary>📦 Big Hunter&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -156,6 +156,25 @@ TODO: Update this about section with a brief introduction/summary about this rep
 | [Missiles Ads Removal](#missiles-ads-removal) | Spoofs the Google Mobile Ads Unity bridge (AdMob): interstitial, rewarded, rewarded interstitial, app open and banner ads resolve instantly as loaded/showed/closed/rewarded without ever displaying an ad. |  |
 | [Missiles Billing Bypass](#missiles-billing-bypass) | Spoofs the Google Play Billing 8.0.0 purchase flow: every buy is instantly granted (fake Purchase delivered through the registered listener), purchases/consumes complete instantly, and the product catalog is served with fake ProductDetails — no Google Play sheet, no real payment. |  |
 | [Missiles License Bypass](#missiles-license-bypass) | Bypasses the Pairip Play Store license check so the app launches normally. |  |
+
+</details>
+
+<details open>
+<summary>📦 MovieBox&nbsp;&nbsp;•&nbsp;&nbsp;5 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 4.0.01.0813.02 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [MovieBox Ad Removal](#moviebox-ad-removal) | Removes splash, banner, native, interstitial and reward video ads. |  |
+| [MovieBox Download Unlock](#moviebox-download-unlock) | Bypasses the server-side download access check so any resolution (including 1080p) can be downloaded on a free account. |  |
+| [MovieBox Force Update Bypass](#moviebox-force-update-bypass) | Disables forced and nag update prompts in MovieBox. |  |
+| [MovieBox Parallel Downloads](#moviebox-parallel-downloads) | Allows up to 5 simultaneous downloads in MovieBox. |  |
+| [MovieBox Premium Unlock](#moviebox-premium-unlock) | Unlocks MovieBox Premium (VIP) by forcing the member state active at Pro level. |  |
 
 </details>
 
