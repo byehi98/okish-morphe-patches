@@ -1,3 +1,9 @@
+## [1.13.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.12.0...v1.13.0) (2026-08-19)
+
+### ✨ New Features
+
+* **vector:** add rewarded ad spoofing ([2c0c141](https://github.com/byehi98/okish-morphe-patches/commit/2c0c141736cdb8d461bedb8a1732b9cf01df502b))
+
 ## [1.13.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.12.0...v1.13.0-dev.1) (2026-08-19)
 
 ### ✨ New Features
