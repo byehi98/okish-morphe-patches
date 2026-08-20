@@ -1,3 +1,9 @@
+## [1.14.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.13.0...v1.14.0) (2026-08-20)
+
+### ✨ New Features
+
+* **injustice:** add ad removal and billing bypass ([c3e432b](https://github.com/byehi98/okish-morphe-patches/commit/c3e432b695dbce2d2dd5cbde78576021daf61de5))
+
 ## [1.14.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.13.0...v1.14.0-dev.1) (2026-08-20)
 
 ### ✨ New Features
