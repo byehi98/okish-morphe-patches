@@ -1,3 +1,9 @@
+## [1.15.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.14.0...v1.15.0) (2026-08-23)
+
+### ✨ New Features
+
+* **plagueinc:** add patches for ads, premium, and unlocks ([f61f358](https://github.com/byehi98/okish-morphe-patches/commit/f61f358d9d6d36fc6b0124ab45f6f822888f5e4e))
+
 ## [1.15.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.14.0...v1.15.0-dev.1) (2026-08-23)
 
 ### ✨ New Features
