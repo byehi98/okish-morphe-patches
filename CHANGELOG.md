@@ -1,3 +1,9 @@
+## [1.16.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.15.0...v1.16.0) (2026-08-24)
+
+### ✨ New Features
+
+* **tentaclewars:** add free in-app purchases ([d4a2950](https://github.com/byehi98/okish-morphe-patches/commit/d4a2950a4942e818e320b0e51e07c5754fa3ec63))
+
 ## [1.16.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.15.0...v1.16.0-dev.1) (2026-08-24)
 
 ### ✨ New Features
