@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.15.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.15.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;42 patches total
+> **[v1.16.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.16.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;43 patches total
 <details open>
 <summary>📦 Big Hunter&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -258,6 +258,21 @@ TODO: Update this about section with a brief introduction/summary about this rep
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Swordigo Premium Unlock](#swordigo-premium-unlock) | Enables ad-free, guiding compass, and coin doubler without purchase. |  |
+
+</details>
+
+<details open>
+<summary>📦 Tentacle Wars&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 2.1.27 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Tentacle Wars Free Purchases](#tentacle-wars-free-purchases) | Spoofs in-app purchases as instantly successful: tapping Buy grants the SKU directly through the game's own purchase callback — no Google Play dialog, no payment. For ad-free, just tap the Remove-Ads button on the main game screen. |  |
 
 </details>
 
