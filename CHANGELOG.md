@@ -1,3 +1,13 @@
+## [1.17.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.16.0...v1.17.0-dev.1) (2026-08-25)
+
+### 🐛 Bug Fixes
+
+* **ads:** prevent Ndemic promo banner from showing ([b686b22](https://github.com/byehi98/okish-morphe-patches/commit/b686b22d1de0985a1ef29019161fcfb24bf79387))
+
+### ✨ New Features
+
+* **adda247-ads:** add ad blocking for Adda247 app ([dbed424](https://github.com/byehi98/okish-morphe-patches/commit/dbed424cb25ed9f3806a1726563b00eb8a7674ab))
+
 ## [1.16.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.15.0...v1.16.0) (2026-08-24)
 
 ### ✨ New Features
