@@ -10,7 +10,23 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.16.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.16.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;43 patches total
+> **[v1.17.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.17.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;45 patches total
+<details open>
+<summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 12.6.4 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Adda247 Ad Removal](#adda247-ad-removal) | Blocks all Google AdMob ads (banner, interstitial, rewarded, rewarded interstitial, native, app open and Ad Manager) by neutralizing the Flutter Google Mobile Ads plugin: no ad is ever requested and no ad can ever be shown. |  |
+| [Adda247 MoEngage In-App Blocker](#adda247-moengage-in-app-blocker) | Blocks the app's own MoEngage in-app promotions (the recurring "recommended for you" nudge with no close button, and full-screen standard in-app messages) by no-oping MoEngage's HTML render chokepoint, so no in-app WebView is ever built or attached. Separate from the Google AdMob block. |  |
+
+</details>
+
 <details open>
 <summary>📦 Big Hunter&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -206,7 +222,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Plague Inc. Premium](#plague-inc-premium) | Unlocks all premium features and disables premium prompts. |  |
-| [Plague Inc. Remove Banner Ads](#plague-inc-remove-banner-ads) | Removes AppLovin banner ads during gameplay. |  |
+| [Plague Inc. Remove Banner Ads](#plague-inc-remove-banner-ads) | Removes AppLovin banner ads and the Ndemic premium promo during gameplay. |  |
 | [Plague Inc. Skip Rewarded Video Ads](#plague-inc-skip-rewarded-video-ads) | Grants rewarded video bonuses instantly without watching ads. |  |
 | [Plague Inc. Sync Premium Entitlements](#plague-inc-sync-premium-entitlements) | Registers unlocked premium content with the native engine so premium modes run without trial banners. |  |
 | [Plague Inc. Unlock Disease Types](#plague-inc-unlock-disease-types) | Unlocks all disease types including Neurax Worm, Necroa Virus, Simian Flu and Shadow Plague. |  |
