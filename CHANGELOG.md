@@ -1,3 +1,9 @@
+## [1.18.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.17.0...v1.18.0-dev.1) (2026-08-26)
+
+### ✨ New Features
+
+* add Only One license bypass + free store patch. ([febc17f](https://github.com/byehi98/okish-morphe-patches/commit/febc17f5cb15aa8b5068fedd0048225b67e87cf4))
+
 ## [1.17.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.16.0...v1.17.0) (2026-08-25)
 
 ### 🐛 Bug Fixes

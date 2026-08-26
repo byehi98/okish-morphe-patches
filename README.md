@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.17.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.17.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;45 patches total
+> **[v1.18.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.18.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;47 patches total
 <details open>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -207,6 +207,22 @@ TODO: Update this about section with a brief introduction/summary about this rep
 | [MovieBox Force Update Bypass](#moviebox-force-update-bypass) | Disables forced and nag update prompts in MovieBox. |  |
 | [MovieBox Parallel Downloads](#moviebox-parallel-downloads) | Allows up to 5 simultaneous downloads in MovieBox. |  |
 | [MovieBox Premium Unlock](#moviebox-premium-unlock) | Unlocks MovieBox Premium (VIP) by forcing the member state active at Pro level. |  |
+
+</details>
+
+<details open>
+<summary>📦 Only One&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.2983 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Only One Free Store](#only-one-free-store) | Makes 'Restore Purchases' grant every store item for free (Ultimate Power, all classes, bundles and powers) — also removes ads. |  |
+| [Only One License Bypass](#only-one-license-bypass) | Bypasses the PairIP Play Store license check so the app launches normally. |  |
 
 </details>
 
