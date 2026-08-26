@@ -1,3 +1,9 @@
+## [1.19.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.18.0...v1.19.0-dev.1) (2026-08-26)
+
+### ✨ New Features
+
+* **haak-billing:** implement free purchases patch ([2a78af4](https://github.com/byehi98/okish-morphe-patches/commit/2a78af4690a48728833bd91d25d8102fcf085c47))
+
 ## [1.18.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.17.0...v1.18.0) (2026-08-26)
 
 ### ✨ New Features
