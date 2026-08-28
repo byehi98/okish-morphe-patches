@@ -1,3 +1,9 @@
+## [1.19.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.19.0...v1.19.1-dev.1) (2026-08-28)
+
+### 🚀 Updated App Support
+
+* **doodlejump:** add resurrection bypass for Doodle Jump 3.11.40 ([f3bb047](https://github.com/byehi98/okish-morphe-patches/commit/f3bb0470271cf50ba16cc5de0734a4eedfe3b90d))
+
 ## [1.19.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.18.0...v1.19.0) (2026-08-26)
 
 ### ✨ New Features
