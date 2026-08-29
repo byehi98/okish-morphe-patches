@@ -1,3 +1,9 @@
+## [1.19.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.19.1-dev.2...v1.19.1-dev.3) (2026-08-29)
+
+### 🚀 Updated App Support
+
+* **hillclimb:** update rewarded video patch for HCR 1.71.1 ([f9b4b0c](https://github.com/byehi98/okish-morphe-patches/commit/f9b4b0cb5cfa080f95bacbba137365022b61f173))
+
 ## [1.19.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.19.1-dev.1...v1.19.1-dev.2) (2026-08-29)
 
 ### 🚀 Updated App Support

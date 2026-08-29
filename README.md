@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.19.1-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.19.1-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;49 patches total
+> **[v1.19.1-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.19.1-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;49 patches total
 <details open>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -132,8 +132,8 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 **🎯 Supported versions:**
 
-| 1.70.0 |
-| :---: |
+| 1.70.0 | 1.71.1 |
+| :---: | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
