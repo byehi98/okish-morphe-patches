@@ -1,3 +1,9 @@
+## [1.20.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.19.1...v1.20.0-dev.1) (2026-08-29)
+
+### ✨ New Features
+
+* **fancypants:** add premium unlock patch ([51616cc](https://github.com/byehi98/okish-morphe-patches/commit/51616cc9ce57f83e7f02ff2132bfcd6fc6e9011f))
+
 ## [1.19.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.19.0...v1.19.1) (2026-08-29)
 
 ### 🚀 Updated App Support
