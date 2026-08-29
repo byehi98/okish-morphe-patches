@@ -1,3 +1,9 @@
+## [1.19.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.19.1-dev.1...v1.19.1-dev.2) (2026-08-29)
+
+### 🚀 Updated App Support
+
+* **rodeosafari:** add support for version 4.24.0 ([a65cb64](https://github.com/byehi98/okish-morphe-patches/commit/a65cb64cca5349e7f3653060a93e46cdc3bd1c7b))
+
 ## [1.19.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.19.0...v1.19.1-dev.1) (2026-08-28)
 
 ### 🚀 Updated App Support
