@@ -1,3 +1,21 @@
+## [1.19.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.19.1-dev.2...v1.19.1-dev.3) (2026-08-29)
+
+### 🚀 Updated App Support
+
+* **hillclimb:** update rewarded video patch for HCR 1.71.1 ([f9b4b0c](https://github.com/byehi98/okish-morphe-patches/commit/f9b4b0cb5cfa080f95bacbba137365022b61f173))
+
+## [1.19.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.19.1-dev.1...v1.19.1-dev.2) (2026-08-29)
+
+### 🚀 Updated App Support
+
+* **rodeosafari:** add support for version 4.24.0 ([a65cb64](https://github.com/byehi98/okish-morphe-patches/commit/a65cb64cca5349e7f3653060a93e46cdc3bd1c7b))
+
+## [1.19.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.19.0...v1.19.1-dev.1) (2026-08-28)
+
+### 🚀 Updated App Support
+
+* **doodlejump:** add resurrection bypass for Doodle Jump 3.11.40 ([f3bb047](https://github.com/byehi98/okish-morphe-patches/commit/f3bb0470271cf50ba16cc5de0734a4eedfe3b90d))
+
 ## [1.19.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.18.0...v1.19.0) (2026-08-26)
 
 ### ✨ New Features

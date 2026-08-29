@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.19.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.19.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;48 patches total
+> **[v1.19.1-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.19.1-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;49 patches total
 <details open>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -46,17 +46,18 @@ TODO: Update this about section with a brief introduction/summary about this rep
 </details>
 
 <details open>
-<summary>📦 Doodle Jump&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<summary>📦 Doodle Jump&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 3.11.38 |
-| :---: |
+| 3.11.38 | 3.11.40 |
+| :---: | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Doodle Jump Billing Bypass](#doodle-jump-billing-bypass) | Unlocks the full game by bypassing Google Play billing. |  |
+| [Doodle Jump Resurrection Bypass](#doodle-jump-resurrection-bypass) | Resurrect instantly after death without watching a rewarded ad. |  |
 
 </details>
 
@@ -131,8 +132,8 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 **🎯 Supported versions:**
 
-| 1.70.0 |
-| :---: |
+| 1.70.0 | 1.71.1 |
+| :---: | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
@@ -268,8 +269,8 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 **🎯 Supported versions:**
 
-| 4.23.0 |
-| :---: |
+| 4.23.0 | 4.24.0 |
+| :---: | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
