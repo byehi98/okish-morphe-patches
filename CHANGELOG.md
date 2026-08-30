@@ -1,3 +1,9 @@
+## [1.22.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.21.1...v1.22.0-dev.1) (2026-08-30)
+
+### ✨ New Features
+
+* **altos-adventure:** add IAP unlock patch ([4734874](https://github.com/byehi98/okish-morphe-patches/commit/47348747c6bb7a79292ecf8480c6fd13cfcda651))
+
 ## [1.21.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.21.0...v1.21.1) (2026-08-30)
 
 ### 🚀 Updated App Support
