@@ -1,3 +1,9 @@
+## [1.21.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.20.0...v1.21.0) (2026-08-30)
+
+### ✨ New Features
+
+* **trafficrider:** add ad removal, instant rewards, and IAP bypass ([de1ffbb](https://github.com/byehi98/okish-morphe-patches/commit/de1ffbbcea1fd3806b8f08f063cc5c712029d36d))
+
 ## [1.21.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.20.0...v1.21.0-dev.1) (2026-08-30)
 
 ### ✨ New Features
