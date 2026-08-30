@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.22.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.22.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;53 patches total
+> **[v1.22.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.22.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;54 patches total
 <details open>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -170,6 +170,21 @@ TODO: Update this about section with a brief introduction/summary about this rep
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [IAP Unlock](#iap-unlock) | Unlocks all in-app purchases by faking Google Play billing query results. |  |
+
+</details>
+
+<details open>
+<summary>📦 Alto's Odyssey&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.0.42 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [IAP Unlock](#iap-unlock) | Unlocks all in-app purchases in Alto's Odyssey by faking Google Play billing query results. |  |
 
 </details>
 
