@@ -1,3 +1,10 @@
+## [1.22.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.21.1...v1.22.0) (2026-08-30)
+
+### ✨ New Features
+
+* **altos-adventure:** add IAP unlock patch ([4734874](https://github.com/byehi98/okish-morphe-patches/commit/47348747c6bb7a79292ecf8480c6fd13cfcda651))
+* **altos-odyssey:** IAP-Purchase auto grant ([ece9701](https://github.com/byehi98/okish-morphe-patches/commit/ece9701c69ad3838eedd8fa6877d7619f73896d9))
+
 ## [1.22.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.22.0-dev.1...v1.22.0-dev.2) (2026-08-30)
 
 ### ✨ New Features
