@@ -1,3 +1,9 @@
+## [1.21.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.21.0...v1.21.1-dev.1) (2026-08-30)
+
+### 🚀 Updated App Support
+
+* **swordigo:** add support for version 1.4.13 ([b5ee187](https://github.com/byehi98/okish-morphe-patches/commit/b5ee1873c06fe329c6b3b6175c84beb69a5d70d4))
+
 ## [1.21.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.20.0...v1.21.0) (2026-08-30)
 
 ### ✨ New Features
