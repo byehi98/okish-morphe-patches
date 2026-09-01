@@ -63,5 +63,7 @@ val hillClimbRewardedVideoPatch = bytecodePatch(
             invoke-static {}, $MAIN_ACTIVITY->onVideoCompletedSuccess()V
             return-void
         """.trimIndent())
+
+        HasVideoCampaignsFingerprint.method.returnEarly(1)
     }
 }
