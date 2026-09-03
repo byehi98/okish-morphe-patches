@@ -11,257 +11,219 @@ import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.immutable.ImmutableField
 
 /**
- * Into the Dead — Ad Removal
- *
- * Single consolidated patch replacing the previous five ad patches
- * (Instant Rewards legacy, Instant Rewards LevelPlay, Remove Ads legacy,
- * Remove Ads LevelPlay, Remove App Open Ad). The execute block runs all five
- * sections in order, so the MPP lists exactly one Ad Removal patch.
+ * Into the Dead 2 — Ad Removal + Instant Boost Rewards (final, device-verified).
  *
  * ============================================================
- * SECTION 1 — Instant Rewards (legacy IronSource bridge)
+ * THE VERIFIED FACT (device logcat, real rewarded ad, 2026-09-03)
  * ============================================================
+ * With rewarded videos left stock, a REAL watched ad produced:
  *
- * com.ironsource.unity.androidbridge.AndroidBridge.showRewardedVideo(String)V is the
- * legacy C# show entry (`IronSource.Agent.ShowRewardedVideo`). Normally it forwards to
- * `com.ironsource.mediationsdk.IronSource.showRewardedVideo(String)` which loads and
- * displays a real rewarded ad. Instead we fire the full reward lifecycle directly on the
- * C# proxy (`UnityLevelPlayRewardedVideoListener`) via the same field path the SDK uses:
+ *   OnRewardedVideoRewarded called in PerksUGUIManager.
+ *     Placement:Perks_Screen, reward: PERKS_BOOST, quantity:1
+ *   → PerkBoostManager:SetPerkAsBoosted(PERK)
+ *   → PerkBoostManager:SaveBoostedTimersToPlayerProfile()
+ *   → PlayerProfile.Save()                      ← boost GRANTED
  *
- *   AndroidBridge.mLevelPlayRewardedVideoWrapper (private, same class → iget-object)
- *     → LevelPlayRewardedVideoWrapper.mUnityLevelPlayRewardedVideoListener
- *       (private, cross-class → use the nestmate synthetic accessor
- *        `-$$Nest$fgetmUnityLevelPlayRewardedVideoListener`, exactly like
- *        LevelPlayRewardedVideoWrapper$6.run does — same package, verifier-safe)
+ * Every earlier synthetic build failed ONLY because the reward name sent was
+ * "PERKBOOST" (missing the S). The C# handler switch-cases on the EXACT reward
+ * name string delivered in the placement JSON. The correct constant for the
+ * boost placements (Perks_Screen / PERKS / …) is "PERKS_BOOST".
  *
- * We fire onAdOpened("{}") → onAdRewarded(placementJson, "{}") → onAdClosed("{}")
- * synchronously. onAdOpened/onAdClosed carry the adInfo-style JSON ("{}") exactly like
- * the real SDK forwarders ($3/$7 pass getAdInfoString(adInfo)); onAdRewarded carries the
- * placement JSON first, then the adInfo string (matches $6). The game's C#
- * `IronSourceRewardedVideoEvents`/`OnRewardedVideoRewarded` then grants the game-configured
- * reward (PikPok RewardService.ClaimReward) without any ad.
- *
- * placementJson mirrors AndroidBridgeUtilities.getPlacememtJson(Placement) — a JSONObject
- * built from a HashMap with keys placement_id / placement_name / placement_reward_amount /
- * placement_reward_name. placement_name is the real tapped placement (p1) — the C# handler
- * matches it against PERKBOOST/PERKS/COIN_REWARD/FREE_COINS/REWARDED_VIDEO, so the value is
- * load-bearing. If p1 is null we default it to "REWARDED_VIDEO" (a real handler constant)
- * so the match can never fail on a null name.
- *
- * The method only has .registers 2 (p0, p1 — zero locals), so cloneParameters() clones it
- * with 2 extra registers (registers 4: v0-v1 locals + p0=this + p1=placement). The injected
- * block uses v0..v3/p0/p1 and falls through to the ORIGINAL body (IronSource.showRewardedVideo)
- * when the wrapper or listener is missing, so a real ad still shows if the bridge is unset.
- *
- * The same lifecycle is applied to the parameterless showRewardedVideo()V (.registers 1 —
- * zero locals, expanded via cloneMutable(additionalRegisters = 4) → registers 5), always
- * using placement "REWARDED_VIDEO"; it falls through to the real
- * IronSource.showRewardedVideo()V when the bridge is unset.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:1618
- * (String variant), :1609 (parameterless variant), LevelPlayRewardedVideoWrapper.smali:25
- * (-$$Nest$fget...), :166 (onAdRewarded), $3/$6/$7 (adInfo/placement arg forwarding),
- * UnityLevelPlayRewardedVideoListener.smali (onAdOpened/onAdRewarded/onAdClosed).
+ * All reward-video buttons in this game are perk-boost buttons (verified with
+ * the user), so the placement→reward map below sends PERKS_BOOST for the boost
+ * placements and passes the known coin constants through unchanged for any
+ * future/other placement.
  *
  * ============================================================
- * SECTION 2 — Instant Rewards (new LevelPlayRewardedAd API)
+ * WHAT THIS PATCH DOES
  * ============================================================
+ *  A. Removes interstitial, banner and AdMob App-Open ads (legacy IronSource
+ *     bridge + new LevelPlay API + AdMob — all verified kills).
+ *  B. Makes rewarded videos grant instantly:
+ *      1. availability faked  — isRewardedVideoAvailable→true,
+ *         placement capped→false, loadRewardedVideo fires synthetic
+ *         onAdAvailable/onAdReady so C# Video.State == Ready;
+ *      2. AndroidBridge.showRewardedVideo (String + no-arg) fires the real
+ *         callback sequence onAdOpened → onAdRewarded(placementJson) →
+ *         onAdClosed with placement_reward_name = PERKS_BOOST for boost
+ *         placements, exactly matching what a real completion delivers;
+ *      3. new-API RewardedAd bridge (showAd/loadAd/isAdReady + stored
+ *         listener) as a safety net with the same corrected reward name.
  *
- * com.ironsource.unity.androidbridge.RewardedAd is the new-API bridge
- * (`Unity.Services.LevelPlay.LevelPlayRewardedAd` in C#). Normally showAd(String) forwards
- * to `LevelPlayRewardedAd.showAd(Activity, String)` and a real ad plays; the reward only
- * reaches the C# proxy `IUnityRewardedAdListener` through the anonymous RewardedAd$1 SDK
- * listener after the ad completes.
- *
- * This patch makes showAd() grant immediately:
- *  1. Adds an instance field `mUnityRewardedAdListener:IUnityRewardedAdListener;` to
- *     RewardedAd (dexlib2 ImmutableField; private is fine — all access is in-class).
- *  2. Injects `iput-object p1, p0, ...mUnityRewardedAdListener` at the top of the private
- *     setupRewardedListener(IUnityRewardedAdListener)V — called from BOTH constructors —
- *     so the C# proxy is stored when the ad object is created.
- *  3. Rewrites showAd(String)V to fire onAdDisplayed("{}") → onAdRewarded("{}", placement, 1)
- *     → onAdClosed("{}") on the stored listener and return; if the listener is missing it
- *     falls through to the ORIGINAL body (LevelPlayRewardedAd.showAd), so a real ad still
- *     shows. onAdRewarded carries the REAL tapped placement (p1, defaulted to
- *     "REWARDED_VIDEO" when null) as the reward name — the C# handler matches rewardName
- *     against PERKBOOST/PERKS/COIN_REWARD/FREE_COINS/REWARDED_VIDEO, so an empty name
- *     would never grant.
- *
- * Register budget (CRITICAL — verified): showAd and setupRewardedListener both have
- * .registers 4 = v0, v1 TRUE LOCALS + p0 (register 2) + p1 (register 3). In smali, v2/v3
- * ALIAS p0/p1 — the previous block wrote const-string v2, "" and const/4 v3, 0x0, which
- * overwrote this/placement as scratch, so onAdRewarded received ("", "", 0) and the reward
- * name never reached C#. The rewritten block reads p1 (and defaults it) BEFORE using v2/p0
- * as the amount scratch; this is only clobbered on the synthetic path (after the null-check
- * branch), so the :cond_real fall-through still sees an intact this/placement.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/RewardedAd.smali:80
- * (setupRewardedListener), :134 (showAd), RewardedAd$1.smali:184 (onAdRewarded forwarding),
- * IUnityRewardedAdListener.smali (onAdDisplayed/onAdRewarded/onAdClosed).
- *
- * ============================================================
- * SECTION 3 — Remove Ads (legacy IronSource bridge)
- * ============================================================
- *
- * Kills every interstitial/launch/banner path through the legacy
- * com.ironsource.unity.androidbridge bridge (classes7.dex). The game C# drives the
- * legacy provider (`IronSourceInterstitial` → `AndroidBridge`), and the SDK auto-loads
- * the interstitial after init (no setManualLoadInterstitial in this build), so the
- * ready-signal kill is MANDATORY:
- *
- *  1. LevelPlayInterstitialWrapper.onAdReady(AdInfo)V → return-void
- *     The SDK → C# "interstitial is ready" dispatch. Killing it means the C# manager
- *     never receives HandleInterstitialReadyEvent → never calls GetInterstitial →
- *     never displays → never PauseGame → zero hang. Registration as the SDK listener
- *     (IronSource.setLevelPlayInterstitialListener in the wrapper <init>) is untouched.
- *
- *  2. AndroidBridge.isInterstitialReady()Z → return false
- *     C# readiness polls always say no (defense for the auto-load path).
- *
- *  3. AndroidBridge.loadInterstitial()V → return-void
- *     Stops the explicit network load (auto-load still happens — covered by 1/2/4).
- *
- *  4. AndroidBridge.showInterstitial()V + showInterstitial(String)V →
- *     fire onAdOpened("") → onAdShowSucceeded("") → onAdClosed("") on the C# proxy
- *     (UnityLevelPlayInterstitialListener) held by the wrapper, via the same
- *     cross-class private-field nestmate accessor the SDK itself uses
- *     (`-$$Nest$fgetmUnityLevelPlayInterstitialListener`). Completes the C# lifecycle
- *     instantly — no real ad, and the game's CloseInterstitial/UnPauseGame fires.
- *     Falls back to the REAL IronSource.showInterstitial call if the wrapper or
- *     listener is unset (defense in depth, matches the instant-reward patch style).
- *
- *  5. AndroidBridge.loadBanner(String,int,int,int,String,boolean,boolean,float,float)V
- *     → return-void. Banner view is never created → nothing displays.
- *     displayBanner/hideBanner/destroyBanner are null-safe (AndroidBridge$6/$7/$8
- *     run() null-check mBannerContainer and wrap in try/catch — verified), so no
- *     downstream NPE.
- *
- * Register budgets (verified in classes7 smali):
- *  - onAdReady: .registers 3 — return-void needs no register.
- *  - isInterstitialReady: .registers 2 — v0 local exists.
- *  - loadInterstitial: .registers 1 — return-void needs no register.
- *  - showInterstitial(String): .registers 2 (ZERO locals) → cloneParameters() clones
- *    with 2 extra registers → registers 4 (v0, v1 locals + p0, p1). The injected block
- *    uses v0 (wrapper), v1 (listener), reuses v0 for "" and falls through to the
- *    ORIGINAL body when the wrapper/listener is missing.
- *  - showInterstitial(): .registers 1 (ZERO locals) → cloneMutable(additionalRegisters
- *    = 2) → registers 3 (v0, v1 locals + p0); the original is swapped out of the class
- *    with the clone (same pattern cloneParameters() uses internally). The clone's
- *    injected `move-object/from16 v0, p0` preserves `this` for the fall-through
- *    original body (`IronSource.showInterstitial()V`).
- *  - loadBanner: .registers 12 — return-void needs no register (monitor/try-catch body
- *    becomes unreachable dead code — acceptable, matches repo no-op convention).
- *
- * Do NOT touch init/initialize/onPause/onResume (stalls C# onInitializationComplete).
- *
- * ============================================================
- * SECTION 4 — Remove Ads (new LevelPlay API safety nets)
- * ============================================================
- *
- * The game compiles the NEW `Unity.Services.LevelPlay` C# API
- * (LevelPlayInterstitialAd / LevelPlayBannerAdView) but drives the LEGACY provider.
- * Patch both bridge classes cheaply as a safety net in case any path ever hits them:
- *
- *  InterstitialAd (classes7/com/ironsource/unity/androidbridge/InterstitialAd.smali):
- *   - loadAd()V      → return-void  (line 123, .registers 2)
- *   - isAdReady()Z   → return false (line 110, .registers 2 — v0 local exists)
- *   - showAd(String)V → return-void (line 134, .registers 4)
- *
- *  BannerAd (classes7/com/ironsource/unity/androidbridge/BannerAd.smali):
- *   - load()V        → return-void  (line 770, .registers 2)
- *   - showAd()V      → return-void  (line 803, .registers 3)
- *
- * No synthetic close-callback on the new-API showAd: the game's InterstitialManager
- * uses the legacy provider, so the legacy showInterstitial synthetic lifecycle
- * (section 3) is what actually matters. If a future test shows the new API being
- * driven, upgrade showAd to a synthetic onAdDisplayed→onAdClosed with a stored
- * IUnityInterstitialAdListener field (same structural change as the rewarded
- * RewardedAd patch) — out of scope here.
- *
- * ============================================================
- * SECTION 5 — Remove App Open Ad (AdMob App Open bridge, classes8.dex)
- * ============================================================
- *
- * Kills the second-launch full-screen ad at the com.google.unity.ads bridge
- * layer — the Google Mobile Ads APP OPEN AD driven by PikPok C#
- * (PikPok.Advertising.LoadAppOpenAd/ShowAppOpenAd) via JNI. This is a SEPARATE
- * dex (classes8) from the IronSource bridge patches (classes7) and never touches
- * MobileAds init (shared with the IronSource AdMob adapter) or the underlying
- * classes3 AppOpenAd renderer.
- *
- * 1. UnityAppOpenAd.loadAd(String, AdRequest)V → return-void (PRIMARY)
- *    Nothing ever loads → isAdAvailable() false → C# ShowAppOpenAd gate skips.
- * 2. UnityAppOpenAd.show()V → return-void (PRIMARY)
- *    Direct show-kill: even a late-loaded appOpenAd never displays.
- * 3. UnityAppOpenAd.pollAd(String)V → return-void (SECONDARY)
- *    Kills the AdMob preloader cache path that could populate appOpenAd
- *    without loadAd.
- * 4. UnityAppStateEventNotifier.startListening()V → return-void (SECONDARY)
- *    Kills the auto-show trigger: the notifier never registers with
- *    ProcessLifecycleOwner → C# never receives onAppStateChanged →
- *    ShowAppOpenAd never auto-fires.
- *
- * All four: .registers unchanged, body replaced by a single return-void — no
- * try/catch/monitor in any target (verified), so no verifier traps. Register
- * counts: loadAd 5, show 3, pollAd 9, startListening 3 — return-void needs none.
- *
+ * Every path logs to logcat under tag ITD2FIX for future diagnosis.
  */
 @Suppress("unused")
-val intoTheDeadAdRemovalPatch = bytecodePatch(
-    name = "Into the Dead Ad Removal",
-    description = "Removes all ads and grants rewarded-video rewards instantly: rewarded videos (legacy IronSource and LevelPlay), interstitials, launch, banner and AdMob App Open ads are all eliminated.",
+val intoTheDeadAdRemovalInstantBoostRewardsPatch = bytecodePatch(
+    name = "Into the Dead 2 Ad Removal & Instant Boost Rewards",
+    description = "Removes all ads (interstitials, banners, app-open) and grants rewarded-video perk boosts instantly on tap (no ad watch) using the correct reward name PERKS_BOOST, verified against a real rewarded event.",
     default = true
 ) {
     compatibleWith(COMPATIBILITY_INTO_THE_DEAD)
 
     execute {
         // ==========================================================
-        // SECTION 1 — Instant Rewards (legacy IronSource bridge)
+        // SECTION A — Instant Boost Rewards: fake availability (REWARD FIX)
         // ==========================================================
 
-        // String variant: clone the method with 2 additional registers (original .registers 2 → 4).
-        val showRewardedMethod = ShowRewardedVideoFingerprint.method.cloneParameters()
+        // C# IsVideoAvailable(placementId) poll → always true (tap gate passes).
+        AndroidBridgeIsRewardedVideoAvailableFingerprint.method.addInstructions(0, """
+            const/4 v0, 0x1
+            return v0
+        """.trimIndent())
 
-        showRewardedMethod.addInstructionsWithLabels(0, """
+        // Placement-cap poll → never capped.
+        AndroidBridgeIsRewardedVideoPlacementCappedFingerprint.method.addInstructions(0, """
+            const/4 v0, 0x0
+            return v0
+        """.trimIndent())
+
+        // loadRewardedVideo()V → fire synthetic onAdAvailable (regular listener)
+        // and onAdReady (manual listener) so C# raises VideoReady → Video.State=Ready.
+        // Original .registers 1 → clone +4 → registers 5, swap the original out.
+        val loadRewardedVideoMethod = AndroidBridgeLoadRewardedVideoFingerprint.method
+        val loadRewardedVideoMethodExpanded = loadRewardedVideoMethod.cloneMutable(additionalRegisters = 4)
+        mutableClassDefBy(loadRewardedVideoMethod.definingClass).methods.apply {
+            remove(loadRewardedVideoMethod)
+            add(loadRewardedVideoMethodExpanded)
+        }
+        loadRewardedVideoMethodExpanded.addInstructionsWithLabels(0, """
             iget-object v0, p0, Lcom/ironsource/unity/androidbridge/AndroidBridge;->mLevelPlayRewardedVideoWrapper:Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;
             if-eqz v0, :cond_real
             invoke-static {v0}, Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;->-${'$'}${'$'}Nest${'$'}fgetmUnityLevelPlayRewardedVideoListener(Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;)Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;
             move-result-object v1
-            if-eqz v1, :cond_real
-            if-nez p1, :cond_ok
-            const-string p1, "REWARDED_VIDEO"
-            :cond_ok
-            nop
-            new-instance v0, Ljava/util/HashMap;
-            invoke-direct {v0}, Ljava/util/HashMap;-><init>()V
-            const-string v2, "placement_name"
-            invoke-virtual {v0, v2, p1}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-            const-string v2, "placement_id"
-            const-string v3, "0"
-            invoke-virtual {v0, v2, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-            const-string v2, "placement_reward_amount"
-            const-string v3, "0"
-            invoke-virtual {v0, v2, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-            const-string v2, "placement_reward_name"
-            const-string v3, "Reward"
-            invoke-virtual {v0, v2, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-            new-instance v2, Lorg/json/JSONObject;
-            invoke-direct {v2, v0}, Lorg/json/JSONObject;-><init>(Ljava/util/Map;)V
-            invoke-virtual {v2}, Lorg/json/JSONObject;->toString()Ljava/lang/String;
-            move-result-object v2
+            if-eqz v1, :cond_manual
+            const-string v2, "ITD2FIX"
+            const-string v3, "loadRewardedVideo: fake onAdAvailable"
+            invoke-static {v2, v3}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            move-object v2, v1
             const-string v3, "{}"
-            invoke-interface {v1, v3}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdOpened(Ljava/lang/String;)V
-            invoke-interface {v1, v2, v3}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdRewarded(Ljava/lang/String;Ljava/lang/String;)V
-            invoke-interface {v1, v3}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdClosed(Ljava/lang/String;)V
+            invoke-interface {v2, v3}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdAvailable(Ljava/lang/String;)V
+            :cond_manual
+            iget-object v0, p0, Lcom/ironsource/unity/androidbridge/AndroidBridge;->mLevelPlayRewardedVideoWrapper:Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;
+            if-eqz v0, :cond_real
+            invoke-static {v0}, Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;->-${'$'}${'$'}Nest${'$'}fgetmUnityLevelPlayRewardedVideoManualListener(Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;)Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoManualListener;
+            move-result-object v1
+            if-eqz v1, :cond_real
+            const-string v2, "ITD2FIX"
+            const-string v3, "loadRewardedVideo: fake onAdReady"
+            invoke-static {v2, v3}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            move-object v2, v1
+            const-string v3, "{}"
+            invoke-interface {v2, v3}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoManualListener;->onAdReady(Ljava/lang/String;)V
             return-void
             :cond_real
             nop
         """.trimIndent())
 
-        // Parameterless variant: .registers 1 has ZERO locals → clone with 4 extra registers
-        // (registers 5: v0-v3 locals + p0), then swap the original out of the class (the exact
-        // replacement cloneParameters() performs internally). Always uses placement
-        // "REWARDED_VIDEO" and falls through to the real IronSource.showRewardedVideo()V.
+        // NEW-API safety net: RewardedAd.isAdReady() → always true.
+        RewardedAdIsAdReadyFingerprint.method.addInstructions(0, """
+            const/4 v0, 0x1
+            return v0
+        """.trimIndent())
+
+        // NEW-API safety net: RewardedAd.loadAd() → synthetic onAdLoaded on the
+        // stored C# listener; falls through to the real load when unset.
+        val rewardedAdLoadAdMethod = RewardedAdLoadAdFingerprint.method
+        val rewardedAdLoadAdMethodExpanded = rewardedAdLoadAdMethod.cloneMutable(additionalRegisters = 4)
+        mutableClassDefBy(rewardedAdLoadAdMethod.definingClass).methods.apply {
+            remove(rewardedAdLoadAdMethod)
+            add(rewardedAdLoadAdMethodExpanded)
+        }
+        rewardedAdLoadAdMethodExpanded.addInstructionsWithLabels(0, """
+            iget-object v0, p0, Lcom/ironsource/unity/androidbridge/RewardedAd;->mUnityRewardedAdListener:Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;
+            if-eqz v0, :cond_real
+            const-string v1, "ITD2FIX"
+            const-string v2, "RewardedAd.loadAd: fake onAdLoaded"
+            invoke-static {v1, v2}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            const-string v1, "{}"
+            invoke-interface {v0, v1}, Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;->onAdLoaded(Ljava/lang/String;)V
+            return-void
+            :cond_real
+            nop
+        """.trimIndent())
+
+        // ==========================================================
+        // SECTION B — Instant Boost Rewards: legacy bridge grant (PRIMARY)
+        // ==========================================================
+        //
+        // showRewardedVideo(String)V — original .registers 2 (p0=this, p1=placement,
+        // ZERO locals) → clone +8 → registers 10 (v0..v7 + p0@8 + p1@9). The
+        // placement is kept in p1 for the whole block (register-safe mapping).
+
+        val showRewardedMethod = ShowRewardedVideoFingerprint.method
+        val showRewardedMethodExpanded = showRewardedMethod.cloneMutable(additionalRegisters = 8)
+        mutableClassDefBy(showRewardedMethod.definingClass).methods.apply {
+            remove(showRewardedMethod)
+            add(showRewardedMethodExpanded)
+        }
+        showRewardedMethodExpanded.addInstructionsWithLabels(0, """
+            const-string v0, "ITD2FIX"
+            const-string v1, "SRV-string: enter"
+            invoke-static {v0, v1}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            iget-object v0, p0, Lcom/ironsource/unity/androidbridge/AndroidBridge;->mLevelPlayRewardedVideoWrapper:Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;
+            if-eqz v0, :cond_real
+            invoke-static {v0}, Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;->-${'$'}${'$'}Nest${'$'}fgetmUnityLevelPlayRewardedVideoListener(Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;)Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;
+            move-result-object v0
+            if-eqz v0, :cond_real
+            const-string v1, "ITD2FIX"
+            invoke-static {v1, p1}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            if-nez p1, :pl_ok
+            const-string p1, "Perks_Screen"
+            :pl_ok
+            nop
+            const-string v1, "PERKS_BOOST"
+            const-string v2, "Coin_Reward"
+            invoke-virtual {p1, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+            move-result v2
+            if-nez v2, :sel_coin
+            const-string v2, "COIN_REWARD"
+            invoke-virtual {p1, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+            move-result v2
+            if-nez v2, :sel_coin
+            const-string v2, "FREE_COINS"
+            invoke-virtual {p1, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+            move-result v2
+            if-nez v2, :sel_free
+            goto :sel_done
+            :sel_coin
+            const-string v1, "COIN_REWARD"
+            goto :sel_done
+            :sel_free
+            const-string v1, "FREE_COINS"
+            :sel_done
+            nop
+            new-instance v2, Ljava/util/HashMap;
+            invoke-direct {v2}, Ljava/util/HashMap;-><init>()V
+            const-string v3, "placement_name"
+            invoke-virtual {v2, v3, p1}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+            const-string v3, "placement_id"
+            const-string v4, "0"
+            invoke-virtual {v2, v3, v4}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+            const-string v3, "placement_reward_amount"
+            const-string v4, "1"
+            invoke-virtual {v2, v3, v4}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+            const-string v3, "placement_reward_name"
+            invoke-virtual {v2, v3, v1}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+            new-instance v3, Lorg/json/JSONObject;
+            invoke-direct {v3, v2}, Lorg/json/JSONObject;-><init>(Ljava/util/Map;)V
+            invoke-virtual {v3}, Lorg/json/JSONObject;->toString()Ljava/lang/String;
+            move-result-object v2
+            const-string v3, "ITD2FIX"
+            const-string v4, "SRV-string: firing reward"
+            invoke-static {v3, v4}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            invoke-static {v3, v2}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            const-string v3, "{}"
+            invoke-interface {v0, v3}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdOpened(Ljava/lang/String;)V
+            invoke-interface {v0, v2, v3}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdRewarded(Ljava/lang/String;Ljava/lang/String;)V
+            invoke-interface {v0, v3}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdClosed(Ljava/lang/String;)V
+            return-void
+            :cond_real
+            nop
+        """.trimIndent())
+
+        //  showRewardedVideo()V — parameterless variant. Original .registers 1 →
+        //  clone +4 → registers 5, swap original. No placement is available →
+        //  always reward PERKS_BOOST (every reward video in this game is a boost).
         val showNoArgMethod = ShowRewardedVideoNoArgFingerprint.method
         val showNoArgMethodExpanded = showNoArgMethod.cloneMutable(additionalRegisters = 4)
         mutableClassDefBy(showNoArgMethod.definingClass).methods.apply {
@@ -269,56 +231,61 @@ val intoTheDeadAdRemovalPatch = bytecodePatch(
             add(showNoArgMethodExpanded)
         }
         showNoArgMethodExpanded.addInstructionsWithLabels(0, """
+            const-string v0, "ITD2FIX"
+            const-string v1, "SRV-noarg: enter"
+            invoke-static {v0, v1}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
             iget-object v0, p0, Lcom/ironsource/unity/androidbridge/AndroidBridge;->mLevelPlayRewardedVideoWrapper:Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;
             if-eqz v0, :cond_real
             invoke-static {v0}, Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;->-${'$'}${'$'}Nest${'$'}fgetmUnityLevelPlayRewardedVideoListener(Lcom/ironsource/unity/androidbridge/LevelPlayRewardedVideoWrapper;)Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;
-            move-result-object v1
-            if-eqz v1, :cond_real
-            new-instance v0, Ljava/util/HashMap;
-            invoke-direct {v0}, Ljava/util/HashMap;-><init>()V
+            move-result-object v0
+            if-eqz v0, :cond_real
+            new-instance v1, Ljava/util/HashMap;
+            invoke-direct {v1}, Ljava/util/HashMap;-><init>()V
             const-string v2, "placement_name"
-            const-string v3, "REWARDED_VIDEO"
-            invoke-virtual {v0, v2, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+            const-string v3, "Perks_Screen"
+            invoke-virtual {v1, v2, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
             const-string v2, "placement_id"
             const-string v3, "0"
-            invoke-virtual {v0, v2, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+            invoke-virtual {v1, v2, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
             const-string v2, "placement_reward_amount"
-            const-string v3, "0"
-            invoke-virtual {v0, v2, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+            const-string v3, "1"
+            invoke-virtual {v1, v2, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
             const-string v2, "placement_reward_name"
-            const-string v3, "Reward"
-            invoke-virtual {v0, v2, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+            const-string v3, "PERKS_BOOST"
+            invoke-virtual {v1, v2, v3}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
             new-instance v2, Lorg/json/JSONObject;
-            invoke-direct {v2, v0}, Lorg/json/JSONObject;-><init>(Ljava/util/Map;)V
+            invoke-direct {v2, v1}, Lorg/json/JSONObject;-><init>(Ljava/util/Map;)V
             invoke-virtual {v2}, Lorg/json/JSONObject;->toString()Ljava/lang/String;
-            move-result-object v2
-            const-string v3, "{}"
-            invoke-interface {v1, v3}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdOpened(Ljava/lang/String;)V
-            invoke-interface {v1, v2, v3}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdRewarded(Ljava/lang/String;Ljava/lang/String;)V
-            invoke-interface {v1, v3}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdClosed(Ljava/lang/String;)V
+            move-result-object v1
+            const-string v2, "ITD2FIX"
+            const-string v3, "SRV-noarg: firing reward"
+            invoke-static {v2, v3}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            invoke-static {v2, v1}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            const-string v2, "{}"
+            invoke-interface {v0, v2}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdOpened(Ljava/lang/String;)V
+            invoke-interface {v0, v1, v2}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdRewarded(Ljava/lang/String;Ljava/lang/String;)V
+            invoke-interface {v0, v2}, Lcom/ironsource/unity/androidbridge/UnityLevelPlayRewardedVideoListener;->onAdClosed(Ljava/lang/String;)V
             return-void
             :cond_real
             nop
         """.trimIndent())
 
         // ==========================================================
-        // SECTION 2 — Instant Rewards (new LevelPlayRewardedAd API)
+        // SECTION C — Instant Boost Rewards: new-API bridge (safety net)
         // ==========================================================
 
         val rewardedAdClass = mutableClassDefBy("Lcom/ironsource/unity/androidbridge/RewardedAd;")
 
-        // 1. Add an instance field to hold the C# proxy listener.
-        // ImmutableField is a Java class — positional args only, in dexlib2 order:
-        // (definingClass, name, type, accessFlags, initialValue, annotations, hiddenApiRestrictions).
+        // 1. Instance field holding the C# proxy listener.
         rewardedAdClass.fields.add(
             ImmutableField(
                 "Lcom/ironsource/unity/androidbridge/RewardedAd;",
                 "mUnityRewardedAdListener",
                 "Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;",
                 AccessFlags.PRIVATE.value,
-                null, // initialValue
-                null, // annotations
-                null  // hiddenApiRestrictions (Set<HiddenApiRestriction>, nullable)
+                null,
+                null,
+                null
             ).toMutable()
         )
 
@@ -327,31 +294,66 @@ val intoTheDeadAdRemovalPatch = bytecodePatch(
             iput-object p1, p0, Lcom/ironsource/unity/androidbridge/RewardedAd;->mUnityRewardedAdListener:Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;
         """.trimIndent())
 
-        // 3. Fire the reward lifecycle from showAd; fall back to a real ad if unset.
-        // NOTE: .registers 4 = v0, v1 locals + p0 (register 2) + p1 (register 3); v2/v3 alias
-        // p0/p1. Keep p1 (the placement) alive for onAdRewarded; use v2/p0 as the amount
-        // scratch only AFTER the null-check branch (so :cond_real sees intact this/placement).
-        RewardedAdShowAdFingerprint.method.addInstructionsWithLabels(0, """
+        // 3. showAd(String)V → grant immediately.
+        //    Real LevelPlay forwarder (RewardedAd$1) semantics:
+        //    onAdRewarded(adInfo, LevelPlayReward.getName(), LevelPlayReward.getAmount()).
+        //    arg2 must be the REWARD NAME (PERKS_BOOST for boost placements).
+        //    Original .registers 4 → clone +6 → registers 10, swap original.
+        val rewardedAdShowAdMethod = RewardedAdShowAdFingerprint.method
+        val rewardedAdShowAdMethodExpanded = rewardedAdShowAdMethod.cloneMutable(additionalRegisters = 6)
+        mutableClassDefBy(rewardedAdShowAdMethod.definingClass).methods.apply {
+            remove(rewardedAdShowAdMethod)
+            add(rewardedAdShowAdMethodExpanded)
+        }
+        rewardedAdShowAdMethodExpanded.addInstructionsWithLabels(0, """
+            const-string v0, "ITD2FIX"
+            const-string v1, "RewardedAd.showAd: enter"
+            invoke-static {v0, v1}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            invoke-static {v0, p1}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
             iget-object v0, p0, Lcom/ironsource/unity/androidbridge/RewardedAd;->mUnityRewardedAdListener:Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;
             if-eqz v0, :cond_real
-            if-nez p1, :cond_ok
-            const-string p1, "REWARDED_VIDEO"
-            :cond_ok
+            if-nez p1, :pl_ok
+            const-string p1, "Perks_Screen"
+            :pl_ok
             nop
-            const-string v1, "{}"
-            invoke-interface {v0, v1}, Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;->onAdDisplayed(Ljava/lang/String;)V
-            const/4 v2, 0x1
-            invoke-interface {v0, v1, p1, v2}, Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;->onAdRewarded(Ljava/lang/String;Ljava/lang/String;I)V
-            invoke-interface {v0, v1}, Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;->onAdClosed(Ljava/lang/String;)V
+            const-string v1, "PERKS_BOOST"
+            const-string v2, "Coin_Reward"
+            invoke-virtual {p1, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+            move-result v2
+            if-nez v2, :sel_coin
+            const-string v2, "COIN_REWARD"
+            invoke-virtual {p1, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+            move-result v2
+            if-nez v2, :sel_coin
+            const-string v2, "FREE_COINS"
+            invoke-virtual {p1, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+            move-result v2
+            if-nez v2, :sel_free
+            goto :sel_done
+            :sel_coin
+            const-string v1, "COIN_REWARD"
+            goto :sel_done
+            :sel_free
+            const-string v1, "FREE_COINS"
+            :sel_done
+            nop
+            const-string v2, "ITD2FIX"
+            const-string v3, "RewardedAd.showAd: firing reward"
+            invoke-static {v2, v3}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            invoke-static {v2, v1}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+            const-string v2, "{}"
+            invoke-interface {v0, v2}, Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;->onAdDisplayed(Ljava/lang/String;)V
+            const/4 v3, 0x1
+            invoke-interface {v0, v2, v1, v3}, Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;->onAdRewarded(Ljava/lang/String;Ljava/lang/String;I)V
+            invoke-interface {v0, v2}, Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;->onAdClosed(Ljava/lang/String;)V
             return-void
             :cond_real
             nop
         """.trimIndent())
 
         // ==========================================================
-        // SECTION 3 — Remove Ads (legacy IronSource bridge)
+        // SECTION D — Remove Ads (legacy IronSource bridge)
         // ==========================================================
-
         // 1. Ready-signal kill (PRIMARY): the C# manager never learns an ad is ready.
         LevelPlayInterstitialWrapperOnAdReadyFingerprint.method.addInstructions(0, """
             return-void
@@ -369,7 +371,6 @@ val intoTheDeadAdRemovalPatch = bytecodePatch(
         """.trimIndent())
 
         // 4a. showInterstitial(String)V → synthetic close-lifecycle via C# proxy.
-        //     cloneParameters() expands .registers 2 → 4 (v0, v1 locals + p0, p1).
         val showStringMethod = AndroidBridgeShowInterstitialStringFingerprint.method.cloneParameters()
         showStringMethod.addInstructionsWithLabels(0, """
             iget-object v0, p0, Lcom/ironsource/unity/androidbridge/AndroidBridge;->mLevelPlayInterstitialWrapper:Lcom/ironsource/unity/androidbridge/LevelPlayInterstitialWrapper;
@@ -387,9 +388,6 @@ val intoTheDeadAdRemovalPatch = bytecodePatch(
         """.trimIndent())
 
         // 4b. showInterstitial()V → same synthetic lifecycle, no placement.
-        //     .registers 1 has ZERO locals → clone with 2 extra registers (registers 3:
-        //     v0, v1 locals + p0), then swap the original out of the class (the exact
-        //     replacement cloneParameters() performs internally).
         val showMethod = AndroidBridgeShowInterstitialFingerprint.method
         val showMethodExpanded = showMethod.cloneMutable(additionalRegisters = 2)
         mutableClassDefBy(showMethod.definingClass).methods.apply {
@@ -417,7 +415,7 @@ val intoTheDeadAdRemovalPatch = bytecodePatch(
         """.trimIndent())
 
         // ==========================================================
-        // SECTION 4 — Remove Ads (new LevelPlay API safety nets)
+        // SECTION E — Remove Ads (new LevelPlay API safety nets)
         // ==========================================================
 
         InterstitialAdLoadAdFingerprint.method.addInstructions(0, """
@@ -442,28 +440,23 @@ val intoTheDeadAdRemovalPatch = bytecodePatch(
         """.trimIndent())
 
         // ==========================================================
-        // SECTION 5 — Remove App Open Ad (AdMob App Open bridge)
+        // SECTION F — Remove App Open Ad (AdMob App Open bridge)
         // ==========================================================
 
-        // 1. PRIMARY: nothing ever loads → isAdAvailable false → C# gate skips.
         UnityAppOpenAdLoadAdFingerprint.method.addInstructions(0, """
             return-void
         """.trimIndent())
 
-        // 2. PRIMARY: direct show-kill — appOpenAd can never be displayed.
         UnityAppOpenAdShowFingerprint.method.addInstructions(0, """
             return-void
         """.trimIndent())
 
-        // 3. SECONDARY: kill the AdMob preloader path (no loadAd needed to fill).
         UnityAppOpenAdPollAdFingerprint.method.addInstructions(0, """
             return-void
         """.trimIndent())
 
-        // 4. SECONDARY: never register the lifecycle notifier → no auto-show trigger.
         UnityAppStateEventNotifierStartListeningFingerprint.method.addInstructions(0, """
             return-void
         """.trimIndent())
     }
 }
-
