@@ -1,3 +1,9 @@
+## [1.22.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.22.1-dev.1...v1.22.1-dev.2) (2026-09-04)
+
+### 🐛 Bug Fixes
+
+* **billing:** prevent delayed credit in IAP bypass ([2c7ebcb](https://github.com/byehi98/okish-morphe-patches/commit/2c7ebcb70b7c933bd87baca9412af37a082a757a))
+
 ## [1.22.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.22.0...v1.22.1-dev.1) (2026-09-03)
 
 ### 🐛 Bug Fixes
