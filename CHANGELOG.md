@@ -1,3 +1,15 @@
+## [1.22.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.22.1-dev.1...v1.22.1-dev.2) (2026-09-04)
+
+### 🐛 Bug Fixes
+
+* **billing:** prevent delayed credit in IAP bypass ([2c7ebcb](https://github.com/byehi98/okish-morphe-patches/commit/2c7ebcb70b7c933bd87baca9412af37a082a757a))
+
+## [1.22.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.22.0...v1.22.1-dev.1) (2026-09-03)
+
+### 🐛 Bug Fixes
+
+* **ads:** correct instant rewarded video boost name ([4f3ad1b](https://github.com/byehi98/okish-morphe-patches/commit/4f3ad1be2d2ca7d9d5ee16bade0d5035c66265e2))
+
 ## [1.22.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.21.1...v1.22.0) (2026-08-30)
 
 ### ✨ New Features

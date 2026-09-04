@@ -2,6 +2,7 @@ package app.intothedead.patches.ads
 
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.methodCall
+import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
 /**
@@ -566,3 +567,133 @@ object UnityAppStateEventNotifierStartListeningFingerprint : Fingerprint(
     )
 )
 
+/**
+ * com.ironsource.unity.androidbridge.AndroidBridge.isRewardedVideoAvailable()Z — public.
+ *
+ * C# `IsVideoAvailable(placementId)` (PikPok.Advertising) polls this before showing a
+ * rewarded video. In the real game it reflects whether the SDK actually loaded an ad
+ * (auto-load or `loadRewardedVideo`); with no network/fill it is false, so the game's
+ * `ShowVideoIfAvailable` gate blocks the tap and the instant-reward path never runs.
+ * Patching it to true lets the game believe a video is always available.
+ *
+ * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:832
+ * (.registers 2 — v0 local + p0). Filter: the only bridge method calling
+ * IronSource.isRewardedVideoAvailable (no overloads).
+ */
+object AndroidBridgeIsRewardedVideoAvailableFingerprint : Fingerprint(
+    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
+    name = "isRewardedVideoAvailable",
+    returnType = "Z",
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    parameters = listOf(),
+    filters = listOf(
+        methodCall(
+            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
+            name = "isRewardedVideoAvailable",
+        )
+    )
+)
+
+/**
+ * com.ironsource.unity.androidbridge.AndroidBridge.isRewardedVideoPlacementCapped(String)Z — public.
+ *
+ * C# `IsRewardedVideoPlacementCapped(placementId)` — if the tapped placement is reported
+ * capped the game refuses to show. Forcing false means no placement can block the flow.
+ *
+ * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:843
+ * (.registers 2 — v0 local + p0, p1). Filter: the only bridge method calling
+ * IronSource.isRewardedVideoPlacementCapped.
+ */
+object AndroidBridgeIsRewardedVideoPlacementCappedFingerprint : Fingerprint(
+    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
+    name = "isRewardedVideoPlacementCapped",
+    returnType = "Z",
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    parameters = listOf("Ljava/lang/String;"),
+    filters = listOf(
+        methodCall(
+            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
+            name = "isRewardedVideoPlacementCapped",
+        )
+    )
+)
+
+/**
+ * com.ironsource.unity.androidbridge.AndroidBridge.loadRewardedVideo()V — public.
+ *
+ * C# `CacheVideo(placementId)` / manual-load entry (`IronSource.Agent.LoadRewardedVideo`).
+ * Normally starts a real network load; on completion the SDK fires wrapper.onAdReady →
+ * manual listener onAdReady OR (auto) wrapper.onAdAvailable → regular listener
+ * onAdAvailable, which the C# provider turns into the `VideoReady` event → the game
+ * marks its Video object Ready and enables/accepts the watch button.
+ *
+ * With no fill the event never fires, so the game never considers a video ready.
+ * This patch fires BOTH synthetic readiness callbacks synchronously ("{}" adInfo, exactly
+ * like the real forwarders $1/$8 do), then falls through to the real load only if the
+ * bridge is unset. C# then raises VideoReady → ShowVideoIfAvailable passes →
+ * showRewardedVideo runs the instant-reward lifecycle.
+ *
+ * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:919
+ * (.registers 1 — p0 only, ZERO locals; expand via cloneMutable(additionalRegisters = 2) →
+ * registers 3: v0, v1 locals + p0, then swap the original out of the class).
+ */
+object AndroidBridgeLoadRewardedVideoFingerprint : Fingerprint(
+    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
+    name = "loadRewardedVideo",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    parameters = listOf(),
+    filters = listOf(
+        methodCall(
+            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
+            name = "loadRewardedVideo",
+        )
+    )
+)
+
+/**
+ * com.ironsource.unity.androidbridge.RewardedAd.isAdReady()Z — public.
+ *
+ * NEW-API readiness poll (`LevelPlayRewardedAd.IsAdReady()` in C#). Forcing true means
+ * the new API never reports an unloaded ad — safety net in case any path polls it.
+ *
+ * Confirmed smali: classes7/com/ironsource/unity/androidbridge/RewardedAd.smali:110
+ * (.registers 2 — v0 local + p0).
+ */
+object RewardedAdIsAdReadyFingerprint : Fingerprint(
+    definingClass = "Lcom/ironsource/unity/androidbridge/RewardedAd;",
+    name = "isAdReady",
+    returnType = "Z",
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    parameters = listOf(),
+    filters = listOf(
+        methodCall(
+            definingClass = "Lcom/unity3d/mediation/rewarded/LevelPlayRewardedAd;",
+            name = "isAdReady",
+        )
+    )
+)
+
+/**
+ * com.ironsource.unity.androidbridge.RewardedAd.loadAd()V — public.
+ *
+ * NEW-API load entry. Fires a synthetic onAdLoaded("{}") on the stored C# listener
+ * (mUnityRewardedAdListener, set by Section 2) so a new-API flow also believes the ad is
+ * ready; falls back to the real load if the listener is unset.
+ *
+ * Confirmed smali: classes7/com/ironsource/unity/androidbridge/RewardedAd.smali:123
+ * (.registers 2 — v0 local + p0; cloneParameters() → registers 4).
+ */
+object RewardedAdLoadAdFingerprint : Fingerprint(
+    definingClass = "Lcom/ironsource/unity/androidbridge/RewardedAd;",
+    name = "loadAd",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    parameters = listOf(),
+    filters = listOf(
+        methodCall(
+            definingClass = "Lcom/unity3d/mediation/rewarded/LevelPlayRewardedAd;",
+            name = "loadAd",
+        )
+    )
+)
