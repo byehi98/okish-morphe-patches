@@ -31,3 +31,11 @@ object PlayRewardedVideoAdFingerprint : Fingerprint(
         methodCall(definingClass = "Lcom/fingersoft/game/firebase/CFirebaseAds;", name = "showVideoAd")
     )
 )
+
+object HasVideoCampaignsFingerprint : Fingerprint(
+    definingClass = "Lcom/fingersoft/game/MainActivity;",
+    name = "hasVideoCampaigns",
+    returnType = "I",
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
+    parameters = listOf("I"),
+)
