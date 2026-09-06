@@ -1,3 +1,9 @@
+## [1.24.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.23.0...v1.24.0-dev.1) (2026-09-06)
+
+### ✨ New Features
+
+* **burritobison3:** add free purchase and protection bypass ([40ae66b](https://github.com/byehi98/okish-morphe-patches/commit/40ae66bbcdf886f607c0ca7285243d4a30aedbce))
+
 ## [1.23.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.22.1...v1.23.0) (2026-09-06)
 
 ### ✨ New Features

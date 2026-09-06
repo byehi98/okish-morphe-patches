@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.23.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.23.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;49 patches total
+> **[v1.24.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.24.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;51 patches total
 <details open>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -107,6 +107,22 @@ TODO: Update this about section with a brief introduction/summary about this rep
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Fancy Pants Unlock Premium](#fancy-pants-unlock-premium) | Unlocks premium, wardrobe, world 1 and world 2 by forcing OTTBilling.isPurchased to always return true. |  |
+
+</details>
+
+<details open>
+<summary>📦 Burrito Bison: Launcha Libre&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 3.75 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Fix app opening](#fix-app-opening) | Required so the modified app opens without crashing — skips signature, root and emulator checks. |  |
+| [Free purchases](#free-purchases) | Get paid items for free — tapping buy grants the item instantly without Google Play payment popup. |  |
 
 </details>
 
