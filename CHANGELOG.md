@@ -1,3 +1,9 @@
+## [1.23.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.22.1...v1.23.0-dev.1) (2026-09-06)
+
+### ✨ New Features
+
+* **moviebox:** remove all moviebox patches ([b408ae4](https://github.com/byehi98/okish-morphe-patches/commit/b408ae401fe682d21fd22f0017d2f14622bf4578))
+
 ## [1.22.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.22.0...v1.22.1) (2026-09-04)
 
 ### 🐛 Bug Fixes
