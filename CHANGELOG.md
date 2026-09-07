@@ -1,3 +1,9 @@
+## [1.24.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.24.0-dev.1...v1.24.0-dev.2) (2026-09-07)
+
+### ✨ New Features
+
+* **pop:** add Prince of Persia: The Lost Crown patches ([2db5921](https://github.com/byehi98/okish-morphe-patches/commit/2db5921314e2ee0a1c82504c20f6670ffaefef92))
+
 ## [1.24.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.23.0...v1.24.0-dev.1) (2026-09-06)
 
 ### ✨ New Features

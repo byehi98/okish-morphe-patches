@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.24.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.24.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;51 patches total
+> **[v1.24.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.24.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;54 patches total
 <details open>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -302,6 +302,23 @@ TODO: Update this about section with a brief introduction/summary about this rep
 | [Plague Inc. Unlock Disease Types](#plague-inc-unlock-disease-types) | Unlocks all disease types including Neurax Worm, Necroa Virus, Simian Flu and Shadow Plague. |  |
 | [Plague Inc. Unlock Expansions](#plague-inc-unlock-expansions) | Unlocks Cure Mode, Plague Pack, custom scenarios and bypasses the Play Pass check. |  |
 | [Plague Inc. Unlock Fast-Forward](#plague-inc-unlock-fast-forward) | Removes the premium lock from the in-game fast-forward button. |  |
+
+</details>
+
+<details open>
+<summary>📦 Prince of Persia: The Lost Crown&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.1.9 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Prince of Persia: Anti-tamper bypass](#prince-of-persia-anti-tamper-bypass) | The game has a built-in self-check that shuts it down if it detects the app was modified. This patch quietly turns that check off so the game can start. |  |
+| [Prince of Persia: Full Game Unlock Engine](#prince-of-persia-full-game-unlock-engine) | Adds a tiny hidden helper into the game. About 30 seconds after the game starts, it presses the game's own secret 'unlock full game' button — no purchases needed. |  |
+| [Prince of Persia: Full Game Unlock Trigger](#prince-of-persia-full-game-unlock-trigger) | Tells the game to start that hidden helper the moment the app opens, so the unlock happens automatically. |  |
 
 </details>
 
