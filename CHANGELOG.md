@@ -1,3 +1,10 @@
+## [1.24.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.23.0...v1.24.0) (2026-09-07)
+
+### ✨ New Features
+
+* **burritobison3:** add free purchase and protection bypass ([40ae66b](https://github.com/byehi98/okish-morphe-patches/commit/40ae66bbcdf886f607c0ca7285243d4a30aedbce))
+* **pop:** add Prince of Persia: The Lost Crown patches ([2db5921](https://github.com/byehi98/okish-morphe-patches/commit/2db5921314e2ee0a1c82504c20f6670ffaefef92))
+
 ## [1.24.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.24.0-dev.1...v1.24.0-dev.2) (2026-09-07)
 
 ### ✨ New Features
