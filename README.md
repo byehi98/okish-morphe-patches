@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.24.1-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.24.1-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;53 patches total
+> **[v1.25.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.25.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;54 patches total
 <details open>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -414,7 +414,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 </details>
 
 <details open>
-<summary>📦 Vector&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<summary>📦 Vector&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -425,6 +425,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Vector Ad Spoof](#vector-ad-spoof) | Spoofs rewarded ad callbacks to grant coins/rewards without showing ads. |  |
+| [Vector Money Mod](#vector-money-mod) | Spending money increases your balance instead of decreasing it (native libil2cpp.so patch). |  |
 
 </details>
 

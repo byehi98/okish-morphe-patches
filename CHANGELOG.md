@@ -1,3 +1,9 @@
+## [1.25.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.24.1-dev.1...v1.25.0-dev.1) (2026-09-08)
+
+### ✨ New Features
+
+* **vector:** add money mod patch ([4fe881f](https://github.com/byehi98/okish-morphe-patches/commit/4fe881fd8f06e661a407740ceab22495e330f70e))
+
 ## [1.24.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.24.0...v1.24.1-dev.1) (2026-09-08)
 
 ### 🚀 Updated App Support
