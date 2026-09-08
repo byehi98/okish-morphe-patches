@@ -10,7 +10,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 ## 🩹 Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.24.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.24.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;54 patches total
+> **[v1.24.1-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.24.1-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;53 patches total
 <details open>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -269,18 +269,17 @@ TODO: Update this about section with a brief introduction/summary about this rep
 </details>
 
 <details open>
-<summary>📦 Only One&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<summary>📦 Only One&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.2983 |
+| 1.3031 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Only One Free Store](#only-one-free-store) | Makes 'Restore Purchases' grant every store item for free (Ultimate Power, all classes, bundles and powers) — also removes ads. |  |
-| [Only One License Bypass](#only-one-license-bypass) | Bypasses the PairIP Play Store license check so the app launches normally. |  |
 
 </details>
 

@@ -1,3 +1,9 @@
+## [1.24.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.24.0...v1.24.1-dev.1) (2026-09-08)
+
+### 🚀 Updated App Support
+
+* **onlyone:** remove PairIP license bypass patch ([27daa1b](https://github.com/byehi98/okish-morphe-patches/commit/27daa1b6bad72526f06be1a3f7874e3508dd6232))
+
 ## [1.24.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.23.0...v1.24.0) (2026-09-07)
 
 ### ✨ New Features
