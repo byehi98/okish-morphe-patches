@@ -6,50 +6,6 @@ import app.morphe.patcher.methodCall
 import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
-// ── PairIP license check ──────────────────────────────────────────────────────
-// PairIP (Google Play integrity wrapper) keeps unobfuscated package/class/method
-// names — they are anchored by the manifest-registered LicenseContentProvider
-// and are identical across all PairIP-injected apps and versions.
-
-/**
- * LicenseClient.initializeLicenseCheck()V — public entry point called by the
- * manifest-registered [com.pairip.licensecheck.LicenseContentProvider.onCreate]
- * before Application.onCreate. It is the sole fan-out of the entire PairIP
- * chain: local installer check, licensing-service bind, CHECK_LICENSE_V2
- * parcel transact, response validation, paywall/error dialog, repeated checks.
- *
- * Confirmed smali (classes2/com/pairip/licensecheck/LicenseClient.smali:1593):
- *   .method public initializeLicenseCheck()V
- *   .registers 3
- *     sget-object v0, ...->licenseCheckState:L...LicenseCheckState;   // state machine read
- *     invoke-virtual {v0}, ...LicenseCheckState;->ordinal()I          // state dispatch
- *     ...
- *     invoke-static {v0, v1}, ...LicenseResponseHelper;->validateResponse(...)V  // JWS check
- *     invoke-direct {p0, v0}, ...->handleError(L...LicenseCheckException;)V      // failure path
- *
- * Stable ordered filters pin the method shape beyond its name:
- * licenseCheckState field read → ordinal() dispatch → validateResponse → handleError.
- */
-object PairipInitializeLicenseCheckFingerprint : Fingerprint(
-    definingClass = "Lcom/pairip/licensecheck/LicenseClient;",
-    name = "initializeLicenseCheck",
-    returnType = "V",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf(),
-    filters = listOf(
-        fieldAccess(
-            smali = "Lcom/pairip/licensecheck/LicenseClient;" +
-                "->licenseCheckState:Lcom/pairip/licensecheck/LicenseClient\$LicenseCheckState;"
-        ),
-        methodCall(name = "ordinal"),
-        methodCall(
-            definingClass = "Lcom/pairip/licensecheck/LicenseResponseHelper;",
-            name = "validateResponse"
-        ),
-        methodCall(name = "handleError")
-    )
-)
-
 // ── Google IAP Billing v2 plugin (Corona) ────────────────────────────────────
 // The whole `plugin.google.iap.billing.v2` package keeps its names because the
 // plugin is loaded BY NAME from Lua (require("plugin.google.iap.billing.v2")

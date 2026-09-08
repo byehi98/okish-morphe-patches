@@ -11,7 +11,7 @@ object Constants {
         apkFileType = ApkFileType.XAPK,
         appIconColor = 0xE2E2E2, // ic_launcher_background (#e2e2e2)
         targets = listOf(
-            AppTarget(version = "1.2983")
+            AppTarget(version = "1.3031")
         )
     )
 }
