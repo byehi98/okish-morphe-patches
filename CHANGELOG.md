@@ -1,3 +1,9 @@
+## [1.26.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.25.0...v1.26.0-dev.1) (2026-09-09)
+
+### ✨ New Features
+
+* **onlyone:** enable free in-app purchases ([daeb665](https://github.com/byehi98/okish-morphe-patches/commit/daeb6651589d0616629b69a5c2982cf5fba516a9))
+
 ## [1.25.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.24.0...v1.25.0) (2026-09-08)
 
 ### ✨ New Features

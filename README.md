@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.25.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.25.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;54 patches total
+> **[v1.26.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.26.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;55 patches total
 <details>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -294,7 +294,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Only One&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<summary>📦 Only One&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -305,6 +305,7 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Only One Free Store](#only-one-free-store) | Makes 'Restore Purchases' grant every store item for free (Ultimate Power, all classes, bundles and powers) — also removes ads. |  |
+| [Only One IAP billing bypass](#only-one-iap-billing-bypass) | Buy any item in the shop for free. When you tap Buy, the item is added to your game right away — no Google Play payment window ever opens. |  |
 
 </details>
 
