@@ -1,17 +1,42 @@
-# 👋🧩 Morphe Patches template
+<div align="center">
 
-Template repository for Morphe Patches.
+# 🧩 okish-morphe-patches
+
+**A personal collection of Morphe patches for favorite Android apps and games.**
+
+[![Release](https://img.shields.io/github/v/release/byehi98/okish-morphe-patches?style=for-the-badge&logo=github&color=5865F2)](https://github.com/byehi98/okish-morphe-patches/releases)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/byehi98/okish-morphe-patches/release.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=Release)](https://github.com/byehi98/okish-morphe-patches/actions/workflows/release.yml)
+[![License: GPL v3](https://img.shields.io/github/license/byehi98/okish-morphe-patches?style=for-the-badge&color=forestgreen)](LICENSE)
+[![Add to Morphe](https://img.shields.io/badge/Morphe-Add%20Source-8A2BE2?style=for-the-badge&logo=android&logoColor=white)](https://morphe.software/add-source?github=byehi98/okish-morphe-patches)
+
+[About](#-about) • [How to Use](#-how-to-use) • [Patches List](#-patches-list) • [App Requests](#-app-requests) • [Contributing](#-contributing) • [Building](#%EF%B8%8F-building-from-source) • [License](#-license)
+
+</div>
+
+---
 
 ## ❓ About
 
-This is a template to create a new Morphe Patches repository.
-TODO: Update this about section with a brief introduction/summary about this repo and what it offers.
+**okish-morphe-patches** is a personal collection of custom patches created for the [Morphe](https://morphe.software) patching ecosystem, primarily developed for personal use and educational research on apps I actively use.
+
+---
+
+## 🚀 How to Use
+
+If you are on an Android device with **Morphe Manager** installed, tap the button below to add this repository as a patch source:
+
+[![Add Source to Morphe](https://img.shields.io/badge/Import%20to%20Morphe-Click%20Here-8A2BE2?style=for-the-badge&logo=android&logoColor=white)](https://morphe.software/add-source?github=byehi98/okish-morphe-patches)
+
+Direct URL:  
+👉 **https://morphe.software/add-source?github=byehi98/okish-morphe-patches**
+
+---
 
 ## 🩹 Patches list
 
-<!-- PATCHES_START EXPANDED -->
+<!-- PATCHES_START -->
 > **[v1.25.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.25.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;54 patches total
-<details open>
+<details>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -27,7 +52,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Big Hunter&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
 
@@ -45,7 +70,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Doodle Jump&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -61,7 +86,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Dr. Driving&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
@@ -78,7 +103,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Earn to Die 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
@@ -95,7 +120,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Fancy Pants Adventures&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
@@ -110,7 +135,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Burrito Bison: Launcha Libre&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -126,7 +151,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 FreeJobAlert&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -142,7 +167,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 HAAK&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
@@ -157,7 +182,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Hill Climb Racing&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
@@ -174,7 +199,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Alto's Adventure&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
@@ -189,7 +214,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Alto's Odyssey&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
@@ -204,7 +229,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Injustice: Gods Among Us&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -220,7 +245,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Into the Dead&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -236,7 +261,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Jetpack Joyride&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
@@ -251,7 +276,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Missiles&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
@@ -268,7 +293,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Only One&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
@@ -283,7 +308,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Plague Inc.&nbsp;&nbsp;•&nbsp;&nbsp;7 patches</summary>
 <br>
 
@@ -304,7 +329,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Prince of Persia: The Lost Crown&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
@@ -321,7 +346,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Rodeo Stampede: Sky Zoo Safari&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -337,7 +362,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Smash Hit&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
@@ -352,7 +377,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Swordigo&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
@@ -367,7 +392,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Tentacle Wars&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
@@ -382,7 +407,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Traffic Rider&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -398,7 +423,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 TrueCloud&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
@@ -413,7 +438,7 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 </details>
 
-<details open>
+<details>
 <summary>📦 Vector&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -431,17 +456,95 @@ TODO: Update this about section with a brief introduction/summary about this rep
 
 <!-- PATCHES_END -->
 
-#### How to use these patches
+---
 
-Click here to add these patches to Morphe: https://morphe.software/add-source?github=byehi98/okish-morphe-patches
+## 💡 App Requests
 
-Or manually add this repository url as a patch source in Morphe: https://github.com/byehi98/okish-morphe-patches
+> [!NOTE]
+> **okish-morphe-patches** is a personal project I created for the apps and games I personally use.
+>
+> - **App requests are open**: If you'd like to suggest an app or a patch, feel free to open a feature request via [GitHub Issues](https://github.com/byehi98/okish-morphe-patches/issues/new/choose).
+> - **Discretionary pickup**: Whether a requested app will actually be picked up, investigated, or patched **totally depends on me** (based on whether I use the app, my personal interest, and available time).
+> - Please understand there are no promises, guarantees, or ETAs for requested apps.
 
-### 🛠️ Building
+---
 
-To build UserXYZ Morphe Patches,
-you can follow the [Morphe documentation](https://github.com/MorpheApp/morphe-documentation).
+## 🤝 Contributing
+
+Contributions and improvements are welcome! If you'd like to contribute, please follow these important guidelines:
+
+### ⚠️ Rules for Pull Requests
+
+1. **Work in the `dev` Branch (NOT `main`)**:
+   - All contributions and pull requests **MUST be made against the `dev` branch, not `main`**.
+   - PRs submitted against `main` will be closed or asked to be re-targeted to `dev`.
+   - Merging from `dev` to `main` and version tagging is automated via CI release workflows.
+
+2. **Strict Conventional Commits**:
+   - Commit messages **MUST strictly follow [Conventional Commits](https://www.conventionalcommits.org/) format**.
+   - The release pipeline uses Semantic Release to automatically calculate version bumps and generate changelogs based on commit prefixes:
+     - `feat:` — New patch or new capability (triggers a **minor** release)
+     - `fix:` — Bug fix in an existing patch (triggers a **patch** release)
+     - `bump:` — Updating supported app target versions (triggers a **patch** release)
+     - `docs:` — Documentation changes only (no release)
+
+### Contribution Workflow
+
+1. **Fork** the repository and clone your fork.
+2. Check out a new branch based on **`dev`**:
+   ```bash
+   git checkout -b feat/my-new-patch origin/dev
+   ```
+3. Implement your patch in `patches/src/main/kotlin/`.
+4. Ensure your patch builds cleanly:
+   ```bash
+   ./gradlew :patches:buildAndroid
+   ```
+5. Commit your changes using conventional commit format:
+   ```bash
+   git commit -m "feat(app-name): add ad-blocking patch"
+   ```
+6. Push to your fork and submit a Pull Request targeting the **`dev`** branch.
+
+---
+
+## 🛠️ Building from Source
+
+### Prerequisites
+
+- **Java Development Kit (JDK)**: Version 17 or 21 (Temurin / OpenJDK recommended)
+- **Git**
+- *(Optional)* **Nix** with Flakes (`flake.nix` and `.envrc` are provided for reproducible dev environments)
+
+### Build Commands
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/byehi98/okish-morphe-patches.git
+   cd okish-morphe-patches
+   ```
+
+2. **Build the patch package (`.mpp`):**
+   ```bash
+   ./gradlew :patches:buildAndroid
+   ```
+   The compiled bundle will be output to `patches/build/libs/patches-<version>.mpp`.
+
+3. **Generate the patches list JSON (`patches-list.json`):**
+   ```bash
+   ./gradlew generatePatchesList
+   ```
+
+For detailed Morphe architecture documentation, refer to the [Morphe documentation](https://github.com/MorpheApp/morphe-documentation).
+
+---
+
+## ⚠️ Disclaimer
+
+This project is provided for **educational purposes only**.
+
+---
 
 ## 📜 License
 
-UserXYZ Morphe Patches are licensed under the [GNU General Public License v3.0](LICENSE)
+**okish-morphe-patches** is licensed under the [GNU General Public License v3.0](LICENSE).
