@@ -3,11 +3,14 @@
 Generates the patches section of README.md from patches-list.json
 and injects it between <!-- PATCHES_START --> / <!-- PATCHES_END --> markers.
 
+Spoilers are collapsed (<details>) by default so they can be expanded on demand.
 Spoilers are expanded (open by default) if:
-  1. Total patch count <= AUTO_EXPAND_THRESHOLD.
+  1. The --expanded flag is passed.
   2. The README marker explicitly says: <!-- PATCHES_START EXPANDED -->
 
-python3 generate_patches_readme.py <owner/repo> <branch> [patches-list.json] [README.md]
+Use --collapsed to force collapsed mode.
+
+python3 generate_patches_readme.py <owner/repo> <branch> [patches-list.json] [README.md] [--collapsed|--expanded]
 """
 
 import json
@@ -17,14 +20,19 @@ import os
 from pathlib import Path
 
 
-if len(sys.argv) < 3:
-    print("Usage: generate_patches_readme.py <owner/repo> <branch> [json] [readme]")
+args = [a for a in sys.argv[1:] if not a.startswith("--")]
+flags = [a for a in sys.argv[1:] if a.startswith("--")]
+
+if len(args) < 2:
+    print("Usage: generate_patches_readme.py <owner/repo> <branch> [json] [readme] [--collapsed|--expanded]")
     sys.exit(1)
 
-repo_full   = sys.argv[1]
-branch      = sys.argv[2]
-json_path   = Path(sys.argv[3]) if len(sys.argv) > 3 else Path("patches-list.json")
-readme_path = Path(sys.argv[4]) if len(sys.argv) > 4 else Path("README.md")
+repo_full   = args[0]
+branch      = args[1]
+json_path   = Path(args[2]) if len(args) > 2 else Path("patches-list.json")
+readme_path = Path(args[3]) if len(args) > 3 else Path("README.md")
+force_collapsed = "--collapsed" in flags
+force_expanded  = "--expanded" in flags
 
 
 if "/" not in repo_full:
@@ -199,17 +207,15 @@ if not marker_match or END_MARKER not in readme:
 
 actual_start = marker_match.group(0)
 
-# Auto-expand threshold
-AUTO_EXPAND_THRESHOLD = 20
-
-# Spoilers are expanded if:
-# 1. Total patch count is small (≤ AUTO_EXPAND_THRESHOLD)
-#    with only a few patches where collapsing adds no benefit.
-# 2. The README marker explicitly requests it: <!-- PATCHES_START EXPANDED -->
-expanded = (
-    total <= AUTO_EXPAND_THRESHOLD or
-    "EXPANDED" in actual_start
-)
+if force_collapsed:
+    expanded = False
+    actual_start = "<!-- PATCHES_START -->"
+elif force_expanded:
+    expanded = True
+    actual_start = "<!-- PATCHES_START EXPANDED -->"
+else:
+    # Collapsed by default unless explicitly marked EXPANDED
+    expanded = "EXPANDED" in actual_start
 
 generated  = build_content(expanded=expanded)
 
