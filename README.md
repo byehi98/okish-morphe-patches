@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.26.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.26.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;55 patches total
+> **[v1.26.1-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.26.1-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;56 patches total
 <details>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -310,7 +310,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Plague Inc.&nbsp;&nbsp;•&nbsp;&nbsp;7 patches</summary>
+<summary>📦 Plague Inc.&nbsp;&nbsp;•&nbsp;&nbsp;8 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -324,6 +324,7 @@ Direct URL:
 | [Plague Inc. Remove Banner Ads](#plague-inc-remove-banner-ads) | Removes AppLovin banner ads and the Ndemic premium promo during gameplay. |  |
 | [Plague Inc. Skip Rewarded Video Ads](#plague-inc-skip-rewarded-video-ads) | Grants rewarded video bonuses instantly without watching ads. |  |
 | [Plague Inc. Sync Premium Entitlements](#plague-inc-sync-premium-entitlements) | Registers unlocked premium content with the native engine so premium modes run without trial banners. |  |
+| [Plague Inc. Unlock All Genes](#plague-inc-unlock-all-genes) | Unlocks all genes by earning them through the game's own unlock path when the gene menu opens. |  |
 | [Plague Inc. Unlock Disease Types](#plague-inc-unlock-disease-types) | Unlocks all disease types including Neurax Worm, Necroa Virus, Simian Flu and Shadow Plague. |  |
 | [Plague Inc. Unlock Expansions](#plague-inc-unlock-expansions) | Unlocks Cure Mode, Plague Pack, custom scenarios and bypasses the Play Pass check. |  |
 | [Plague Inc. Unlock Fast-Forward](#plague-inc-unlock-fast-forward) | Removes the premium lock from the in-game fast-forward button. |  |

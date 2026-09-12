@@ -27,6 +27,8 @@ import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
  *   - "cure_expansion_premium" alt Cure Mode id (getCureExpansionID)
  *   - "zombie" / "neurax" / "simian_flu" / "vampire" / "xenolith"
  *                            disease identifiers passed to Unlocks.isAvailable
+ *   - "allgenes"               gene pool SKU (GenesMenu.refreshUnlocks sets this
+ *                            literal on the pool UnlockButton; Option A gene fix)
  *
  * Implementation note: <init> has only two free registers (.registers 4), not
  * enough for the 4-arg native call, so the logic lives in a synthetic static
@@ -65,7 +67,8 @@ val plagueIncEngineEntitlementSyncPatch = bytecodePatch(
                 "neurax",
                 "simian_flu",
                 "vampire",
-                "xenolith"
+                "xenolith",
+                "allgenes"
             )
 
             addInstructions(

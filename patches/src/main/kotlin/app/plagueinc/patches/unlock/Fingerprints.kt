@@ -58,3 +58,53 @@ internal fun convertNativeUnlockMethodToTrueStub(mutableClass: MutableClass, met
     mutableClass.methods.remove(original)
     mutableClass.methods.add(stub)
 }
+
+/**
+ * Genes.getLockedGeneCount() — native gene-progression counter.
+ *
+ * Confirmed smali (classes5/com/miniclip/plagueinc/jni/Genes.smali line 52):
+ *   .method public static native getLockedGeneCount()I
+ *
+ * Used as an anchor proving the Genes JNI bridge exists, and as the loop
+ * condition source for the gene unlock-all injection (Option B).
+ */
+object GenesLockedCountFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/jni/Genes;",
+    name = "getLockedGeneCount",
+    returnType = "I"
+)
+
+/**
+ * Unlocks.unlockRandomGene() — native "earn one gene" entry point.
+ *
+ * Confirmed smali (classes3/com/miniclip/plagueinc/jni/Unlocks.smali line 70):
+ *   .method public static native unlockRandomGene()V
+ *
+ * This is the same native the game calls on a real `fullversion` purchase
+ * (PurchaseManager.handlePurchase) and on legitimate gene earn. The unlock-all
+ * loop replays it until the locked pool is drained.
+ */
+object UnlocksUnlockRandomGeneFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/jni/Unlocks;",
+    name = "unlockRandomGene",
+    returnType = "V"
+)
+
+/**
+ * GenesMenu.showMainPage(Z) — gene menu entry, Option B injection target.
+ *
+ * Confirmed smali (classes6/com/miniclip/plagueinc/menu/GenesMenu.smali line 2421):
+ *   .method private showMainPage(Z)V (.registers 7)
+ *
+ * Menu entry is safe: the engine is already init here (the method itself calls
+ * Genes.firstActiveGeneInCategory / getDisplayUnlockedGeneCount further down),
+ * and every onShow path funnels through here. Injection goes at method entry
+ * (index 0), never between an invoke-* and its move-result.
+ */
+object GenesMenuShowMainPageFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/menu/GenesMenu;",
+    name = "showMainPage",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PRIVATE),
+    parameters = listOf("Z")
+)
