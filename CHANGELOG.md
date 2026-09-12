@@ -1,3 +1,9 @@
+## [1.26.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.26.0...v1.26.1-dev.1) (2026-09-12)
+
+### 🐛 Bug Fixes
+
+* **plagueinc:** unlocking genes, fixing genes unlocked in store but remains locked ([768c1be](https://github.com/byehi98/okish-morphe-patches/commit/768c1be2ffb5ac855755f28cb8993c65ddc81f23))
+
 ## [1.26.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.25.0...v1.26.0) (2026-09-09)
 
 ### ✨ New Features
