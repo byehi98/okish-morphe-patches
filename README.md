@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.26.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.26.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;56 patches total
+> **[v1.27.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.27.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;59 patches total
 <details>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -242,6 +242,23 @@ Direct URL:
 |----------|----------------|-----------|
 | [Injustice Ads Removal](#injustice-ads-removal) | Get stamina without watching ad Video. |  |
 | [Injustice Billing Bypass](#injustice-billing-bypass) | Bypass billing get the items in store for free. |  |
+
+</details>
+
+<details>
+<summary>📦 Aliens Drive Me Crazy&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 3.2.7 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Instant rewards](#instant-rewards) | Reward buttons (free revive, double coins) pay out instantly without playing any ad video (native libil2cpp.so patch). |  |
+| [Remove ads](#remove-ads) | Stops all interstitial/commercial-break ads between games (native libil2cpp.so patch, rewarded videos handled by the instant-rewards patch). |  |
+| [Unlimited coins](#unlimited-coins) | Coin save reads always return ~1.34 billion coins (native libil2cpp.so patch on Org.TotalCoins). |  |
 
 </details>
 
