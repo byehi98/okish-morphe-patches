@@ -1,3 +1,9 @@
+## [1.27.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.26.1...v1.27.0) (2026-09-13)
+
+### ✨ New Features
+
+* **admc:** add patches for ads and coins ([df359fd](https://github.com/byehi98/okish-morphe-patches/commit/df359fd51f0ea24a02aa85e38c0515f8688f0ac5))
+
 ## [1.27.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.26.1...v1.27.0-dev.1) (2026-09-13)
 
 ### ✨ New Features
