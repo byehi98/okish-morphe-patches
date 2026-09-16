@@ -1,3 +1,9 @@
+## [1.28.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.27.0...v1.28.0-dev.1) (2026-09-16)
+
+### ✨ New Features
+
+* **dtm:** add unlimited money and remove ads patches ([98a0d17](https://github.com/byehi98/okish-morphe-patches/commit/98a0d1718b8bfd4a3a3053b43a885d78f0f5951f))
+
 ## [1.27.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.26.1...v1.27.0) (2026-09-13)
 
 ### ✨ New Features

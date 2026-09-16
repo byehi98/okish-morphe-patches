@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.27.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.27.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;59 patches total
+> **[v1.28.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.28.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;62 patches total
 <details>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -362,6 +362,23 @@ Direct URL:
 | [Prince of Persia: Anti-tamper bypass](#prince-of-persia-anti-tamper-bypass) | The game has a built-in self-check that shuts it down if it detects the app was modified. This patch quietly turns that check off so the game can start. |  |
 | [Prince of Persia: Full Game Unlock Engine](#prince-of-persia-full-game-unlock-engine) | Adds a tiny hidden helper into the game. About 30 seconds after the game starts, it presses the game's own secret 'unlock full game' button — no purchases needed. |  |
 | [Prince of Persia: Full Game Unlock Trigger](#prince-of-persia-full-game-unlock-trigger) | Tells the game to start that hidden helper the moment the app opens, so the unlock happens automatically. |  |
+
+</details>
+
+<details>
+<summary>📦 Dan the Man&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.14.02 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Remove ads](#remove-ads) | Removes all ads. Reward videos now give you the prize instantly — no watching needed. |  |
+| [Unlimited money (restore save)](#unlimited-money-restore-save) | Loads the unlimited money save into the game the first time you open it. |  |
+| [Unlimited money (save bundle)](#unlimited-money-save-bundle) | Packs the special save file (unlimited coins & gems, everything unlocked) inside the app. |  |
 
 </details>
 
