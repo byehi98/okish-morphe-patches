@@ -10,8 +10,7 @@ import kotlin.io.writeBytes
  * Aliens Drive Me Crazy — Unlimited Coins (native il2cpp)
  *
  * The game is Unity IL2CPP: all coin logic lives in libil2cpp.so, the DEX layer
- * is only SDK glue. This is the exact change the circulating v3.2.7 mod APKs
- * make (liteapks/9mod, an1.com, apkvision all ship the identical lib):
+ * is only SDK glue.
  *
  *   lib/arm64-v8a/libil2cpp.so @ file offset 0x016F9498 (VA 0x16FD498)
  *     inside Org.Awake — the call whose result is stored to [x19, #0x28]
@@ -55,7 +54,7 @@ val admcUnlimitedCoinsPatch = rawResourcePatch(
         if (idx < 0) {
             throw PatchException(
                 "ADMC Unlimited Coins: Org.TotalCoins anchor not found in libil2cpp.so (size=" +
-                    bytes.size + " bytes) — unsupported game version?"
+                        bytes.size + " bytes) — unsupported game version?"
             )
         }
 
