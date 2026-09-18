@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.27.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.27.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;59 patches total
+> **[v1.28.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.28.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;65 patches total
 <details>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -366,6 +366,23 @@ Direct URL:
 </details>
 
 <details>
+<summary>📦 Dan the Man&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.14.02 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Remove ads](#remove-ads) | Removes all ads. Reward videos now give you the prize instantly — no watching needed. |  |
+| [Unlimited money (restore save)](#unlimited-money-restore-save) | Loads the unlimited money save into the game the first time you open it. |  |
+| [Unlimited money (save bundle)](#unlimited-money-save-bundle) | Packs the special save file (unlimited coins & gems, everything unlocked) inside the app. |  |
+
+</details>
+
+<details>
 <summary>📦 Rodeo Stampede: Sky Zoo Safari&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -393,6 +410,23 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Smash Hit Premium Unlock](#smash-hit-premium-unlock) | Unlocks premium and all game modes without purchase. |  |
+
+</details>
+
+<details>
+<summary>📦 Swift Backup&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 5.1.0 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Swift Backup Premium Unlock](#swift-backup-premium-unlock) | Unlocks all Premium features. |  |
+| [Swift Backup Tamper Protection](#swift-backup-tamper-protection) | Stops the app from closing itself on patched installs. |  |
+| [Swift Backup Web Login](#swift-backup-web-login) | Makes Google sign-in work for connecting cloud accounts. |  |
 
 </details>
 
