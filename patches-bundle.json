@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-09-19T02:00:58",
-  "description": "## [1.28.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.0...v1.28.1-dev.1) (2026-09-19)\n\n### 🚀 Updated App Support\n\n* **admc:** update patches for game version 3.2.10 ([d36e27a](https://github.com/byehi98/okish-morphe-patches/commit/d36e27a967f45f89edc58fd181481ffd8b73452c))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.28.1-dev.1/patches-1.28.1-dev.1.mpp",
+  "created_at": "2026-09-19T02:32:02",
+  "description": "## [1.28.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.1...v1.28.1-dev.2) (2026-09-19)\n\n### 🚀 Updated App Support\n\n* **onlyone:** version bump + bypass PairIP license check ([c585a13](https://github.com/byehi98/okish-morphe-patches/commit/c585a1359345cb9d27d34a814b8bd3bc10add926))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.28.1-dev.2/patches-1.28.1-dev.2.mpp",
   "signature_download_url": "",
-  "version": "1.28.1-dev.1"
+  "version": "1.28.1-dev.2"
 }

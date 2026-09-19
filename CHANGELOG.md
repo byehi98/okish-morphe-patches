@@ -1,3 +1,9 @@
+## [1.28.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.1...v1.28.1-dev.2) (2026-09-19)
+
+### 🚀 Updated App Support
+
+* **onlyone:** version bump + bypass PairIP license check ([c585a13](https://github.com/byehi98/okish-morphe-patches/commit/c585a1359345cb9d27d34a814b8bd3bc10add926))
+
 ## [1.28.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.0...v1.28.1-dev.1) (2026-09-19)
 
 ### 🚀 Updated App Support

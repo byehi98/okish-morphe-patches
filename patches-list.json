@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.28.1-dev.1",
+  "version": "1.28.1-dev.2",
   "patches": [
     {
       "name": "Adda247 Ad Removal",
@@ -936,7 +936,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.3031",
+              "version": "1.3040",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -962,7 +962,33 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.3031",
+              "version": "1.3040",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Only One PairIP removal",
+      "description": "Disables the PairIP license check so the game starts without Google Play licensing, error dialogs or forced exits.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.rebelbinary.onlyone",
+          "name": "Only One",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#E2E2E2",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "1.3040",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
