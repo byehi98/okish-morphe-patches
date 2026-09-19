@@ -1,3 +1,9 @@
+## [1.28.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.0...v1.28.1-dev.1) (2026-09-19)
+
+### 🚀 Updated App Support
+
+* **admc:** update patches for game version 3.2.10 ([d36e27a](https://github.com/byehi98/okish-morphe-patches/commit/d36e27a967f45f89edc58fd181481ffd8b73452c))
+
 ## [1.28.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.27.0...v1.28.0) (2026-09-18)
 
 ### ✨ New Features
