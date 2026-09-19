@@ -7,16 +7,16 @@ import kotlin.io.readBytes
 import kotlin.io.writeBytes
 
 /**
- * Aliens Drive Me Crazy — Unlimited Coins (native il2cpp)
+ * Aliens Drive Me Crazy — Unlimited Coins (native il2cpp, 3.2.10-only)
  *
  * The game is Unity IL2CPP: all coin logic lives in libil2cpp.so, the DEX layer
  * is only SDK glue.
  *
- *   lib/arm64-v8a/libil2cpp.so @ file offset 0x016F9498 (VA 0x16FD498)
+ *   lib/arm64-v8a/libil2cpp.so @ file offset 0x016FDB88 (VA 0x1701B88)
  *     inside Org.Awake — the call whose result is stored to [x19, #0x28]
  *     = Org.TotalCoins (field offset 0x28):
  *
- *       c4 b2 04 94   bl  Load.LoadInt      (VA 0x1829FA8, PlayerPrefs int loader)
+ *       bc be 04 94   bl  Load.LoadInt      (VA 0x1831678, PlayerPrefs int loader)
  *         →
  *       00 00 b6 12   mov w0, #0x4FFFFFFF   (= 1,342,177,279 coins)
  *
@@ -24,12 +24,17 @@ import kotlin.io.writeBytes
  *
  * Matching is anchor-based (shadowfight/vector patch pattern): the 12-byte
  * sequence [bl Load.LoadInt][ldr x8,[x27]][str w0,[x19,#0x28]] occurs exactly
- * once in the whole 56 MB library for 3.2.7 (versionCode 46), which makes the
+ * once in the whole 3.2.10 56 MB library (versionCode 50), which makes the
  * match self-verifying — if Neko (Rebel Twins) ships a new build, the anchor
  * moves and the patch fails loudly instead of corrupting anything.
- *
+ * 3.2.10 anchor (1 hit, byte-verified):
+ *   BCBE0494 680340F9 602A00B9 @ file 0x16FDB88
+ *     (Org.Awake VA 0x17019D0 + 0x1B8;
+ *     bl word 9404BEBC -> Load.LoadInt VA 0x1831678, verified).
+ * Tail: ldr x8,[x27]; str w0,[x19,#0x28] with Org.TotalCoins still
+ * field 0x28 in dump.cs.
  * ⚠️ Il2CppDumper reports VIRTUAL addresses; the executable LOAD segment maps
- * file 0x137BB30 → VA 0x137FB30 (delta +0x4000). Always recompute file offsets
+ * file 0x137FF00 → VA 0x1383F00 (delta +0x4000). Always recompute file offsets
  * from script.json VAs via the program headers when retargeting versions.
  */
 @Suppress("unused")
@@ -44,8 +49,10 @@ val admcUnlimitedCoinsPatch = rawResourcePatch(
         val soFile = get("lib/arm64-v8a/libil2cpp.so", true)
         val bytes = soFile.readBytes()
 
-        // Anchor: bl #Load.LoadInt ; ldr x8,[x27] ; str w0,[x19,#0x28]  (Org.TotalCoins store)
-        val pattern = hex("C4B20494 680340F9 602A00B9")
+        // 3.2.10-only anchor: bl #Load.LoadInt ; ldr x8,[x27] ;
+        // str w0,[x19,#0x28] (Org.TotalCoins store) @ file 0x16FDB88.
+        // Replacement: mov w0, #0x4FFFFFFF.
+        val pattern = hex("BCBE0494 680340F9 602A00B9")
         // Replacement for the first word: mov w0, #0x4FFFFFFF  (1,342,177,279)
         val replacement = hex("0000B612")
 
@@ -60,7 +67,7 @@ val admcUnlimitedCoinsPatch = rawResourcePatch(
 
         replacement.copyInto(bytes, idx, 0, replacement.size)
         soFile.writeBytes(bytes)
-        println("ADMC Unlimited Coins: bl Load.LoadInt -> mov w0,#0x4FFFFFFF at file offset 0x" + idx.toString(16))
+        println("ADMC Unlimited Coins (3.2.10): bl Load.LoadInt -> mov w0,#0x4FFFFFFF at file offset 0x" + idx.toString(16))
     }
 }
 
