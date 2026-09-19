@@ -1,3 +1,9 @@
+## [1.28.1-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.4...v1.28.1-dev.5) (2026-09-19)
+
+### 🚀 Updated App Support
+
+* **adda247:** update ad patch fingerprints for v12.6.7 ([1a33758](https://github.com/byehi98/okish-morphe-patches/commit/1a337585c8b93f9965b91dfd9cccb61ba37e4090))
+
 ## [1.28.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.3...v1.28.1-dev.4) (2026-09-19)
 
 ### 🚀 Updated App Support
