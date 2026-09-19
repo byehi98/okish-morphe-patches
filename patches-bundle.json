@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-09-19T02:32:02",
-  "description": "## [1.28.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.1...v1.28.1-dev.2) (2026-09-19)\n\n### 🚀 Updated App Support\n\n* **onlyone:** version bump + bypass PairIP license check ([c585a13](https://github.com/byehi98/okish-morphe-patches/commit/c585a1359345cb9d27d34a814b8bd3bc10add926))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.28.1-dev.2/patches-1.28.1-dev.2.mpp",
+  "created_at": "2026-09-19T05:40:51",
+  "description": "## [1.28.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.2...v1.28.1-dev.3) (2026-09-19)\n\n### 🚀 Updated App Support\n\n* **rodeosafari:** update supported version to 4.25.0 ([c2d7d84](https://github.com/byehi98/okish-morphe-patches/commit/c2d7d84297fedcb02a822e8eecc75876edad09b1))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.28.1-dev.3/patches-1.28.1-dev.3.mpp",
   "signature_download_url": "",
-  "version": "1.28.1-dev.2"
+  "version": "1.28.1-dev.3"
 }

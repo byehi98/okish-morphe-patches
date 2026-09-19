@@ -1,3 +1,9 @@
+## [1.28.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.2...v1.28.1-dev.3) (2026-09-19)
+
+### 🚀 Updated App Support
+
+* **rodeosafari:** update supported version to 4.25.0 ([c2d7d84](https://github.com/byehi98/okish-morphe-patches/commit/c2d7d84297fedcb02a822e8eecc75876edad09b1))
+
 ## [1.28.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.1...v1.28.1-dev.2) (2026-09-19)
 
 ### 🚀 Updated App Support
