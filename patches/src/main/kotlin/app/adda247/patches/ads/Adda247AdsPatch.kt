@@ -12,7 +12,7 @@ import app.adda247.patches.shared.Constants.COMPATIBILITY_ADDA247
  * Google Mobile Ads Flutter plugin, whose Java layer IS in DEX. Every ad operation Dart
  * requests travels through ONE method — the plugin's MethodChannel handler:
  *
- *   io.flutter.plugins.googlemobileads.n.onMethodCall(Lu00/h;Lu00/i$d;)V
+ *   io.flutter.plugins.googlemobileads.n.onMethodCall(Lw00/h;Lw00/i$d;)V
  *   (jadx: C19948n; confirmed classes6/io/flutter/plugins/googlemobileads/n.smali:535)
  *
  * Patching that single dispatcher kills BOTH halves of the ad lifecycle, which is why no
@@ -82,7 +82,7 @@ val adda247AdsPatch = bytecodePatch(
         // plugin's MethodChannel handler; everything else falls through to the original body.
         GoogleMobileAdsOnMethodCallFingerprint.method.addInstructionsWithLabels(0, """
             move-object/from16 v0, p1
-            iget-object v0, v0, Lu00/h;->a:Ljava/lang/String;
+            iget-object v0, v0, Lw00/h;->a:Ljava/lang/String;
             if-eqz v0, :morphe_adda247_original
             const-string v1, "load"
             invoke-virtual {v0, v1}, Ljava/lang/String;->startsWith(Ljava/lang/String;)Z
@@ -96,7 +96,7 @@ val adda247AdsPatch = bytecodePatch(
             move-object/from16 v0, p2
             if-eqz v0, :morphe_adda247_swallow
             const/4 v1, 0x0
-            invoke-interface {v0, v1}, Lu00/i${'$'}d;->success(Ljava/lang/Object;)V
+            invoke-interface {v0, v1}, Lw00/i${'$'}d;->success(Ljava/lang/Object;)V
             :morphe_adda247_swallow
             return-void
             :morphe_adda247_original

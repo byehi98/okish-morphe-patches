@@ -35,14 +35,14 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.28.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.28.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;65 patches total
+> **[v1.28.1-dev.5](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.28.1-dev.5)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;66 patches total
 <details>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 12.6.4 |
+| 12.6.7 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -251,7 +251,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 3.2.7 |
+| 3.2.10 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -311,18 +311,19 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Only One&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<summary>📦 Only One&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.3031 |
+| 1.3040 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Only One Free Store](#only-one-free-store) | Makes 'Restore Purchases' grant every store item for free (Ultimate Power, all classes, bundles and powers) — also removes ads. |  |
 | [Only One IAP billing bypass](#only-one-iap-billing-bypass) | Buy any item in the shop for free. When you tap Buy, the item is added to your game right away — no Google Play payment window ever opens. |  |
+| [Only One PairIP removal](#only-one-pairip-removal) | Disables the PairIP license check so the game starts without Google Play licensing, error dialogs or forced exits. |  |
 
 </details>
 
@@ -388,8 +389,8 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 4.23.0 | 4.24.0 |
-| :---: | :---: |
+| 4.25.0 |
+| :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
@@ -497,7 +498,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 2.10.0 |
+| 2.10.2 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

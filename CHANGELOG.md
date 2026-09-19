@@ -1,3 +1,33 @@
+## [1.28.1-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.4...v1.28.1-dev.5) (2026-09-19)
+
+### 🚀 Updated App Support
+
+* **adda247:** update ad patch fingerprints for v12.6.7 ([1a33758](https://github.com/byehi98/okish-morphe-patches/commit/1a337585c8b93f9965b91dfd9cccb61ba37e4090))
+
+## [1.28.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.3...v1.28.1-dev.4) (2026-09-19)
+
+### 🚀 Updated App Support
+
+* **vector:** update target app version 2.10.2 ([324e1fd](https://github.com/byehi98/okish-morphe-patches/commit/324e1fd015ccffc6f03151cf51ddc1c78efa4c2f))
+
+## [1.28.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.2...v1.28.1-dev.3) (2026-09-19)
+
+### 🚀 Updated App Support
+
+* **rodeosafari:** update supported version to 4.25.0 ([c2d7d84](https://github.com/byehi98/okish-morphe-patches/commit/c2d7d84297fedcb02a822e8eecc75876edad09b1))
+
+## [1.28.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.1...v1.28.1-dev.2) (2026-09-19)
+
+### 🚀 Updated App Support
+
+* **onlyone:** version bump + bypass PairIP license check ([c585a13](https://github.com/byehi98/okish-morphe-patches/commit/c585a1359345cb9d27d34a814b8bd3bc10add926))
+
+## [1.28.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.0...v1.28.1-dev.1) (2026-09-19)
+
+### 🚀 Updated App Support
+
+* **admc:** update patches for game version 3.2.10 ([d36e27a](https://github.com/byehi98/okish-morphe-patches/commit/d36e27a967f45f89edc58fd181481ffd8b73452c))
+
 ## [1.28.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.27.0...v1.28.0) (2026-09-18)
 
 ### ✨ New Features

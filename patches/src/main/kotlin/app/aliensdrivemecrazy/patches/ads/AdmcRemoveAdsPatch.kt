@@ -7,20 +7,21 @@ import kotlin.io.readBytes
 import kotlin.io.writeBytes
 
 /**
- * Aliens Drive Me Crazy — Remove ads (native il2cpp)
+ * Aliens Drive Me Crazy — Remove ads (native il2cpp, 3.2.10-only)
  *
  * Kills every interstitial ("commercial break") path while leaving the
  * reward dispatcher untouched for the Instant rewards patch:
  *
- *   1. MyIronSource.ShowInterstitial  (VA 0x183E744) -> RET
- *   2. MyIronSource.LoadIntersitial   (VA 0x183E5AC) -> RET  (typo is the game's)
- *   3. MyIronSource.CzyMozeBycInterstitial (VA 0x183E444, returns bool!)
+ *   1. MyIronSource.ShowInterstitial  (VA 0x1846514) -> RET
+ *   2. MyIronSource.LoadIntersitial   (VA 0x1846374) -> RET  (typo is the game's)
+ *   3. MyIronSource.CzyMozeBycInterstitial (VA 0x184620C, returns bool!)
  *        -> mov w0, #0 ; RET  — bare RET would return `this` != 0 = true (ads on!)
- *   4. Legacy Unity-Ads path MyAds.PokazInterstital (VA 0x1838128) -> RET
+ *   4. Legacy Unity-Ads path MyAds.PokazInterstital (VA 0x183F830) -> RET
  *
- * All four sites are matched by unique 16-24 byte instruction anchors
- * (verified unique across the whole 56 MB library for 3.2.7 / versionCode 46),
- * so a future game build fails loudly instead of patching the wrong function.
+ * All four sites are matched by single 3.2.10-only instruction anchors
+ * (each verified unique — 1 hit — in the 3.2.10 56 MB library,
+ * versionCode 50), so a future game build fails loudly instead of
+ * patching the wrong function.
  */
 @Suppress("unused")
 val admcRemoveAdsPatch = rawResourcePatch(
@@ -37,20 +38,32 @@ val admcRemoveAdsPatch = rawResourcePatch(
         val ret = hex("C0035FD6")   // RET
         val nop = hex("1F2003D5")   // NOP
 
-        // anchor hex (unique), number of 4-byte words it covers
+        // 3.2.10-only anchors (byte-verified prologues, 1 hit each):
+        //   ShowInterstitial  VA 0x1846514 (6 words):
+        //     FE5FBDA9 F65701A9 F44F02A9 D6EA00D0 77D90090 75D90090
+        //   LoadIntersitial   VA 0x1846374 (6 words, minimum):
+        //     FE0F1CF8 F85F01A9 F65702A9 F44F03A9 D3EA00D0 14D900D0
+        //   CzyMozeByc...     VA 0x184620C (6 words):
+        //     FE0F1DF8 F65701A9 F44F02A9 D6EA00D0 75D90090 F4D800F0
+        //   PokazInterstital  VA 0x183F830 (4 words):
+        //     FE0F1DF8 F65701A9 F44F02A9 16EB00B0
         val sites = listOf(
-            "MyIronSource.ShowInterstitial" to
-                ("FE0F1DF8F65701A9F44F02A9B4EA00F0F5D800F0" to 5),
-            "MyIronSource.LoadIntersitial" to
-                ("FE0F1CF8F85F01A9F65702A9F44F03A9B3EA00F0" to 5),
-            "MyIronSource.CzyMozeBycInterstitial (bool)" to
-                ("FE0F1DF8F65701A9F44F02A9B6EA00F055D900B0F4D800B0" to 6),
-            "MyAds.PokazInterstital (legacy)" to
-                ("FE0F1DF8F65701A9F44F02A9F6EA00B0" to 4),
+            "MyIronSource.ShowInterstitial" to (
+                "FE5FBDA9F65701A9F44F02A9D6EA00D077D9009075D90090" to 6
+            ),
+            "MyIronSource.LoadIntersitial" to (
+                "FE0F1CF8F85F01A9F65702A9F44F03A9D3EA00D014D900D0" to 6
+            ),
+            "MyIronSource.CzyMozeBycInterstitial (bool)" to (
+                "FE0F1DF8F65701A9F44F02A9D6EA00D075D90090F4D800F0" to 6
+            ),
+            "MyAds.PokazInterstital (legacy)" to (
+                "FE0F1DF8F65701A9F44F02A916EB00B0" to 4
+            ),
         )
 
-        for ((name, anchorPair) in sites) {
-            val (anchorHex, words) = anchorPair
+        for ((name, pair) in sites) {
+            val (anchorHex, words) = pair
             val pattern = hex(anchorHex)
             val idx = indexOfPattern(bytes, pattern)
             if (idx < 0) {
