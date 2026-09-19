@@ -12,7 +12,7 @@ import com.android.tools.smali.dexlib2.AccessFlags
 // dispatches every ad operation the Dart side requests.
 
 /**
- * io.flutter.plugins.googlemobileads.n.onMethodCall(Lu00/h;Lu00/i$d;)V — public.
+ * io.flutter.plugins.googlemobileads.n.onMethodCall(Lw00/h;Lw00/i$d;)V — public.
  *
  * The GoogleMobileAdsPlugin `MethodChannel.MethodCallHandler` (jadx: `C19948n`) for the
  * "plugins.flutter.io/google_mobile_ads" channel (registered in onAttachedToEngine —
@@ -33,16 +33,16 @@ import com.android.tools.smali.dexlib2.AccessFlags
  * v0..v19 locals + p0=v20, p1=v21 (MethodCall), p2=v22 (Result); NO try/catch and NO monitor
  * anywhere in the method, so an index-0 injection is verifier-safe).
  *
- * `call.method` is read at n.smali:584 as `iget-object v5, v1, Lu00/h;->a:Ljava/lang/String;`
- * (v1 == p1 after the `move-object/from16 v1, p1` prologue). `Lu00/h;->a` is `public final`
- * (u00/h.smali:7), so a direct `iget-object` from the patch is legal.
+ * `call.method` is read at n.smali:584 as `iget-object v5, v1, Lw00/h;->a:Ljava/lang/String;`
+ * (v1 == p1 after the `move-object/from16 v1, p1` prologue). `Lw00/h;->a` is `public final`
+ * (w00/h.smali:7), so a direct `iget-object` from the patch is legal.
  *
  * MATCH STRATEGY — the plugin package/class/method names come from a third-party SDK and are
  * NOT obfuscated at the package level (`io/flutter/plugins/googlemobileads/...`), but R8 DID
- * rename the handler class to `n` and the Flutter channel types to `u00/h` / `u00/i$d`.
+ * rename the handler class to `n` and the Flutter channel types to `w00/h` / `w00/i$d`.
  * Because the injected code has to reference those renamed types by name anyway, the
- * fingerprint is deliberately pinned to the 12.6.4-604 mapping (definingClass `n`, parameters
- * `Lu00/h;`/`Lu00/i$d;`) — pinning adds no fragility the patch does not already have, and it
+ * fingerprint is deliberately pinned to the 12.6.7 mapping (definingClass `n`, parameters
+ * `Lw00/h;`/`Lw00/i$d;`) — pinning adds no fragility the patch does not already have, and it
  * makes the match fast and unambiguous (`n` has exactly one `onMethodCall`).
  *
  * Filters are in EXACT instruction order (verified against n.smali line numbers). All filters
@@ -71,7 +71,7 @@ object GoogleMobileAdsOnMethodCallFingerprint : Fingerprint(
     name = "onMethodCall",
     returnType = "V",
     accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf("Lu00/h;", "Lu00/i\$d;"),
+    parameters = listOf("Lw00/h;", "Lw00/i\$d;"),
     filters = listOf(
         string("loadRewardedInterstitialAd"),
         methodCall(
@@ -102,16 +102,16 @@ object GoogleMobileAdsOnMethodCallFingerprint : Fingerprint(
 // See analysis/com.adda247.app/notes/app-owned-ads.md, Surface 1.
 
 /**
- * The `InApp_10.2.0_HtmlViewEngine` class — MoEngage's abstract HTML view engine
- * (R8-renamed to `Lkv/i0;` in 12.6.4-604; jadx: `p311kv.AbstractC22653i0`).
+ * The `InApp_10.3.0_HtmlViewEngine` class — MoEngage's abstract HTML view engine
+ * (R8-renamed to `Llv/i0;` in 12.6.7; jadx: `p311kv.AbstractC22653i0`).
  *
  * Used ONLY as a `classFingerprint` anchor for the render method below, so the
  * obfuscated class name never has to be hardcoded.
  *
  * The engine's log tag is assigned in its constructor:
  *
- *   kv/i0.smali:74   const-string p1, "InApp_10.2.0_HtmlViewEngine"
- *   kv/i0.smali:78   iput-object p1, p0, Lkv/i0;->g:Ljava/lang/String;
+ *   lv/i0.smali:74   const-string p1, "InApp_10.3.0_HtmlViewEngine"
+ *   lv/i0.smali:78   iput-object p1, p0, Llv/i0;->g:Ljava/lang/String;
  *
  * IMPORTANT CORRECTION to app-owned-ads.md fingerprint (B): that note lists
  * `string("InApp_10.2.0_HtmlViewEngine")` as a filter of the render method `Q`.
@@ -122,14 +122,14 @@ object GoogleMobileAdsOnMethodCallFingerprint : Fingerprint(
  * the string is used here, at CLASS level, which is both correct and the most durable
  * anchor available (it is version-pinned to the MoEngage SDK, not to R8's naming).
  *
- * Uniqueness: `rg -c 'InApp_10\.2\.0_HtmlViewEngine'` over the whole APK returns
- * exactly ONE hit — classes5/kv/i0.smali:74 — so this resolves to a single class.
+ * Uniqueness: `rg -c 'InApp_10\.3\.0_HtmlViewEngine'` over the whole APK returns
+ * exactly ONE hit — classes5/lv/i0.smali:74 — so this resolves to a single class.
  */
 object MoEngageHtmlViewEngineClassFingerprint : Fingerprint(
     name = "<init>",
     returnType = "V",
     filters = listOf(
-        string("InApp_10.2.0_HtmlViewEngine"),
+        string("InApp_10.3.0_HtmlViewEngine"),
     )
 )
 
