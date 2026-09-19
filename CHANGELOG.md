@@ -1,3 +1,9 @@
+## [1.28.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.3...v1.28.1-dev.4) (2026-09-19)
+
+### 🚀 Updated App Support
+
+* **vector:** update target app version 2.10.2 ([324e1fd](https://github.com/byehi98/okish-morphe-patches/commit/324e1fd015ccffc6f03151cf51ddc1c78efa4c2f))
+
 ## [1.28.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.2...v1.28.1-dev.3) (2026-09-19)
 
 ### 🚀 Updated App Support

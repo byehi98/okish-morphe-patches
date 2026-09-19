@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.28.1-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.28.1-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;66 patches total
+> **[v1.28.1-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.28.1-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;66 patches total
 <details>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -498,7 +498,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 2.10.0 |
+| 2.10.2 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-09-19T05:40:51",
-  "description": "## [1.28.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.2...v1.28.1-dev.3) (2026-09-19)\n\n### 🚀 Updated App Support\n\n* **rodeosafari:** update supported version to 4.25.0 ([c2d7d84](https://github.com/byehi98/okish-morphe-patches/commit/c2d7d84297fedcb02a822e8eecc75876edad09b1))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.28.1-dev.3/patches-1.28.1-dev.3.mpp",
+  "created_at": "2026-09-19T05:52:43",
+  "description": "## [1.28.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1-dev.3...v1.28.1-dev.4) (2026-09-19)\n\n### 🚀 Updated App Support\n\n* **vector:** update target app version 2.10.2 ([324e1fd](https://github.com/byehi98/okish-morphe-patches/commit/324e1fd015ccffc6f03151cf51ddc1c78efa4c2f))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.28.1-dev.4/patches-1.28.1-dev.4.mpp",
   "signature_download_url": "",
-  "version": "1.28.1-dev.3"
+  "version": "1.28.1-dev.4"
 }
