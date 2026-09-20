@@ -19,8 +19,8 @@ import app.intothedead2.patches.shared.Constants.COMPATIBILITY_INTO_THE_DEAD_2
  */
 @Suppress("unused")
 val nativeIapGrantTriggerPatch = bytecodePatch(
-    name = "IAP Grant Trigger",
-    description = "Wakes up that helper every time you open the game, so free shopping keeps working.",
+    name = "IAP Gold Grant Trigger",
+    description = "Wakes up that helper every time you open the game, so free Gold shopping keeps working.",
     default = true
 ) {
     compatibleWith(COMPATIBILITY_INTO_THE_DEAD_2)

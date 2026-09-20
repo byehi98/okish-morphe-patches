@@ -22,8 +22,8 @@ import app.intothedead2.patches.shared.Constants.COMPATIBILITY_INTO_THE_DEAD_2
  */
 @Suppress("unused")
 val nativeIapGrantEnginePatch = rawResourcePatch(
-    name = "IAP Grant Engine",
-    description = "Helper that makes the game approve every purchase on your own device, so bought items land in your account without paying anything.",
+    name = "IAP Gold Grant Engine",
+    description = "Helper that makes the game approve Gold purchase on your own device, so bought items land in your account without paying anything.",
     default = true
 ) {
     compatibleWith(COMPATIBILITY_INTO_THE_DEAD_2)
