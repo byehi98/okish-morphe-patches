@@ -1,3 +1,9 @@
+## [1.29.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.0-dev.1...v1.29.0-dev.2) (2026-09-20)
+
+### ✨ New Features
+
+* **iap:** clarify patch descriptions for gold ([f7db7e0](https://github.com/byehi98/okish-morphe-patches/commit/f7db7e0a9b951873c10df91de6b891977199bd29))
+
 ## [1.29.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1...v1.29.0-dev.1) (2026-09-20)
 
 ### ✨ New Features

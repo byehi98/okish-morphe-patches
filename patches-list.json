@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.29.0-dev.1",
+  "version": "1.29.0-dev.2",
   "patches": [
     {
       "name": "Adda247 Ad Removal",
@@ -662,8 +662,8 @@
       "options": []
     },
     {
-      "name": "IAP Grant Engine",
-      "description": "Helper that makes the game approve every purchase on your own device, so bought items land in your account without paying anything.",
+      "name": "IAP Gold Grant Engine",
+      "description": "Helper that makes the game approve Gold purchase on your own device, so bought items land in your account without paying anything.",
       "default": true,
       "dependencies": [],
       "compatiblePackages": [
@@ -688,8 +688,8 @@
       "options": []
     },
     {
-      "name": "IAP Grant Trigger",
-      "description": "Wakes up that helper every time you open the game, so free shopping keeps working.",
+      "name": "IAP Gold Grant Trigger",
+      "description": "Wakes up that helper every time you open the game, so free Gold shopping keeps working.",
       "default": true,
       "dependencies": [],
       "compatiblePackages": [

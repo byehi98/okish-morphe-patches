@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.29.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.29.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;69 patches total
+> **[v1.29.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.29.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;69 patches total
 <details>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
@@ -163,8 +163,8 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Free GOLD](#free-gold) | Get gold in the game shop for free. Tap buy and the item is added to your account — no Google Play payment screen appears and you are never charged. Note 1: Only for GOLD. Note 2: For Ad-Free just get any amount of gold in the shop |  |
-| [IAP Grant Engine](#iap-grant-engine) | Helper that makes the game approve every purchase on your own device, so bought items land in your account without paying anything. |  |
-| [IAP Grant Trigger](#iap-grant-trigger) | Wakes up that helper every time you open the game, so free shopping keeps working. |  |
+| [IAP Gold Grant Engine](#iap-gold-grant-engine) | Helper that makes the game approve Gold purchase on your own device, so bought items land in your account without paying anything. |  |
+| [IAP Gold Grant Trigger](#iap-gold-grant-trigger) | Wakes up that helper every time you open the game, so free Gold shopping keeps working. |  |
 
 </details>
 
