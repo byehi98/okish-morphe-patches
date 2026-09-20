@@ -1,3 +1,9 @@
+## [1.29.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1...v1.29.0-dev.1) (2026-09-20)
+
+### ✨ New Features
+
+* **intothedead2:** implement free IAP functionality ([f05b36b](https://github.com/byehi98/okish-morphe-patches/commit/f05b36b37b04906c4c136b6024665af443f3ca4d))
+
 ## [1.28.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.0...v1.28.1) (2026-09-19)
 
 ### 🚀 Updated App Support
