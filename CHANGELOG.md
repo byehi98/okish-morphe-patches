@@ -1,3 +1,9 @@
+## [1.29.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.0-dev.3...v1.29.0-dev.4) (2026-09-20)
+
+### ✨ New Features
+
+* **intothedead2:** expand IAP bypass to all purchases and subscriptions ([9da55e5](https://github.com/byehi98/okish-morphe-patches/commit/9da55e548b948f659addb6ed4e6d476d7af8b97e))
+
 ## [1.29.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.0-dev.2...v1.29.0-dev.3) (2026-09-20)
 
 ### ✨ New Features

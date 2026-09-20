@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.29.0-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.29.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;70 patches total
+> **[v1.29.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.29.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;70 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -48,9 +48,9 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [AD Instant Rewards](#ad-instant-rewards) | Grants rewarded-video rewards instantly |  |
-| [Free GOLD](#free-gold) | Get gold in the game shop for free. Tap buy and the item is added to your account — no Google Play payment screen appears and you are never charged. Note 1: Only for GOLD. Note 2: For Ad-Free just get any amount of gold in the shop |  |
-| [IAP Gold Grant Engine](#iap-gold-grant-engine) | Helper that makes the game approve Gold purchase on your own device, so bought items land in your account without paying anything. |  |
-| [IAP Gold Grant Trigger](#iap-gold-grant-trigger) | Wakes up that helper every time you open the game, so free Gold shopping keeps working. |  |
+| [Full IAP Unlock](#full-iap-unlock) | Unlocks every purchase in the game for free. Tap buy and it is yours — no Google Play payment screen appears and you are never charged. Subscriptions like VIP membership show as pre-owned, so just open them, no purchase needed. |  |
+| [IAP Grant Engine](#iap-grant-engine) | Helper that makes the game approve every purchase on your own device, including subscriptions like VIP membership, so bought items land in your account without paying anything. |  |
+| [IAP Grant Trigger](#iap-grant-trigger) | Wakes up that helper every time you open the game, so free purchases and subscriptions keep working. |  |
 
 </details>
 
