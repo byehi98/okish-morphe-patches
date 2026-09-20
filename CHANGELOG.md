@@ -1,3 +1,27 @@
+## [1.29.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.0-dev.3...v1.29.0-dev.4) (2026-09-20)
+
+### ✨ New Features
+
+* **intothedead2:** expand IAP bypass to all purchases and subscriptions ([9da55e5](https://github.com/byehi98/okish-morphe-patches/commit/9da55e548b948f659addb6ed4e6d476d7af8b97e))
+
+## [1.29.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.0-dev.2...v1.29.0-dev.3) (2026-09-20)
+
+### ✨ New Features
+
+* **intothedead2:** provide instant ad rewards and kill ads ([7d3ee7b](https://github.com/byehi98/okish-morphe-patches/commit/7d3ee7b1cbcf9bfa6596d3ad5211826cf4a5fe6a))
+
+## [1.29.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.0-dev.1...v1.29.0-dev.2) (2026-09-20)
+
+### ✨ New Features
+
+* **iap:** clarify patch descriptions for gold ([f7db7e0](https://github.com/byehi98/okish-morphe-patches/commit/f7db7e0a9b951873c10df91de6b891977199bd29))
+
+## [1.29.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.1...v1.29.0-dev.1) (2026-09-20)
+
+### ✨ New Features
+
+* **intothedead2:** implement free IAP functionality ([f05b36b](https://github.com/byehi98/okish-morphe-patches/commit/f05b36b37b04906c4c136b6024665af443f3ca4d))
+
 ## [1.28.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.28.0...v1.28.1) (2026-09-19)
 
 ### 🚀 Updated App Support

@@ -35,7 +35,25 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.28.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.28.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;66 patches total
+> **[v1.29.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.29.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;70 patches total
+<details>
+<summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.87.0 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [AD Instant Rewards](#ad-instant-rewards) | Grants rewarded-video rewards instantly |  |
+| [Full IAP Unlock](#full-iap-unlock) | Unlocks every purchase in the game for free. Tap buy and it is yours — no Google Play payment screen appears and you are never charged. Subscriptions like VIP membership show as pre-owned, so just open them, no purchase needed. |  |
+| [IAP Grant Engine](#iap-grant-engine) | Helper that makes the game approve every purchase on your own device, including subscriptions like VIP membership, so bought items land in your account without paying anything. |  |
+| [IAP Grant Trigger](#iap-grant-trigger) | Wakes up that helper every time you open the game, so free purchases and subscriptions keep working. |  |
+
+</details>
+
 <details>
 <summary>📦 Adda247&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
