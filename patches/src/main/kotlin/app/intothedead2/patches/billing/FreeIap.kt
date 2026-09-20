@@ -43,8 +43,8 @@ import app.intothedead2.patches.shared.Constants.COMPATIBILITY_INTO_THE_DEAD_2
  */
 @Suppress("unused")
 val intoTheDead2FreeIapPatch = bytecodePatch(
-    name = "Free GOLD",
-    description = "Get gold in the game shop for free. Tap buy and the item is added to your account — no Google Play payment screen appears and you are never charged. Note 1: Only for GOLD. Note 2: For Ad-Free just get any amount of gold in the shop",
+    name = "Full IAP Unlock",
+    description = "Unlocks every purchase in the game for free. Tap buy and it is yours — no Google Play payment screen appears and you are never charged. Subscriptions like VIP membership show as pre-owned, so just open them, no purchase needed.",
     default = true
 ) {
     compatibleWith(COMPATIBILITY_INTO_THE_DEAD_2)
