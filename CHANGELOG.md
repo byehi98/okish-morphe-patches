@@ -1,3 +1,9 @@
+## [1.29.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.0-dev.2...v1.29.0-dev.3) (2026-09-20)
+
+### ✨ New Features
+
+* **intothedead2:** provide instant ad rewards and kill ads ([7d3ee7b](https://github.com/byehi98/okish-morphe-patches/commit/7d3ee7b1cbcf9bfa6596d3ad5211826cf4a5fe6a))
+
 ## [1.29.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.0-dev.1...v1.29.0-dev.2) (2026-09-20)
 
 ### ✨ New Features

@@ -1,7 +1,33 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.29.0-dev.2",
+  "version": "1.29.0-dev.3",
   "patches": [
+    {
+      "name": "AD Instant Rewards",
+      "description": "Grants rewarded-video rewards instantly",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.pikpok.dr2.play",
+          "name": "Into the Dead 2",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#8B0000",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "1.87.0",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
     {
       "name": "Adda247 Ad Removal",
       "description": "Blocks all Google AdMob ads (banner, interstitial, rewarded, rewarded interstitial, native, app open and Ad Manager) by neutralizing the Flutter Google Mobile Ads plugin: no ad is ever requested and no ad can ever be shown.",
