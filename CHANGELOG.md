@@ -1,3 +1,9 @@
+## [1.29.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.0...v1.29.1) (2026-09-21)
+
+### 🐛 Bug Fixes
+
+* **intothedead2:** Unlock that one VIP crate that was not locking. ([b51d490](https://github.com/byehi98/okish-morphe-patches/commit/b51d490e4f88295e39df6e5336ec63a26a17616f))
+
 ## [1.29.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.0...v1.29.1-dev.1) (2026-09-21)
 
 ### 🐛 Bug Fixes
