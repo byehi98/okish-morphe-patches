@@ -1,3 +1,9 @@
+## [1.30.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.2...v1.30.0-dev.1) (2026-09-23)
+
+### ✨ New Features
+
+* **crossyroad:** implement free store ([c8453dd](https://github.com/byehi98/okish-morphe-patches/commit/c8453dd9d1851bd548719d11b63a98581a0bf0d6))
+
 ## [1.29.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.1...v1.29.2) (2026-09-23)
 
 ### 🚀 Updated App Support
