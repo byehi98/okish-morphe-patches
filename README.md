@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.29.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.29.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;70 patches total
+> **[v1.30.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.30.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;71 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -166,6 +166,21 @@ Direct URL:
 |----------|----------------|-----------|
 | [Fix app opening](#fix-app-opening) | Required so the modified app opens without crashing — skips signature, root and emulator checks. |  |
 | [Free purchases](#free-purchases) | Get paid items for free — tapping buy grants the item instantly without Google Play payment popup. |  |
+
+</details>
+
+<details>
+<summary>📦 Crossy Road&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 7.13.0 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free store](#free-store) | The in-game store is free. Just tap "Buy" and the item is yours — no payment needed. For an ad-free game, just buy the ad-block item from the store. |  |
 
 </details>
 
