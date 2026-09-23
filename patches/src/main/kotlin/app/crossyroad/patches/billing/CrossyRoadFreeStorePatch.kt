@@ -3,12 +3,16 @@ package app.crossyroad.patches.billing
 import app.crossyroad.patches.shared.Constants.COMPATIBILITY_CROSSY_ROAD
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
+import app.morphe.patcher.patch.PatchException
 import app.morphe.patcher.patch.bytecodePatch
+import app.morphe.patcher.patch.rawResourcePatch
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod.Companion.toMutable
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethodParameter
+import kotlin.io.readBytes
+import kotlin.io.writeBytes
 
 // Smali class descriptors. The \$ escapes keep Kotlin string interpolation from
 // treating "$Builder" / "$ProductDetailsParams" / "$Product" as template
@@ -20,7 +24,10 @@ private const val BFP_PRODUCT_DETAILS_PARAMS = "Lcom/android/billingclient/api/B
 private const val QUERY_PRODUCT = "Lcom/android/billingclient/api/QueryProductDetailsParams\$Product;"
 
 /**
- * Crossy Road — Free store (Google Play Billing 8.0.0 purchase forge).
+ * Crossy Road — Free store: ONE patch entry covering BOTH approved halves —
+ * the DEX billing forge and the native character-branch NOP.
+ *
+ * ══ PART 1 — DEX: Google Play Billing 8.0.0 purchase forge ════════════════
  *
  * Strategy: spoof the trusted source. All store taps (characters, coin packs,
  * bundles) funnel C#'s UniversalStoreManager.PurchaseRequest →
@@ -73,6 +80,72 @@ private const val QUERY_PRODUCT = "Lcom/android/billingclient/api/QueryProductDe
  * Fake identity is unique per tap (System.currentTimeMillis once → orderId +
  * purchaseToken + purchaseTime), so Unity IAP's transaction dedup never
  * swallows the 2nd+ purchase.
+ *
+ * ══ PART 2 — NATIVE: libil2cpp.so character branch (7.13.0, ARM32) ════════
+ *
+ * Complements the DEX forge: makes PAID CHARACTERS take the game's own
+ * local-grant path without ever entering Google Play billing.
+ *
+ * lib/armeabi-v7a/libil2cpp.so — file offset == RVA for the executable LOAD
+ * segment (readelf: Offset 0x0 = VirtAddr 0x0; verified delta 0). Target
+ * inside UniversalStoreManager.PurchaseRequest (RVA 0x13469AC):
+ *
+ *   0x1346AB0   bl      Character.GetConfiguredPurchaseType   ; FreeInternal==1
+ *   0x1346AB4   cmp     r0, #1
+ *   0x1346AB8   bne     0x1346B30      ← NOP this ( PaidIAP → billing path )
+ *   0x1346ABC   mov     r0, r6         ← fall-through: direct local-grant path
+ *                                       ( SetBonusCoins → HandleProductPurchase
+ *                                         0x1346E0C → PurchaseProductBundle → grant )
+ *
+ * The earlier `character == null` beq (non-character products → billing) is
+ * untouched, so coin packs / bundles still flow through the DEX forge — this
+ * half only reroutes products that resolved to a Character with a paid
+ * purchase type. The free-grant path dereferences the character (r6), but the
+ * null-character check upstream still diverts lookups away — no NPE.
+ *
+ * Matching is anchor-based (shadowfight/vector/ADMC pattern): the 12-byte
+ * sequence [cmp r0,#1][bne][mov r0,r6] occurs EXACTLY ONCE in the whole
+ * 73,234,644-byte 7.13.0 library (byte-verified), so the match is
+ * self-verifying — a new build moves the anchor and the patch fails loudly
+ * instead of corrupting anything. The 8-byte tail alone occurs 21× (hence the
+ * leading cmp word).
+ *
+ * 7.13.0 anchor (1 hit, byte-verified): 010050E3 1C00001A 0600A0E1 @ 0x1346AB4
+ * Replacement @ 0x1346AB8: 0000A0E1  (= 0xE1A00000, `mov r0, r0` NOP).
+ *
+ * ══ WHY one entry: inline dependsOn(rawResourcePatch) ═════════════════════
+ *
+ * The DSL binds exactly one context type per Patch subclass (javap-verified
+ * against morphe-patcher-1.5.2):
+ *   bytecodePatch    → BytecodePatchContext — classDefBy / navigate / … and
+ *                      NO file API; its no-arg get() returns the Set of
+ *                      PatchedDexFile (PatchContext-as-Supplier), not a
+ *                      resource file.
+ *   rawResourcePatch → ResourcePatchContext — the ONLY home of
+ *                      get(path, uncompress): Boolean → File (plus document()
+ *                      and delete()).
+ * So the native .so edit physically cannot live in this bytecode patch's own
+ * execute{} block — BytecodePatchContext has no get(String, Boolean).
+ *
+ * The sanctioned combination (patch-anatomy dependsOn example; community
+ * ample-revanced/hoodles hexPatch-inside-patch pattern) keeps ONE listing
+ * entry:
+ *   bytecodePatch("Free store") { dependsOn(rawResourcePatch { …native… });
+ *                                 execute { …DEX… } }
+ * - PatchLoader discovers patches ONLY through public static top-level
+ *   fields / zero-arg methods returning Patch (Class.getFields/getMethods
+ *   + name != null). The native half is created inline inside dependsOn()
+ *   and is never a field — so it is never discovered, and list-patches /
+ *   patches-list.json / the Manager UI expose exactly ONE entry: "Free store".
+ * - Patcher.plusAssign walks dependencies recursively (execute in dependency
+ *   order): the native .so edit runs first, then the DEX hooks; and because a
+ *   RawResourcePatch sits anywhere in the graph, ResourceMode.RAW_ONLY is
+ *   forced — lib/ is extracted and get("lib/armeabi-v7a/libil2cpp.so", true)
+ *   resolves inside the dependency's execute{}.
+ * - The halves touch disjoint artifacts (classes*.dex vs
+ *   lib/armeabi-v7a/libil2cpp.so), so their relative order is irrelevant;
+ *   both bodies and the anchor below are byte-for-byte identical to the
+ *   previously approved two-patch code.
  */
 @Suppress("unused")
 val crossyRoadFreeStorePatch = bytecodePatch(
@@ -81,6 +154,47 @@ val crossyRoadFreeStorePatch = bytecodePatch(
     default = true
 ) {
     compatibleWith(COMPATIBILITY_CROSSY_ROAD)
+
+    // ══ Native character branch — inline rawResourcePatch dependency ═══════
+    // Defined INSIDE dependsOn() so PatchLoader never discovers it as a
+    // separate top-level entry (see KDoc "WHY one entry"). Its execute block
+    // runs against ResourcePatchContext — the only context exposing get().
+    dependsOn(
+        rawResourcePatch(
+            name = "Free store (character branch)",
+            description = "The in-game store is free. Just tap \"Buy\" and the item is yours — no payment needed. For an ad-free game, just buy the ad-block item from the store.",
+            default = true
+        ) {
+            compatibleWith(COMPATIBILITY_CROSSY_ROAD)
+
+            execute {
+                val soFile = get("lib/armeabi-v7a/libil2cpp.so", true)
+                val bytes = soFile.readBytes()
+
+                // cmp r0,#1 ; bne→billing ; mov r0,r6  (PurchaseRequest @ 0x1346AB4)
+                val pattern = hex("010050E3 1C00001A 0600A0E1")
+                // mov r0,r0 (NOP) — replaces ONLY the bne word at pattern offset +4.
+                val replacement = hex("0000A0E1")
+
+                println("Crossy Road Free store (native): libil2cpp.so size=" + bytes.size + " bytes")
+                val idx = indexOfPattern(bytes, pattern)
+                if (idx < 0) {
+                    throw PatchException(
+                        "Crossy Road Free store (native): PurchaseRequest branch anchor not found in " +
+                                "libil2cpp.so (size=" + bytes.size + " bytes) — unsupported game version?"
+                    )
+                }
+
+                replacement.copyInto(bytes, idx + 4)
+                soFile.writeBytes(bytes)
+                println(
+                    "Crossy Road Free store (native): bne→billing NOP'd at file offset 0x" +
+                            (idx + 4).toString(16) +
+                            (if (idx != 0x1346AB4) " (expected 0x1346ab4 — anchor moved, verify!)" else "")
+                )
+            }
+        }
+    )
 
     execute {
         // ═══ 1. launchBillingFlow — INSTANT PURCHASE GRANT (primary) ══════════
@@ -340,4 +454,26 @@ val crossyRoadFreeStorePatch = bytecodePatch(
             nop
         """.trimIndent())
     }
+}
+
+/** Parses a big-endian hex string (spaces optional) into a byte array. */
+private fun hex(s: String): ByteArray =
+    s.replace(" ", "").chunked(2).map { it.toInt(16).toByte() }.toByteArray()
+
+private fun indexOfPattern(haystack: ByteArray, needle: ByteArray): Int {
+    if (needle.isEmpty()) return 0
+    val last = haystack.size - needle.size
+    var i = 0
+    while (i <= last) {
+        var match = true
+        for (j in needle.indices) {
+            if (haystack[i + j] != needle[j]) {
+                match = false
+                break
+            }
+        }
+        if (match) return i
+        i++
+    }
+    return -1
 }
