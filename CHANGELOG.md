@@ -1,3 +1,9 @@
+## [1.30.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.30.0-dev.1...v1.30.0-dev.2) (2026-09-23)
+
+### ✨ New Features
+
+* **crossyroad-refactor:** consolidate free store patches ([dcf4bfe](https://github.com/byehi98/okish-morphe-patches/commit/dcf4bfe025d632dda8f1c6b668be54b705d0fe2a))
+
 ## [1.30.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.29.2...v1.30.0-dev.1) (2026-09-23)
 
 ### ✨ New Features
