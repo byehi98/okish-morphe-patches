@@ -1,3 +1,9 @@
+## [1.31.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.31.0-dev.1...v1.31.0-dev.2) (2026-09-25)
+
+### 🚀 Updated App Support
+
+* **billing:** update patch for Into the Dead 2 v1.87.1 ([c8d77d7](https://github.com/byehi98/okish-morphe-patches/commit/c8d77d7e8e6b339cfb0818a73c0076065cb2ca59))
+
 ## [1.31.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.30.0...v1.31.0-dev.1) (2026-09-25)
 
 ### ✨ New Features
