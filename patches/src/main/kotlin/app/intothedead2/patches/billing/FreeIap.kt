@@ -11,7 +11,7 @@ import app.intothedead2.patches.shared.Constants.COMPATIBILITY_INTO_THE_DEAD_2
  * com.pikpok.AndroidStore.PurchaseUIThread(String productId, boolean isSubscription)V
  * is the single entry point for every store purchase (tapped "buy" → AndroidStore$8.run
  * → -$$Nest$mPurchaseUIThread → PurchaseUIThread). Normally it validates the billing
- * client, checks iapSupported/subsSupported, looks up SkuDetails and launches the
+ * client, checks iapSupported/subsSupported, looks up ProductDetails and launches the
  * real Google Play billing dialog.
  *
  * We replace the whole body: build a fabricated Google Play purchase JSON with the

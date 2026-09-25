@@ -35,14 +35,14 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.30.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.30.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;71 patches total
+> **[v1.31.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.31.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;75 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.87.0 |
+| 1.87.1 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -51,6 +51,24 @@ Direct URL:
 | [Full IAP Unlock](#full-iap-unlock) | Unlocks every purchase in the game for free. Tap buy and it is yours — no Google Play payment screen appears and you are never charged. Subscriptions like VIP membership show as pre-owned, so just open them, no purchase needed. |  |
 | [IAP Grant Engine](#iap-grant-engine) | Helper that makes the game approve every purchase on your own device, including subscriptions like VIP membership, so bought items land in your account without paying anything. |  |
 | [IAP Grant Trigger](#iap-grant-trigger) | Wakes up that helper every time you open the game, so free purchases and subscriptions keep working. |  |
+
+</details>
+
+<details>
+<summary>📦 Subway Surfers&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 3.69.1 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Ad Removal & Free Rewards](#ad-removal-free-rewards) | Removes all ads. "Watch a video" rewards (coins, revives, bonuses) are granted instantly, without watching anything. |  |
+| [IAP Grant Engine](#iap-grant-engine) | Approves every in-app purchase for free — items are added to your account instantly. |  |
+| [IAP Grant Trigger](#iap-grant-trigger) | Starts the free-purchase helper every time you open the game. |  |
+| [No Payment Popup](#no-payment-popup) | Buy coins or items in the shop instantly — no Google Play popup, no payment, rewards arrive right away. |  |
 
 </details>
 

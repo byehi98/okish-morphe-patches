@@ -9,21 +9,26 @@ import com.android.tools.smali.dexlib2.AccessFlags
  * com.pikpok.AndroidStore.PurchaseUIThread(String, boolean)V — private.
  *
  * Single entry point for every store tap (Purchase(String,Z) → AndroidStore$8.run
- * → -$$Nest$mPurchaseUIThread → here). Builds BillingFlowParams from SkuDetails
- * and calls BillingClient.launchBillingFlow.
+ * → -$$Nest$mPurchaseUIThread → here). Builds BillingFlowParams from ProductDetails
+ * (Play Billing 7 — was SkuDetails pre-1.87.1) and calls BillingClient.launchBillingFlow.
  *
  * Confirmed smali: classes7/com/pikpok/AndroidStore.smali:1018 (.registers 5).
  * We replace the whole body with a fabricated purchase-success call.
  *
  * Filters are in exact instruction order (verified against smali):
  *   "No billing client" → "Iap type not supported"
- *   → "Null sku details for product id" → BillingFlowParams$Builder.setSkuDetails
+ *   → "Null sku details for product id"
+ *   → BillingFlowParams$ProductDetailsParams$Builder.setProductDetails
  *   → BillingClient.launchBillingFlow
+ *
+ * 1.87.1 (Play Billing 6→7 migration) dropped BillingFlowParams$Builder.setSkuDetails
+ * in favour of BillingFlowParams$ProductDetailsParams$Builder.setProductDetails;
+ * the string literals either side of it are unchanged, so only filter 4 moved.
  *
  * NOTE: these are the Into the Dead 2 strings. Do NOT use ITD1's
  * "Billing client not ready" / ReQuerySingle / LaunchBillingflow — they do
  * not exist in this title (gating here is via iapSupported/subsSupported
- * fields + SkuDetails map lookup).
+ * fields + ProductDetails map lookup).
  */
 object PurchaseUIThreadFingerprint : Fingerprint(
     definingClass = "Lcom/pikpok/AndroidStore;",
@@ -35,7 +40,7 @@ object PurchaseUIThreadFingerprint : Fingerprint(
         string("No billing client"),
         string("Iap type not supported"),
         string("Null sku details for product id"),
-        methodCall(definingClass = "Lcom/android/billingclient/api/BillingFlowParams\$Builder;", name = "setSkuDetails"),
+        methodCall(definingClass = "Lcom/android/billingclient/api/BillingFlowParams\$ProductDetailsParams\$Builder;", name = "setProductDetails"),
         methodCall(definingClass = "Lcom/android/billingclient/api/BillingClient;", name = "launchBillingFlow"),
     )
 )
