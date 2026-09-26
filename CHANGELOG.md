@@ -1,3 +1,9 @@
+## [1.31.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.31.0...v1.31.1-dev.1) (2026-09-26)
+
+### 🚀 Updated App Support
+
+* **subwaysurfers:** update patch for app version 3.69.2 ([8c51794](https://github.com/byehi98/okish-morphe-patches/commit/8c517947fb7318e06e034d70e45a757e8f7c8711))
+
 ## [1.31.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.30.0...v1.31.0) (2026-09-25)
 
 ### ✨ New Features
