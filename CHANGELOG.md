@@ -1,3 +1,9 @@
+## [1.33.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.33.1-dev.1...v1.33.1-dev.2) (2026-09-27)
+
+### 🚀 Updated App Support
+
+* **adda247:** update app target version to 12.7.2 ([54d1076](https://github.com/byehi98/okish-morphe-patches/commit/54d1076f65b6ae83a2aa2b03ce6c5292936fdb91))
+
 ## [1.33.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.33.0...v1.33.1-dev.1) (2026-09-27)
 
 ### 🚀 Updated App Support
