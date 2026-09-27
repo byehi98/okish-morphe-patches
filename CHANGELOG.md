@@ -1,3 +1,9 @@
+## [1.32.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.31.1...v1.32.0-dev.1) (2026-09-26)
+
+### ✨ New Features
+
+* **trafficracer:** add iap bypass patch ([df8a017](https://github.com/byehi98/okish-morphe-patches/commit/df8a017d5f0eb2a8a2b02e33281244f29bb9b6c3))
+
 ## [1.31.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.31.0...v1.31.1) (2026-09-26)
 
 ### 🚀 Updated App Support
