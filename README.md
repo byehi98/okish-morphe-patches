@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.33.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.33.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;72 patches total
+> **[v1.34.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.34.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;76 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -526,7 +526,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 TrueCloud&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<summary>📦 TrueCloud&nbsp;&nbsp;•&nbsp;&nbsp;5 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -536,7 +536,11 @@ Direct URL:
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [TrueCloud Ad Removal](#truecloud-ad-removal) | Consolidated patch to remove all ads, boot pages, cloud popups, and the help center robot. |  |
+| [TrueCloud Ads](#truecloud-ads) | Removes all ads: ad service, house-ad network, ad rows, polling, and banner/popup surfaces; disables cloud boot pages, cloud prompts, and the help-center robot. |  |
+| [TrueCloud Protection](#truecloud-protection) | Bypasses anti-emulator self-kill and disables analytics, telemetry, device-ID, and crash-reporting SDKs. |  |
+| [TrueCloud UX](#truecloud-ux) | Hides the in-app rating dialog and rate-us tip banner. |  |
+| [TrueCloud Update](#truecloud-update) | Blocks all app update and force-update dialogs and their version checks. |  |
+| [TrueCloud VIP](#truecloud-vip) | Unlocks cloud/WeChat-call entitlements, extends alarm replay duration and message window, and disables 4G trial countdown gates. - Doesn't unlock Cloud Server Side Storage. |  |
 
 </details>
 
