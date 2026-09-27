@@ -1,3 +1,9 @@
+## [1.34.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.33.1...v1.34.0-dev.1) (2026-09-27)
+
+### ✨ New Features
+
+* **truecloud:** restructure patches and add new categories ([54d2a21](https://github.com/byehi98/okish-morphe-patches/commit/54d2a212ca9bf6d9abfaf37a6999e2680ab579dd))
+
 ## [1.33.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.33.0...v1.33.1) (2026-09-27)
 
 ### 🚀 Updated App Support
