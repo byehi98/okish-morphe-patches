@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.34.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.34.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;76 patches total
+> **[v1.35.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.35.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;78 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -323,6 +323,22 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
+
+</details>
+
+<details>
+<summary>📦 Lumina Walls&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.0.2.6 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Lumina PairIP License Bypass](#lumina-pairip-license-bypass) | Disables the PairIP license check (Play licensing service validation + signed-response verification + paywall/error dialog + forced System.exit). Required for patched APKs — the original check fails on any non-Play signature and force-closes the app. |  |
+| [Lumina Premium](#lumina-premium) | Unlocks all premium wallpapers and categories. |  |
 
 </details>
 

@@ -1,3 +1,9 @@
+## [1.35.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.34.0...v1.35.0-dev.1) (2026-09-28)
+
+### ✨ New Features
+
+* **lumina:** add wallpapers license and premium patches ([ad1bb27](https://github.com/byehi98/okish-morphe-patches/commit/ad1bb2756a3a095d9736b141a851c898a657bd7b))
+
 ## [1.34.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.33.1...v1.34.0) (2026-09-27)
 
 ### ✨ New Features
