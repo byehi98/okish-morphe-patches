@@ -1,3 +1,9 @@
+## [1.35.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.0-dev.1...v1.35.0-dev.2) (2026-09-28)
+
+### ✨ New Features
+
+* **docscanner:** add premium unlock patch ([502c977](https://github.com/byehi98/okish-morphe-patches/commit/502c9777f2a7d357247aaefa05f8219c2e4aebf2))
+
 ## [1.35.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.34.0...v1.35.0-dev.1) (2026-09-28)
 
 ### ✨ New Features
