@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.35.1-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.35.1-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;79 patches total
+> **[v1.35.1-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.35.1-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;79 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -142,12 +142,12 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.4.58 |
+| 1.5.6 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Earn to Die 2 Free IAP](#earn-to-die-2-free-iap) | Intercepts all in-app purchases and reports instant success to the game engine, unlocking paid content (cash doubler) for free. |  |
+| [Earn to Die 2 Free IAP](#earn-to-die-2-free-iap) | Intercepts all in-app purchases and calls the native on_purchase(String[], String) grant directly, unlocking paid content (cash doubler) for free without Play Billing. |  |
 | [Earn to Die 2 No Ads + Instant Rewards](#earn-to-die-2-no-ads-instant-rewards) | Removes interstitial and rewarded ads, and grants rewarded-video rewards instantly by firing the native callbacks. |  |
 | [Earn to Die 2 Remove Google Play Check](#earn-to-die-2-remove-google-play-check) | Bypasses the native Google Play distribution checks (installer package + signing signature) so the app runs when sideloaded. |  |
 

@@ -1,3 +1,9 @@
+## [1.35.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.1-dev.3...v1.35.1-dev.4) (2026-09-29)
+
+### 🚀 Updated App Support
+
+* **earntodie2:** update patches for v1.5.6 compatibility ([9e2a773](https://github.com/byehi98/okish-morphe-patches/commit/9e2a77331a791d4c180611a3738411ed9361a5cc))
+
 ## [1.35.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.1-dev.2...v1.35.1-dev.3) (2026-09-29)
 
 ### 🚀 Updated App Support
