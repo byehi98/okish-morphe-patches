@@ -1,3 +1,27 @@
+## [1.35.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.1-dev.3...v1.35.1-dev.4) (2026-09-29)
+
+### 🚀 Updated App Support
+
+* **earntodie2:** update patches for v1.5.6 compatibility ([9e2a773](https://github.com/byehi98/okish-morphe-patches/commit/9e2a77331a791d4c180611a3738411ed9361a5cc))
+
+## [1.35.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.1-dev.2...v1.35.1-dev.3) (2026-09-29)
+
+### 🚀 Updated App Support
+
+* **plagueinc:** bump target version to 1.26.1 ([494b34e](https://github.com/byehi98/okish-morphe-patches/commit/494b34e2f39e997869fc551f0497704ea78ac2a9))
+
+## [1.35.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.1-dev.1...v1.35.1-dev.2) (2026-09-29)
+
+### 🚀 Updated App Support
+
+* **onlyone:** update target app version to 1.3044 ([a403bf4](https://github.com/byehi98/okish-morphe-patches/commit/a403bf4cbead8cde7df362db0e1ea150dd57578c))
+
+## [1.35.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.0...v1.35.1-dev.1) (2026-09-29)
+
+### 🚀 Updated App Support
+
+* **bighunter:** update license bypass, and updated app version for 3.1.2 ([7cf21d8](https://github.com/byehi98/okish-morphe-patches/commit/7cf21d8748e3fe6aa259646013bbef1fe019ce66))
+
 ## [1.35.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.34.0...v1.35.0) (2026-09-28)
 
 ### ✨ New Features
