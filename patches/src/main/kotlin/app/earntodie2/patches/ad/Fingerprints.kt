@@ -57,52 +57,7 @@ object MaxInterstitialShowFingerprint : Fingerprint(
     )
 )
 
-/**
- * IronSourceHelper.showRewardedVideo(String)V — IronSource rewarded entry point
- * (secondary ad network; same callback contract as MAXHelper).
- *
- * Confirmed smali (classes5/com/notdoppler/advertising/IronSourceHelper.smali:119):
- *   .method public static showRewardedVideo(Ljava/lang/String;)V
- *   .registers 2
- *   ...isEmpty() → IronSource.showRewardedVideo(...)
- */
-object IronSourceRewardedVideoShowFingerprint : Fingerprint(
-    definingClass = "Lcom/notdoppler/advertising/IronSourceHelper;",
-    name = "showRewardedVideo",
-    returnType = "V",
-    parameters = listOf("Ljava/lang/String;"),
-    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
-    filters = listOf(
-        methodCall(definingClass = "Ljava/lang/String;", name = "isEmpty"),
-        methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "showRewardedVideo"
-        )
-    )
-)
-
-/**
- * IronSourceHelper.showInterstitial(String)Z — IronSource interstitial entry point.
- *
- * Confirmed smali (classes5/.../IronSourceHelper.smali:79):
- *   .method public static showInterstitial(Ljava/lang/String;)Z
- *   .registers 2
- *   ...IronSource.isInterstitialReady() → showInterstitial(...)
- */
-object IronSourceInterstitialShowFingerprint : Fingerprint(
-    definingClass = "Lcom/notdoppler/advertising/IronSourceHelper;",
-    name = "showInterstitial",
-    returnType = "Z",
-    parameters = listOf("Ljava/lang/String;"),
-    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "isInterstitialReady"
-        ),
-        methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "showInterstitial"
-        )
-    )
-)
+// Note: IronSource fingerprints removed for 1.5.6 — Not Doppler gutted
+// IronSourceHelper into an orphaned no-op stub (no IronSource calls remain
+// in its smali, and no game code references it), so MAXHelper is the only
+// live ad network.

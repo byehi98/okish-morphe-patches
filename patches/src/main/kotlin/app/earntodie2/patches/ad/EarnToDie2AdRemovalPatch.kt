@@ -37,21 +37,8 @@ val earnToDie2AdRemovalPatch = bytecodePatch(
             return v0
         """.trimIndent())
 
-        // --- IronSourceHelper (secondary network, same contract) ---
-
-        IronSourceRewardedVideoShowFingerprint.method.addInstructions(0, """
-            invoke-static {}, Lcom/notdoppler/advertising/IronSourceHelper;->on_rewarded_video_ad_opened()V
-            invoke-static {}, Lcom/notdoppler/advertising/IronSourceHelper;->on_rewarded_video_ad_rewarded()V
-            invoke-static {}, Lcom/notdoppler/advertising/IronSourceHelper;->on_rewarded_video_ad_closed()V
-            return-void
-        """.trimIndent())
-
-        IronSourceInterstitialShowFingerprint.method.addInstructions(0, """
-            invoke-static {}, Lcom/notdoppler/advertising/IronSourceHelper;->on_interstitial_ad_opened()V
-            invoke-static {}, Lcom/notdoppler/advertising/IronSourceHelper;->on_interstitial_ad_show_succeeded()V
-            invoke-static {}, Lcom/notdoppler/advertising/IronSourceHelper;->on_interstitial_ad_closed()V
-            const/4 v0, 0x1
-            return v0
-        """.trimIndent())
+        // IronSourceHelper injections removed for 1.5.6: the helper is an
+        // orphaned no-op stub (IronSource was dropped from the build), so
+        // MAXHelper above is the only live ad network.
     }
 }
