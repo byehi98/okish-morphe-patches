@@ -1,3 +1,9 @@
+## [1.35.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.0...v1.35.1-dev.1) (2026-09-29)
+
+### 🚀 Updated App Support
+
+* **bighunter:** update license bypass, and updated app version for 3.1.2 ([7cf21d8](https://github.com/byehi98/okish-morphe-patches/commit/7cf21d8748e3fe6aa259646013bbef1fe019ce66))
+
 ## [1.35.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.34.0...v1.35.0) (2026-09-28)
 
 ### ✨ New Features
