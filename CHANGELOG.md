@@ -1,3 +1,9 @@
+## [1.36.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.1...v1.36.0-dev.1) (2026-09-30)
+
+### ✨ New Features
+
+* **deadtrigger:** add free store patch ([8d5fbf3](https://github.com/byehi98/okish-morphe-patches/commit/8d5fbf36d6e6310472bca935ac3d27974d19d83c))
+
 ## [1.35.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.0...v1.35.1) (2026-09-29)
 
 ### 🚀 Updated App Support
