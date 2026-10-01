@@ -31,7 +31,7 @@ private const val IAP_STORE = "Lcom/fingersoft/game/InAppPurchaseStore;"
 @Suppress("unused")
 val hillClimbFreeStorePatch = bytecodePatch(
     name = "Hill Climb Racing Free Store",
-    description = "Every store item is granted instantly and free: coins, gems, paints, ad-skips, ad-free and bundles, without launching Google Play billing.",
+    description = "Everything in the store is free — coins, gems, paints and bundles are added instantly with no Google Play payment.",
     default = true
 ) {
     compatibleWith(COMPATIBILITY_HILLCLIMB)
