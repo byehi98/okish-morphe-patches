@@ -1,3 +1,9 @@
+## [1.36.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.1-dev.1...v1.36.1-dev.2) (2026-10-01)
+
+### 🐛 Bug Fixes
+
+* **crossyroad:** extend free store native patch to all ABIs ([30dc81f](https://github.com/byehi98/okish-morphe-patches/commit/30dc81f6b5b1d82bd8263a2fd5e83e5913f3c915))
+
 ## [1.36.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.0...v1.36.1-dev.1) (2026-10-01)
 
 ### 🚀 Updated App Support
