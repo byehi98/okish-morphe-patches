@@ -39,7 +39,7 @@ private const val MAIN_ACTIVITY = "Lcom/fingersoft/game/MainActivity;"
 @Suppress("unused")
 val hillClimbRewardedVideoPatch = bytecodePatch(
     name = "Hill Climb Racing Instant Rewarded Video Rewards",
-    description = "Rewarded video ads grant their reward instantly without playing the ad: the native engine receives onVideoStartedSuccess + onVideoCompletedSuccess on the GL thread, exactly as if the video had been watched and completed.",
+    description = "Rewarded ads pay out instantly — no video plays; the game gives you the reward as if you had watched the whole ad.",
     default = true
 ) {
     compatibleWith(COMPATIBILITY_HILLCLIMB)

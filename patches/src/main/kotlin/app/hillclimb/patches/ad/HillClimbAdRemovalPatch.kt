@@ -55,7 +55,7 @@ import app.hillclimb.patches.shared.Constants.COMPATIBILITY_HILLCLIMB
 @Suppress("unused")
 val hillClimbAdRemovalPatch = bytecodePatch(
     name = "Hill Climb Racing Ad Removal",
-    description = "Completely removes ads: banners and interstitials can never be displayed (CFirebaseAds.showBanners/showInterstitial become no-ops) and ad-free is granted once per app start — loadStore() seeds mAdFree = 1, the native engine's poll grants it and the store's own reset (inappPurchasesProcessed) zeroes the field, so no repeated purchase popups.",
+    description = "Removes all ads — banner and pop-up ads never show, and the game treats you as ad-free from the start without any repeat purchase pop-ups.",
     default = true
 ) {
     compatibleWith(COMPATIBILITY_HILLCLIMB)
