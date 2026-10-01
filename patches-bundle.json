@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-09-30T11:38:56",
-  "description": "## [1.36.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.1...v1.36.0) (2026-09-30)\n\n### ✨ New Features\n\n* **deadtrigger:** add free store patch ([8d5fbf3](https://github.com/byehi98/okish-morphe-patches/commit/8d5fbf36d6e6310472bca935ac3d27974d19d83c))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.36.0/patches-1.36.0.mpp",
+  "created_at": "2026-10-01T02:30:42",
+  "description": "## [1.36.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.0...v1.36.1-dev.1) (2026-10-01)\n\n### 🚀 Updated App Support\n\n* **hillclimb:** update app compatibility and patch descriptions ([9092113](https://github.com/byehi98/okish-morphe-patches/commit/9092113fb27e18a14d2c207ee225c2734d26d582))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.36.1-dev.1/patches-1.36.1-dev.1.mpp",
   "signature_download_url": "",
-  "version": "1.36.0"
+  "version": "1.36.1-dev.1"
 }

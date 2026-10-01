@@ -1,3 +1,9 @@
+## [1.36.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.0...v1.36.1-dev.1) (2026-10-01)
+
+### 🚀 Updated App Support
+
+* **hillclimb:** update app compatibility and patch descriptions ([9092113](https://github.com/byehi98/okish-morphe-patches/commit/9092113fb27e18a14d2c207ee225c2734d26d582))
+
 ## [1.36.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.35.1...v1.36.0) (2026-09-30)
 
 ### ✨ New Features
