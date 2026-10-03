@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.36.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.36.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;80 patches total
+> **[v1.37.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.37.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;83 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -67,6 +67,23 @@ Direct URL:
 |----------|----------------|-----------|
 | [Adda247 Ad Removal](#adda247-ad-removal) | Blocks all Google AdMob ads (banner, interstitial, rewarded, rewarded interstitial, native, app open and Ad Manager) by neutralizing the Flutter Google Mobile Ads plugin: no ad is ever requested and no ad can ever be shown. |  |
 | [Adda247 MoEngage In-App Blocker](#adda247-moengage-in-app-blocker) | Blocks the app's own MoEngage in-app promotions (the recurring "recommended for you" nudge with no close button, and full-screen standard in-app messages) by no-oping MoEngage's HTML render chokepoint, so no in-app WebView is ever built or attached. Separate from the Google AdMob block. |  |
+
+</details>
+
+<details>
+<summary>📦 Dead Target: Offline Games 3D&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 4.183.0 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [All items owned](#all-items-owned) | Every gun, skin, glove and drone shows as unlocked. Pick and equip anything you like. |  |
+| [Instant rewarded video](#instant-rewarded-video) | Reward buttons pay out instantly. Tap once and you get the reward, with no ad to watch. |  |
+| [Unlimited currency](#unlimited-currency) | Your cash, gold and diamonds always show the maximum. You never run short of money. |  |
 
 </details>
 
