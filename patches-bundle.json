@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-02T01:54:38",
-  "description": "## [1.36.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.1...v1.36.2) (2026-10-02)\n\n### 🚀 Updated App Support\n\n* **crossyroad:** update target app version ([620c17a](https://github.com/byehi98/okish-morphe-patches/commit/620c17a5ffb8c23ef37a093f1801abb978f7958c))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.36.2/patches-1.36.2.mpp",
+  "created_at": "2026-10-03T14:00:58",
+  "description": "## [1.37.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.2...v1.37.0-dev.1) (2026-10-03)\n\n### ✨ New Features\n\n* **deadtarget:** add instant rewarded video, all items, unlimited currency ([9ccbc04](https://github.com/byehi98/okish-morphe-patches/commit/9ccbc04362c0f0afd6afcdd02b02a8087b1386e3))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.37.0-dev.1/patches-1.37.0-dev.1.mpp",
   "signature_download_url": "",
-  "version": "1.36.2"
+  "version": "1.37.0-dev.1"
 }

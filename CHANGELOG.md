@@ -1,3 +1,9 @@
+## [1.37.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.2...v1.37.0-dev.1) (2026-10-03)
+
+### ✨ New Features
+
+* **deadtarget:** add instant rewarded video, all items, unlimited currency ([9ccbc04](https://github.com/byehi98/okish-morphe-patches/commit/9ccbc04362c0f0afd6afcdd02b02a8087b1386e3))
+
 ## [1.36.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.1...v1.36.2) (2026-10-02)
 
 ### 🚀 Updated App Support
