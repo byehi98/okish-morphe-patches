@@ -1,3 +1,9 @@
+## [1.37.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.37.0-dev.1...v1.37.0-dev.2) (2026-10-03)
+
+### 🐛 Bug Fixes
+
+* **deadtarget:** enable gun usability in all items patch ([8fe968d](https://github.com/byehi98/okish-morphe-patches/commit/8fe968d8e790dd1c4a920762cd277265acc96ccd))
+
 ## [1.37.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.2...v1.37.0-dev.1) (2026-10-03)
 
 ### ✨ New Features
