@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.37.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.37.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;83 patches total
+> **[v1.37.0-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.37.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;83 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -81,7 +81,7 @@ Direct URL:
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [All items owned](#all-items-owned) | Every gun, skin, glove and drone shows as unlocked. Pick and equip anything you like. |  |
+| [All items owned](#all-items-owned) | Every gun, skin, glove and drone shows as unlocked, and you can equip any of them. Your save file is not changed. |  |
 | [Instant rewarded video](#instant-rewarded-video) | Reward buttons pay out instantly. Tap once and you get the reward, with no ad to watch. |  |
 | [Unlimited currency](#unlimited-currency) | Your cash, gold and diamonds always show the maximum. You never run short of money. |  |
 

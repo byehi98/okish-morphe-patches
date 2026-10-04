@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.37.0-dev.2",
+  "version": "1.37.0-dev.3",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -82,7 +82,7 @@
     },
     {
       "name": "All items owned",
-      "description": "Every gun, skin, glove and drone shows as unlocked. Pick and equip anything you like.",
+      "description": "Every gun, skin, glove and drone shows as unlocked, and you can equip any of them. Your save file is not changed.",
       "default": true,
       "dependencies": [],
       "compatiblePackages": [
