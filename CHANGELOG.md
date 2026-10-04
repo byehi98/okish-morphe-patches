@@ -1,3 +1,9 @@
+## [1.38.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.37.1...v1.38.0-dev.1) (2026-10-04)
+
+### ✨ New Features
+
+* **headbasketball:** add free store and unlimited points patches ([476c337](https://github.com/byehi98/okish-morphe-patches/commit/476c337211527c08b2d87213b4da2517ba957bf3))
+
 ## [1.37.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.37.0...v1.37.1) (2026-10-04)
 
 ### 🚀 Updated App Support
