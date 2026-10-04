@@ -1,3 +1,9 @@
+## [1.37.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.37.0...v1.37.1-dev.1) (2026-10-04)
+
+### 🚀 Updated App Support
+
+* **dantheman:** bump app target version to 1.14.05 ([efe9730](https://github.com/byehi98/okish-morphe-patches/commit/efe973027374a52cd6e1e63a324390c300a5904d))
+
 ## [1.37.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.2...v1.37.0) (2026-10-04)
 
 ### 🐛 Bug Fixes
