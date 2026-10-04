@@ -1,3 +1,21 @@
+## [1.37.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.37.0-dev.2...v1.37.0-dev.3) (2026-10-04)
+
+### 🐛 Bug Fixes
+
+* **deadtarget:** enable glove and drone equipping ([e657845](https://github.com/byehi98/okish-morphe-patches/commit/e6578453e3b567b77f48bfab5edd2dddabe0efc5))
+
+## [1.37.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.37.0-dev.1...v1.37.0-dev.2) (2026-10-03)
+
+### 🐛 Bug Fixes
+
+* **deadtarget:** enable gun usability in all items patch ([8fe968d](https://github.com/byehi98/okish-morphe-patches/commit/8fe968d8e790dd1c4a920762cd277265acc96ccd))
+
+## [1.37.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.2...v1.37.0-dev.1) (2026-10-03)
+
+### ✨ New Features
+
+* **deadtarget:** add instant rewarded video, all items, unlimited currency ([9ccbc04](https://github.com/byehi98/okish-morphe-patches/commit/9ccbc04362c0f0afd6afcdd02b02a8087b1386e3))
+
 ## [1.36.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.36.1...v1.36.2) (2026-10-02)
 
 ### 🚀 Updated App Support
