@@ -1,3 +1,9 @@
+## [1.38.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.38.0-dev.1...v1.38.0-dev.2) (2026-10-04)
+
+### ✨ New Features
+
+* **headbasketball:** add free ad rewards patch ([670245e](https://github.com/byehi98/okish-morphe-patches/commit/670245e173a77912f5260d32b221f1d50ca4b31a))
+
 ## [1.38.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.37.1...v1.38.0-dev.1) (2026-10-04)
 
 ### ✨ New Features
