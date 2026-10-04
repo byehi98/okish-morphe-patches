@@ -13,20 +13,24 @@ import kotlin.io.readBytes
  * Dead Target is Unity IL2CPP: the smali layer is SDK plumbing only, every ownership decision
  * lives in `libil2cpp.so` (85,048,024 bytes, arm64-v8a, plaintext `.text`). This patch forces
  * the game's own ownership *reads* to answer "owned", so **everything unlockable reads as
- * owned**: every gun-skin tile is ticked, every glove lights up in the shop and in the
- * in-battle selector, every drone tile renders as owned, and — because the five gun-usability
- * gates below were merged in after device testing — every gun can actually be **selected,
- * equipped and fired**.
+ * owned** — and, because the **equip** gates below were merged in after device testing, it can
+ * actually be equipped: every gun, gun skin, glove and drone shows as unlocked, can be selected,
+ * equipped and used.
  *
- * **Ten sites, ten same-length in-place edits** in one file: five ownership **display** sites
- * (guns tile, gloves, gun skins, drone tile, glove tile — merged in from
- * `analysis/dead-target/notes/cosmetic-unlock-targets.md`) plus five gun **usability** gates
- * merged in from `analysis/dead-target/notes/gun-usable-gate.md` after the shipped patch was
- * falsified on device. Same shape as ../unlock/UnlimitedCurrencyPatch.kt and
- * ../ads/InstantRewardedVideoPatch.kt.
+ * **Fourteen sites, fourteen same-length in-place edits** in one file, in three merged waves:
+ *  - five ownership **display** sites (guns tile, gloves, gun skins, drone tile, glove tile) from
+ *    `analysis/dead-target/notes/cosmetic-unlock-targets.md`;
+ *  - five gun **usability** gates (shop button, loadout repair, two record resolvers, raid-boss
+ *    lock) from `analysis/dead-target/notes/gun-usable-gate.md`, merged after device testing
+ *    falsified the display-only claim;
+ *  - four glove/drone **equip** gates (sites 11–14) from
+ *    `analysis/dead-target/notes/glove-drone-equip-gates.md`, merged after the *same*
+ *    display-only failure shape was reported on device for gloves and drones.
+ * Same shape as ../unlock/UnlimitedCurrencyPatch.kt and ../ads/InstantRewardedVideoPatch.kt.
  *
  * ============================================================================
- * THE TEN SITES — five DISPLAY sites (1–5) + five GUN-USABILITY gates (6–10)
+ * THE FOURTEEN SITES — five DISPLAY (1–5) + five GUN-USE gates (6–10)
+ *                    + four GLOVE/DRONE-EQUIP gates (11–14)
  * ============================================================================
  *  | # | What                | Predicate / site                        | VA        | File offset | Write | Kind          |
  *  |---|---------------------|-----------------------------------------|-----------|-------------|-------|---------------|
@@ -40,18 +44,23 @@ import kotlin.io.readBytes
  *  | 8 | GUNS record resolve | `GetOwnedGunConfigById(int)` branch     | 0x021D2DB0| 0x021CEDB0  | 4 B   | **branch**    |
  *  | 9 | GUNS battle resolve | `GetCurEquipedGunBattle(int)` branch    | 0x021D30E4| 0x021CF0E4  | 4 B   | **branch**    |
  *  |10 | RAID-BOSS item lock | `RaidbossSelectionView.CheckItemLocked` | 0x0206B9A8| 0x020679A8  | 8 B   | entry stub    |
+ *  |11 | GLOVES shop equip   | inline `listHandSkin.Contains` in `GlovesView.RefreshButtons` | 0x02BBFE3C| 0x02BBBE3C | 4 B | **mid-body** |
+ *  |12 | GLOVES battle equip | inline `listHandSkin.Contains` in `ControlGloveSkin.RefreshButtons` | 0x0240E064| 0x0240A064 | 4 B | **mid-body** |
+ *  |13 | DRONES shop equip  | inline `droneInventory.ContainsKey` in `DroneShopView.SetupButtonEquip` | 0x02BBCCE0| 0x02BB8CE0 | 4 B | **mid-body** |
+ *  |14 | DRONES button label | inline `droneInventory.ContainsKey` in `DroneShopView.SetupButtonUnlock` | 0x02BBCE20| 0x02BB8E20 | 4 B | **mid-body**, *label only* |
  *
  * ⚠️ Sites 1–3, 6 and 10 overwrite a **function entry**, so the stub is `mov w0,#1 ; ret`
  * (site 10 inverts it: `mov w0,#0 ; ret`, because it returns *locked*, not owned). Sites 4–5
- * are **mid-function inline edits**: they replace a single 4-byte `bl` instruction and must
- * NOT be given a `ret`. See SITES 4 AND 5 for the three substitute proofs that replace the
- * entry-prologue test there.
+ * and 11–14 are **mid-function inline edits**: they replace a single 4-byte `bl` instruction and
+ * must NOT be given a `ret`. See SITES 4 AND 5 for the three substitute proofs that replace the
+ * entry-prologue test there, and SITES 11 TO 14 for the same four-proof argument applied to the
+ * four equip gates.
  *
-* ⚠️ Sites 7–9 are **neither** of those: they are 4-byte **condition-code forcing** edits on
-* one conditional branch each, joining sites 4–5 as the places where a 36-byte verification
-* window carries a 4-byte write. See SITES 6 TO 10 for all three. Anchor length and write length
-* are deliberately independent axes here (36 B verified / 4 B written at sites 4, 5, 7, 8, 9), so
-* do not "normalise" one to the other.
+ * ⚠️ Sites 7–9 are **neither** of those: they are 4-byte **condition-code forcing** edits on
+ * one conditional branch each, joining sites 4–5 and 11–14 as the places where a 36-byte
+ * verification window carries a 4-byte write. See SITES 6 TO 10 and SITES 11 TO 14. Anchor
+ * length and write length are deliberately independent axes here (36 B verified / 4 B written at
+ * sites 4, 5, 7, 8, 9, 11, 12, 13, 14), so do not "normalise" one to the other.
  *
  * Original 36-byte anchors (verbatim from the shipped library; each occurs exactly once):
  *
@@ -95,9 +104,25 @@ import kotlin.io.readBytes
  *                          88 46 65 39 B5 56 46 F9 F3 03 01 2A 28 01 00 37
  *                          60 6A 01 F0
  *                  →           00 00 80 52 C0 03 5F D6              (8 B)
+ * 11 GlovesView     0x02BBBE3C F2 A6 40 94 C0 07 00 36 95 12 40 B9 02 00 00 14
+ *                          F5 03 1F 2A C0 02 40 F9 C0 D6 1C 94 20 16 00 B4
+ *                          08 D0 40 F9
+ *                  →           20 00 80 52                          (4 B)
+ * 12 ControlGlove…  0x0240A064 68 6E 5F 94 A0 07 00 36 95 12 40 B9 02 00 00 14
+ *                          F5 03 1F 2A C0 02 40 F9 36 9E 3B 94 E0 14 00 B4
+ *                          08 D0 40 F9
+ *                  →           20 00 80 52                          (4 B)
+ * 13 SetupBtnEquip  0x02BB8CE0 D0 25 2C 94 A8 02 40 F9 F5 03 00 2A E0 03 08
+ *                          AA 19 E3 1C 94 E0 03 00 B4 08 D0 40 F9 A8 03 00
+ *                          B4 60 46 40 F9
+ *                  →           20 00 80 52                          (4 B)
+ * 14 SetupBtnUnlock 0x02BB8E20 80 25 2C 94 68 52 40 F9 28 17 00 B4 A0 00 00 36
+ *                          F4 0F 01 F0 09 01 40 F9 94 26 42 F9 04 00 00 14
+ *                          14 10 01 D0
+ *                  →           20 00 80 52                          (4 B)
  *
  * Every write is **same-length in place** — 8-over-8 at sites 1–3, 6, 10, 4-over-4 at sites
- * 4–5 and 7–9 — which is what the patcher's `lastModified`-keyed change diff detects (see
+ * 4–5, 7–9 and 11–14 — which is what the patcher's `lastModified`-keyed change diff detects (see
  * DELIVERY). Only 8 or 4 bytes of each 36-byte window are written; the other 28 / 32 are
  * verified and left untouched, so file length never changes.
  *
@@ -152,6 +177,62 @@ import kotlin.io.readBytes
  * separately, by sites 6–10 below.** Those five gates were added to fix exactly that, and
  * everything this file previously said about guns being equippable now rests on them instead of
  * on site 1.
+ *
+ * ============================================================================
+ * ROOT CAUSE, ROUND TWO — THE SAME SHAPE RECURRED FOR GLOVES AND DRONES
+ * ============================================================================
+ * **The established rule, now stated once so it is never re-learned on hardware:**
+ *
+ * ```
+ *   A PATCHED OWNERSHIP PREDICATE PROVES DISPLAY, NEVER EQUIP.
+ * ```
+ *
+ * Guns failed this way on device, and the fix was sites 6–10. Then the **identical** failure
+ * shape was reported for **gloves** (show as owned, cannot be equipped) and for **drones** (same
+ * report), and the diagnosis was the identical one: the predicates this file already patched for
+ * those two categories drive the **tile icon** and nothing else.
+ *
+ *  - **Glove side.** Site 5 (`GloveItemCtrl.Refresh`, `0x02649228`) and site 2
+ *    (`DSystem.IsOwnGlove(string)`, `0x021C5314`) are the two already-shipped glove predicates.
+ *    Site 5's *only* consumer is `this._iconOwned.SetActive(owned)` at `0x0264D248`; site 2 is
+ *    reached from `GlovesView.RefreshButtons` at `0x02BC0024` only to decide whether to *force
+ *    hide* `Btn_Get` in one edge case. Neither ever touches `Btn_Use`.
+ *  - **Drone side.** Site 4 (`DroneItemCtrl.Refresh`, `0x02631630`) likewise feeds
+ *    `_iconOwned.SetActive(droneInventory.ContainsKey(DroneConfig.id))` and nothing else.
+ *
+ * The actual **Equip button** is gated by *separate, inlined* collection tests inside the two
+ * `RefreshButtons` methods and `DroneShopView.SetupButtonEquip`. In **all three** cases the
+ * not-owned branch jumps *past* the block that would show the button, so the button never
+ * appears at all — which is why the user sees "owned but I cannot press Equip" rather than
+ * "owned but the press does nothing". Those are sites **11, 12 and 13**.
+ *
+ * **What this fixes, per category:**
+ *  - **Gloves need TWO independent gates** — and both are mandatory. `GlovesView.RefreshButtons`
+ *    (site 11) is the **shop** entry point; `ControlGloveSkin.RefreshButtons` (site 12) is the
+ *    **in-battle** glove selector, a different class with its own copy of the same algorithm
+ *    (its `Btn_Use` lives at `+0x70`, not the shop's `+0x60`). Equipping from the battle screen
+ *    instead of the shop bypasses site 11 entirely, so site 11 alone leaves the player stuck.
+ *    This is the one place in the file where shipping half the fix would look complete and
+ *    behave as if nothing had changed.
+ *  - **Drones:** `SetupButtonEquip` (**site 13**) is **essential** — it is the sole gate on
+ *    `_btnEquip.gameObject.SetActive(owned)`, and the literal structural twin of gun gate G1
+ *    (site 6). `SetupButtonUnlock` (**site 14**) is **label text only**: it chooses the caption
+ *    on the *unlock* button and does not touch visibility or interactivity, so it is the one
+ *    droppable site in this file — removing it costs cosmetics and nothing else.
+ *
+ * **Why there is deliberately no patch on the commit path.** Both commits are
+ * **unconditional field writes with no ownership read whatsoever**:
+ *  - `GlovesView.BtnUse_OnClick` (`0x02BC030C`) and `ControlGloveSkin.BtnUse_OnClick`
+ *    (`0x0240E494`) are each exactly `str w8,[x9,#0x490]` — `UserData.curHandSkin = handID`;
+ *  - `DroneShopView.EquipClick` (`0x02BBD1F4`) tail-calls `DSystem.EquipedDrone(int)`
+ *    (`0x021D5E38`), which is the two-instruction raw write `ldr x8,[x0,#0x1A0]` /
+ *    `str w1,[x8,#0x118]` — `UserData.equippedDrone = id`.
+ *
+ * Nothing in either chain asks "do I own this?", so **once the button is visible and the tap
+ * reaches it, the equip lands.** That is the whole argument for sites 11–14 being sufficient and
+ * for there being nothing to patch on the commit path — the same asymmetry that made the gun
+ * commit chain (`EquipGun` / `SwitchItemsEquiped` / `EquipedItems`) need no site either. The
+ * gates are purely *reachability* gates.
  *
  * ============================================================================
  * SITE 1 — `DProject.DSystem.IsGunUnlock(int idGun)` (GUN TILE ICON — display only)
@@ -546,6 +627,216 @@ import kotlin.io.readBytes
  * mode is out of scope, this site can be dropped without affecting the other nine.
  *
  * ============================================================================
+ * SITES 11 TO 14 — GLOVE AND DRONE EQUIP GATES: FOUR MID-FUNCTION INLINE EDITS
+ * ============================================================================
+ * These are the glove/drone half of the gun finding, and mechanically they are the **same kind**
+ * of site as sites 4–5: a single 4-byte `bl` word replaced by the 4-byte `mov w0,#1`, with **no
+ * `ret`**, 36 bytes verified and 4 written. So the same four substitute proofs apply (the
+ * "word 0 is a genuine prologue" argument is inapplicable to all four, for the same reason), and
+ * they are given once here rather than repeated per site. Source:
+ * `analysis/dead-target/notes/glove-drone-equip-gates.md`.
+ *
+ *  1. **Word 0 decodes as a `BL` to the shared generic collection helper** — re-decoded from the
+ *     library bytes, not taken on trust:
+ *
+ *     | Site | file word | LE word | target | helper |
+ *     |---|---|---|---|---|
+ *     | 11 | `F2 A6 40 94` | `0x9460A6F2` | `0x03BE9A04` | `List<int>.Contains` |
+ *     | 12 | `68 6E 5F 94` | `0x945F6E68` | `0x03BE9A04` | `List<int>.Contains` |
+ *     | 13 | `D0 25 2C 94` | `0x942C25D0` | `0x036C6420` | `Dictionary<int,int>.ContainsKey` |
+ *     | 14 | `80 25 2C 94` | `0x942C2580` | `0x036C6420` | `Dictionary<int,int>.ContainsKey` |
+ *
+ *     `0x03BE9A04` is the *same* function site 5 replaces and that `DSystem.IsOwnGlove(int)`
+ *     tail-branches to (`0x021DB2C0: b 0x3be9a04`); `0x036C6420` is the *same* shared generic
+ *     sites 1, 3, 6, 7 and 8 all route through. Identical helper to the already-proven sites.
+ *  2. **The receiver is pinned by the collection load inside the anchor.** Sites 11/12 carry
+ *     `ldr x0,[x8,#0x488]` = `UserData+0x488` = `listHandSkin` (`List<int>`) at −0x18; sites
+ *     13/14 carry `ldr x0,[x8,#0xF0]` = `UserData+0xF0` = `droneInventory`
+ *     (`Dictionary<int,int>`) at −0x18. Both loads are reached from `ldr x8,[x0,#0x1A0]`,
+ *     i.e. `DSystem.userData`.
+ *  3. **The id argument is in `w1`**, as `Contains`/`ContainsKey` require — `ldr w1,[x20,#0x10]`
+ *     = `HandSkinRecord.handID` (sites 11/12) or `DroneConfig.idItem` (sites 13/14), 4 bytes
+ *     before the `bl` in every case.
+ *  4. **The result is consumed immediately**, which is what makes the write meaningful — see the
+ *     per-site disassembly below.
+ *
+ * ---- SITE 11 — GLOVES SHOP: `GlovesView.RefreshButtons(HandSkinRecord)` — `Btn_Use` ----
+ *  VA 0x02BBFE3C · file 0x02BBBE3C · write 4 B · anchor 36 B
+ *
+ * ```
+ *  02bbfe08: ldr  w8, [x20, #0x10]     ; HandSkinRecord.handID
+ *  02bbfe0c: cbz  w8, 0x2bbfe4c        ; handID == 0 -> "always owned" shortcut
+ *  02bbfe1c: ldr  x8, [x0, #0x1a0]     ;   userData
+ *  02bbfe24: ldr  x0, [x8, #0x488]     ;   UserData.listHandSkin
+ *  02bbfe34: ldr  w1, [x20, #0x10]     ;   handID
+ *  02bbfe3c: bl   0x3be9a04            ;   List<int>.Contains            <<<< SITE 11
+ *  02bbfe40: tbz  w0, #0x0, 0x2bbff38  ; NOT owned -> SKIP the whole Btn_Use block
+ *  02bbfe44: ldr  w21, [x20, #0x10]    ; ---- OWNED BLOCK ----
+ *  02bbfe64: ldr  x0, [x19, #0x60]     ;   this.Btn_Use        (@ +0x60)
+ *  02bbfe6c: ldr  w23, [x8, #0x490]    ;   UserData.curHandSkin
+ *  02bbfedc: subs wzr, w21, w23
+ *  02bbfee0: cset w1, ne               ;   interactable := handID != curHandSkin
+ *  02bbfee8: bl   0x4b44ca4            ;   Selectable.set_interactable(...)
+ *  02bbfeec: ldr  x0, [x19, #0x60]     ;   this.Btn_Use
+ *  02bbff08: bl   0x48f1c14            ;   Btn_Use.gameObject.SetActive(true)   <<< THE BUTTON
+ *  02bbff38: mov  w24, wzr             ; ---- NOT OWNED ---- (past the whole Btn_Use block)
+ *  ```
+ *
+ * **Proof the not-owned branch never shows the button:** the only `Btn_Use.gameObject.SetActive`
+ * in the method is `0x02BBFF08`, which lies strictly *inside* the owned block, while the
+ * not-owned target `0x02BBFF38` lies past it, and there is no `Btn_Use.SetActive(false)`
+ * anywhere on the not-owned path — the button is simply left as `PreRender` left it, i.e.
+ * hidden. Established by an exhaustive `bl` scan of the method range `0x02BBFCD0 … 0x02BC0120`:
+ * `set_interactable` (`0x4b44ca4`) is called exactly once and `GameObject.SetActive`
+ * (`0x48f1c14`) four times, of which only `0x02BBFF08` targets `+0x60`.
+ *
+ * `Btn_Use.SetActive(true)` is then the **last** thing that reads the forced value: `tbz` is
+ * never taken, execution falls into `ldr w21,[x20,#0x10]` at `0x02BBFE44`, and the shared tail
+ * at `0x02BBFF40` additionally runs with `w24 = 1` (owned) rather than `w23 = 1`, which flips
+ * `Btn_Del_Cheat` / `Btn_Get_Cheat` visibility. **Those two remain hidden anyway** — both are
+ * ANDed with the `DSystem+0x5DA` dev-flag byte — so this site cannot expose a cheat button.
+ *
+ * ---- SITE 12 — GLOVES IN BATTLE: `ControlGloveSkin.RefreshButtons(HandSkinRecord)` ----
+ *  VA 0x0240E064 · file 0x0240A064 · write 4 B · anchor 36 B
+ *
+ * **Byte-for-byte the same algorithm as site 11**, in a different class (the NGUI variant,
+ * TypeDefIndex 1292) with its own field offsets — `Btn_Use` at `+0x70` rather than `+0x60`, and
+ * the `set_interactable` call is virtual through slot `0x188` (`0x0240E10C blr x9`) rather than a
+ * direct `bl` to `0x4b44ca4`. Verified independently:
+ *
+ * ```
+ *  0240e064: bl   0x3be9a04            ;   List<int>.Contains             <<<< SITE 12
+ *  0240e068: tbz  w0, #0x0, 0x240e15c  ; NOT owned -> SKIP the whole Btn_Use block
+ *  0240e094: ldr  w23, [x8, #0x490]    ;   curHandSkin
+ *  0240e104: cset w1, ne
+ *  0240e10c: blr  x9                  ;   UIButton.set_interactable(handID != curHandSkin)
+ *  0240e12c: bl   0x48f1c14            ;   Btn_Use.gameObject.SetActive(true)
+ *  0240e15c: mov  w24, wzr             ; ---- NOT OWNED, past the Btn_Use block ----
+ *  ```
+ *
+ * ⚠️ **Site 11 without site 12 is a half-fix that looks complete.** A player who equips gloves
+ * from the battle screen never runs `GlovesView.RefreshButtons` at all, so ship them together.
+ *
+ * ---- SITE 13 — DRONES SHOP: `DroneShopView.SetupButtonEquip(DroneConfig)` — ESSENTIAL ----
+ *  VA 0x02BBCCE0 · file 0x02BB8CE0 · write 4 B · anchor 36 B
+ *
+ * ```
+ *  02bbccbc: ldr  x8, [x0, #0x1a0]     ;   userData
+ *  02bbccc8: ldr  x0, [x8, #0xf0]      ;   UserData.droneInventory
+ *  02bbccd8: ldr  w1, [x20, #0x10]     ;   DroneConfig.idItem
+ *  02bbcce0: bl   0x36c6420            ;   Dictionary<int,int>.ContainsKey <<<< SITE 13
+ *  02bbcce8: mov  w21, w0              ;   owned = w0        (NO BRANCH AT ALL)
+ *  02bbcd00: ldr  x0, [x19, #0x88]     ;   this._btnEquip     (@ +0x88)
+ *  02bbcd08: ldr  w22, [x8, #0x118]    ;   UserData.equippedDrone
+ *  02bbcd1c: and  w1, w21, #0x1        ;   owned
+ *  02bbcd24: bl   0x48f1c14            ;   _btnEquip.gameObject.SetActive(owned)  <<< THE BUTTON
+ *  02bbcd34: b.ne  0x2bbcd48           ;   _textBtnEquip := "Equip" / "Equipped"
+ *  ```
+ *
+ * **The cleanest of the four, and the closest analogue of gun gate G1 (site 6):** there is no
+ * `set_interactable` on this path at all — `_btnEquip.SetActive(owned)` *is* the entire gate, and
+ * the method is 0x124 bytes long with exactly two effects (that `SetActive` and the caption).
+ * Note the fall-through is even simpler than at sites 11/12: `w0` is moved straight into `w21`
+ * with no branch, so forcing `w0 = 1` cannot possibly reach a wrong arm.
+ *
+ * ---- SITE 14 — DRONES SHOP CAPTION: `DroneShopView.SetupButtonUnlock(DroneConfig)` — COSMETIC ----
+ *  VA 0x02BBCE20 · file 0x02BB8E20 · write 4 B · anchor 36 B
+ *
+ * ```
+ *  02bbce08: ldr  x0, [x8, #0xf0]      ;   droneInventory
+ *  02bbce18: ldr  w1, [x22, #0x10]     ;   idItem
+ *  02bbce20: bl   0x36c6420            ;   ContainsKey                    <<<< SITE 14
+ *  02bbce2c: tbz  w0, #0x0, 0x2bbce40  ; owned ? [0x4dbb000+0x448] : [0x4dbe000+0xe88]
+ *  02bbce5c: blr  x10                  ;   _textBtnTiketNormal.set_text(...)
+ *  02bbce78: blr  x9                   ;   _textPriceTiketNormal.set_text(...)
+ *  ```
+ *
+ * ⚠️ **THIS IS THE ONE DROPPABLE SITE IN THE FILE.** It changes `DLabel.set_text` on the *unlock*
+ * button's caption and on its price label and **nothing else** — not `_btnEquip`, not
+ * `_btnUnlock` visibility, not interactivity, not the equip path. It is included so the button
+ * reads as already-owned rather than quoting a price for something the player is about to be
+ * told they own. Deleting this single [ItemAnchor] entry from [ARM64_ITEM_ANCHORS] reverts it
+ * with no effect on sites 11, 12, 13 or on any other patch.
+ *
+ * **Consumer honesty for all four:** sites 11–14 write **no state at all** —
+ * `UserData.listHandSkin` and `UserData.droneInventory` are never touched — so they are the same
+ * class of change as the rest of this file, and they inherit the same "read patch, nothing
+ * persists" limit (see HONEST SCOPE). With site 14 in place an un-owned drone shows a working
+ * Equip button *and* an owned-style caption; with site 14 removed it shows a working Equip button
+ * next to a price caption, which is cosmetically odd but functionally identical.
+ *
+ * ============================================================================
+ * THE LEVEL-GATE QUESTION — THERE IS NO LEVEL GATE (rejected on evidence)
+ * ============================================================================
+ * *"Can we bypass the level requirement, or something?"* — asked directly. **There is nothing to
+ * bypass, and this is a finding, not an omission.** Two independent lines of evidence:
+ *
+ *  1. **Neither config type has any level field.** `HandSkinRecord` (TypeDefIndex 814,
+ *     dump.cs:27051) has 28 fields and not one of them is a level: the nearest numerics are
+ *     cosmetic or a different kind of gate — `numOfPart` (`0x40`, part count), `inChallengeMode`
+ *     (`0x42`, mode flag), `clipSizeExt` (`0x44`, magazine-size bonus).
+ *     `DroneConfig` (TypeDefIndex 794, dump.cs:26175) has 18 fields and likewise none: only
+ *     `price` / `priceType` / `priceSale` / `priceUnlock` and `normalPart` / `specialPart`.
+ *  2. **No such field name exists anywhere in `dump.cs` for these types.** A case-insensitive
+ *     sweep of the whole 34.5 MB dump for `unlockLevel|minLevel|requireLevel|levelLimit|
+ *     openLevel|levelUnlock|needLevel|maxLevel` returns no hit on any glove or drone type. The
+ *     only `levelUnlock` in the game belongs to `GunInfos` (`0x16`, with
+ *     `GetLevelUnlockByID`) — i.e. **gun skins**, a different item family; the `maxLevel` hits
+ *     belong to `ConfigCardRecord` / `ConfigCardRarityRecord` / `SpecialCondition`.
+ *
+ * ⇒ **The only thing standing between an un-owned glove or drone and the Equip button is the
+ * collection-membership test, and sites 11–14 are those tests.** There is no level comparison
+ * on the glove or drone path, so no level override could help even in principle.
+ *
+ * **And a global `DSystem.get_level()` override — the tempting "bigger hammer" — was measured
+ * and rejected, not assumed.** `get_level()` (RVA `0x0219E830`) is a three-instruction getter
+ * (`ldr x8,[x0,#0x1A0]` / `ldr w0,[x8,#0x84]` / `ret`) for `UserData.level`, but it is the
+ * game's single account-level accessor: an exhaustive direct-branch scan finds **98 branch sites**
+ * (96 `BL` + 2 `B`) feeding XP curves, mission and rank gating, progression rewards, tutorial and
+ * mode unlocks, analytics, and mode-specific loadout logic. Forcing it high would desynchronise
+ * level from XP and could trip level-up side effects, for **zero gain** — skins are gated by the
+ * `GunInfos.levelUnlock` *config* field, not by `get_level()`. **Rejected: blast radius is two
+ * orders of magnitude larger than four 4-byte edits, and it buys nothing.** Do not retry this as
+ * "future-proofing".
+ *
+ * ============================================================================
+ * ⚠️ DISASSEMBLY TRAP — `cset ne` mis-renders as `csinc …, eq`. NO FIFTH GATE.
+ * ============================================================================
+ * **Recorded because getting it wrong manufactures a phantom site.** `llvm-objdump -M no-aliases`
+ * renders the word `0xE1079F1A` as
+ *
+ * ```
+ *   2bbfee0: csinc  w1, wzr, wzr, eq      ;   reads as w1 = (handID == curHandSkin)
+ * ```
+ *
+ * Taken at face value that **inverts the condition** and would imply `Btn_Use` is interactable
+ * only when the glove is *already* equipped — i.e. a plausible-looking **fifth, separate gate**
+ * needing a fifth patch site. **It is not real, and there is no fifth gate.** Bit-exact decode of
+ * the CSEL/CSINC family (`sf 00 11010100 Rm cond op2 Rn Rd`; `cond` = bits 15:12) gives
+ * `cond = 0b0001 = NE`. Confirmed by round trip through the assembler:
+ *
+ * ```
+ *   cset w1, ne  => [0xe1,0x07,0x9f,0x1a]  == the bytes on disk (E1 07 9F 1A)   ✓
+ *   cset w1, eq  => [0xe1,0x17,0x9f,0x1a]  == NOT what is there
+ * ```
+ *
+ * Cross-checked against the library's own three uses of the word, which is what settles the
+ * direction rather than the encoding table:
+ *
+ *  | VA | file bytes | truth | meaning |
+ *  |---|---|---|---|
+ *  | `0x0264D1D4` | `E1 17 9F 1A` | `cset w1, eq` | `GloveItemCtrl.Refresh`: `_selected.SetActive(_index == selectedIndex)` — correct, the highlight shows on the selected tile |
+ *  | `0x02BBFEE0` | `E1 07 9F 1A` | `cset w1, **ne**` | site 11: `Btn_Use.set_interactable(handID != curHandSkin)` |
+ *  | `0x0240E104` | `E1 07 9F 1A` | `cset w1, **ne**` | site 12: `Btn_Use.set_interactable(handID != curHandSkin)` |
+ *
+ * So the correct reading is the ordinary "you may press Use unless you already have it on", and
+ * **sites 11 and 12 are complete on their own.** Anyone re-deriving this must decode the
+ * condition by hand or run objdump **without** `-M no-aliases`, and must not "discover" a fifth
+ * gate here. (`llvm-mc`'s *alias text* is itself unreliable — it prints `ne` for the `eq`
+ * spelling — but its **encodings** agree with objdump's, which is why the round trip above is
+ * trustworthy and its prose is not.)
+ *
+ * ============================================================================
  * REPLACEMENT STUBS
  * ============================================================================
  * Entry stubs (sites 1–3, 6) — `mov w0,#1 ; ret` = `20 00 80 52 | C0 03 5F D6` (8 bytes):
@@ -561,8 +852,15 @@ import kotlin.io.readBytes
  *    site 10 has), but it is why this stub's encoding was cross-checked with `llvm-mc` instead
  *    of being read off the library.
  *
-* Inline stubs (sites 4–5) — `mov w0,#1` = `20 00 80 52` (4 bytes) only. **No `ret`**: the
- * enclosing `Refresh` must keep running so it loads `_iconOwned` and calls `SetActive`.
+ * Inline stubs (sites 4–5, 11–14) — `mov w0,#1` = `20 00 80 52` (4 bytes) only. **No `ret`**: the
+ * enclosing `Refresh` / `RefreshButtons` / `SetupButton*` must keep running — at sites 4–5 so it
+ * can load `_iconOwned` and call `SetActive`, and at sites 11–14 so it can reach the
+ * `Btn_Use` / `_btnEquip` `SetActive(true)` that the whole patch exists to make reachable.
+ *
+ * All four new sites reuse the *existing* [BOOL_TRUE_W] constant rather than getting a
+ * purpose-named alias: the encoding is byte-identical, and a second constant with the same value
+ * would be a maintenance trap (two names for one encoding that could drift apart on the next
+ * edit). Sites 11–14 add **no new stub constant** at all.
  *
  * Branch-forcing edits (sites 7–9) — 4 bytes each, again **no `ret`** (same reasoning: these
  * are mid-function):
@@ -575,7 +873,7 @@ import kotlin.io.readBytes
  *  | byte string | meaning | occurrences | used by |
  *  |---|---|---|---|
  *  | `20008052C0035FD6` | `mov w0,#1 ; ret` | **1,735** | sites 1–3, 6 |
- *  | `20008052`         | `mov w0,#1`       | **9,104** | sites 4–5 |
+ *  | `20008052`         | `mov w0,#1`       | **9,104** | sites 4–5, 11–14 |
  *  | `C0035FD6`         | `ret` alone       | 196,005 | — |
  *  | `00008052C0035FD6` | `mov w0,#0 ; ret` | 0       | site 10 |
  *  | `0A000014`         | `b #+0x28`        | 4,297   | site 7 |
@@ -613,11 +911,11 @@ import kotlin.io.readBytes
  * touches the stack**, so the discarded `stp x21,x20,[sp,#-32]!` / `stp x20,x19,[sp,#16]`
  * frame is simply never executed — no unbalanced sp, no callee-saved register clobber, no
  * leak. The `x1`/`w1` argument is ignored, which is exactly the point of a constant `true`
- * (site 10 a constant `false`). Sites 4–5 and 7–9 discard no prologue at all; see SITES 4 AND 5
- * and SITES 6 TO 10.
+ * (site 10 a constant `false`). Sites 4–5, 7–9 and 11–14 discard no prologue at all; see SITES 4
+ * AND 5, SITES 6 TO 10 and SITES 11 TO 14.
  *
  * ============================================================================
- * ANCHOR UNIQUENESS — all ten anchors, 36 bytes, exactly one hit each
+ * ANCHOR UNIQUENESS — all fourteen anchors, 36 bytes, exactly one hit each
  * ============================================================================
  * Occurrence counts for progressively longer prefixes of each anchor, counted over the whole
  * 85 MB library. "min unique" is the shortest prefix that occurs exactly once.
@@ -634,17 +932,27 @@ import kotlin.io.readBytes
  *  | 8 GetOwnedGun  | **1** | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 8 B |
  *  | 9 GetCurEquiBd | **1** | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 8 B |
  *  |10 CheckItemLock| 24,734 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 12 B |
+ *  |11 GlovesView    | **1** | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 8 B |
+ *  |12 ControlGlove… | **1** | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 8 B |
+ *  |13 SetupBtnEquip | **1** | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 8 B |
+ *  |14 SetupBtnUnlock| **1** | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 8 B |
  *
- * Every 36-byte window is exactly **1 occurrence**, and in all ten cases that single hit is
+ * Every 36-byte window is exactly **1 occurrence**, and in all fourteen cases that single hit is
  * the documented file offset (i.e. `hit == VA − 0x4000`) — re-verified against the shipped
- * library for all ten rows above, in this pass, with three independent counting methods
- * (Python `find`-loop, `bytes.count`, and `xxd -p` piped to GNU `grep -o`) which agree exactly.
+ * library for all fourteen rows above, in this pass, independently of the hunt note: whole-file
+ * non-overlapping `find` scans at every prefix length 8…36, plus `bytes.count` cross-checks on the
+ * ambiguous prefixes. The four new rows are **min-unique already at 8 bytes**, same as sites 4,
+ * 5, 7, 8 and 9 — but 36 bytes is still searched and verified, because a mid-function window
+ * starting at a non-entry proves nothing about *which* instruction it is until the surrounding
+ * collection load, id load and consumer are included. The minimum-unique figure is a floor, not
+ * a licence to shorten.
  *
  *  - Site 1 needs 16 bytes; 36 is used anyway, matching the sibling patches and giving margin
  *    against a future build shifting surrounding code.
  *  - Site 2 **must not** use a 16- or 20-byte anchor: both are ambiguous (2 hits — the other
  *    is `DSystem.GetSkinIndex(string,string)`). 24 bytes is the minimum; 36 is used.
- *  - Sites 4, 5, 7, 8 and 9 are unique even at 4 bytes (their instruction encodings each occur
+ *  - Sites 4, 5, 7, 8, 9, 11, 12, 13 and 14 are unique even at 4 bytes (their instruction
+ *    encodings each occur
  *    once in 85 MB), but that is irrelevant: **all 36 bytes are still searched and verified**,
  *    because these windows start at a non-entry point and a 4-byte match would prove nothing
  *    about *which* instruction it was. The 36-byte window pins the collection load, the id load
@@ -665,30 +973,52 @@ import kotlin.io.readBytes
  * really does make that prefix ambiguous the guard machinery below would reject it loudly rather
  * than write into the wrong place.
  *
- * Only the first 8 bytes (sites 1–3, 6, 10) or first 4 bytes (sites 4–5, 7–9) are ever written,
+ * Only the first 8 bytes (sites 1–3, 6, 10) or first 4 bytes (sites 4–5, 7–9, 11–14) are ever
+ * written,
  * and each
  * write is same-length, so the remaining 32 / 32 anchor bytes are pure verification. Every
  * write is additionally guarded by read-original-bytes-then-compare (see [applyItemAnchors]) and
  * by the "exactly one occurrence" check, so a new game build fails loudly with a
  * [PatchException] instead of writing into the wrong function.
  *
-* ============================================================================
-* NO OVERLAP WITH THE OTHER DEAD TARGET PATCHES
-* ============================================================================
-* **24 write windows** are live across the Dead Target patch set:
-*  - 5 × 12-byte currency getters — ../unlock/UnlimitedCurrencyPatch.kt: `0x218BD78`,
-*    `0x2192464`, `0x21925DC`, `0x2193234`, `0x2194A2C`
-*  - 1 × 12-byte ads window — ../ads/InstantRewardedVideoPatch.kt: `0x283BDE0`
-*  - 8 × 4-byte god-mode windows — ./cheat/GodModeCheatMenuPatch.kt: `0x2142988`, `0x214299C`,
-*    `0x21429B4`, `0x21F4AA4`, `0x21F4FFC`, `0x21F52F0`, `0x22B4FB0`, `0x22B4FC8`
-*  - this file's ten (8+8+8+4+4+8+4+4+4+8 = 60 bytes across 10 windows)
-*
-* The interval-overlap test `aStart < bEnd && bStart < aEnd` was re-run over **all
-* C(24,2) = 276** pairs, on **both** axes — once with the *write* lengths (4/8/12 B) and once
-* with the full *anchor* lengths (36 B, or the write length where there is no anchor) — because
-* two patches can be disjoint where they write yet still collide where they *verify*. Both runs
-* return **zero overlaps: all 24 windows pairwise disjoint**, twice.
-*
+ * ============================================================================
+ * NO OVERLAP WITH THE OTHER DEAD TARGET PATCHES
+ * ============================================================================
+ * **20 write windows** are live across the Dead Target patch set as it now stands (the god-mode
+ * patch is **not** part of the shipped set — see the note below):
+ *  - 5 × 12-byte currency getters — ../unlock/UnlimitedCurrencyPatch.kt: `0x218BD78`,
+ *    `0x2192464`, `0x21925DC`, `0x2193234`, `0x2194A2C`
+ *  - 1 × 12-byte ads window — ../ads/InstantRewardedVideoPatch.kt: `0x283BDE0`
+ *  - this file's fourteen (8+8+8+4+4+8+4+4+4+8+4+4+4+4 = **76 bytes across 14 windows**)
+ *
+ * (The hunt note's overlap test additionally includes the 8 god-mode windows
+ * `0x2142988`, `0x214299C`, `0x21429B4`, `0x21F4AA4`, `0x21F4FFC`, `0x21F52F0`, `0x22B4FB0`,
+ * `0x22B4FC8` that were recorded in `gun-usable-gate.md` §5, for margin. They change nothing —
+ * the nearest of them to any site here is `0x22B4FC8`, **2.2 MB** from site 12 — and the god-mode
+ * patch is not currently in the set, so they are listed as margin rather than counted.)
+ *
+ * The interval-overlap test `aStart < bEnd && bStart < aEnd` was re-run over **all
+ * C(20,2) = 190** pairs, on **both** axes — once with the *write* lengths (4/8/12 B) and once
+ * with the full *anchor* lengths (36 B, or the write length where there is no anchor) — because
+ * two patches can be disjoint where they write yet still collide where they *verify*. Both runs
+ * return **zero overlaps: all 20 windows pairwise disjoint**, twice.
+ *
+ * Nearest neighbour per window added in this pass (the four glove/drone equip gates):
+ *
+ *  | new window | write | nearest window | byte distance |
+ *  |---|---|---|---|
+ *  |11 `0x02BBBE3C` | 4 B | site 14 `0x02BB8E20` | 12,312 B (12.0 KB) |
+ *  |12 `0x0240A064` | 4 B | site 4 `0x02631630` | 2,258,376 B (2205.4 KB) |
+ *  |13 `0x02BB8CE0` | 4 B | site 14 `0x02BB8E20` | **316 B (0.3 KB)** |
+ *  |14 `0x02BB8E20` | 4 B | site 13 `0x02BB8CE0` | **316 B (0.3 KB)** |
+ *
+ * Sites 13 and 14 sit 0x140 apart inside `DroneShopView`, so **316 B** is the tightest new
+ * separation and it is inherent to where the gates are, not a hazard: 316 B is ~8.8× the 36-byte
+ * anchor and ~79× the 4-byte write, so no anchor search can reach into the neighbouring window.
+ * Measured on the anchor axis the gap is 284 B (still ~7.9× the window). Every other new site is
+ * **12 KB or further** from its nearest neighbour, and site 12 — 2.2 MB from anything else —
+ * could not interact with any write in this patch set under any interpretation.
+ *
 * Nearest neighbour per window added in this pass (the five gun-usability gates):
 *
 *  | new window | write | nearest window | byte distance |
@@ -699,19 +1029,18 @@ import kotlin.io.readBytes
 *  | 9 `0x021CF0E4` | 4 B | site 8 `0x021CEDB0` | **816 B (0.8 KB)** |
 *  |10 `0x020679A8` | 8 B | site 6 `0x020A4708` | 249,176 B (243.3 KB) |
 *
-* The tightest separations are sites 8↔9 at **816 B** (~200× the 4-byte write) — these three
-* gates live in three adjacent `DSystem` methods (`FixedWrongEquipWeapon`, `GetOwnedGunConfigById`,
-* `GetCurEquipedGunBattle` are consecutive methods at `0x021D26C0`, `0x021D2D38`, `0x021D2E9C`),
-* which is inherent to where the gates are, not a hazard: 816 B is ~17× the 36-byte anchor and
-* ~200× the write, so no anchor search can reach into a neighbouring window. Their nearest
-* *pre-existing* neighbour is site 3 (`CheckHaveGun`, `0x021D1BB4`) at 10,956 B.
-* For reference, the tightest separation anywhere in the 24-window set is **20 B**, and it is
-* between two god-mode writes (`0x02142988` / `0x0214299C`) — pre-existing, disjoint, and not
-* anything this patch introduced.
-*
-* (Historic note: when this file had 5 sites, the tightest pair was 22.2 KB, site 3 ↔ site 1.
-* The five new gates are all *closer* to each other than that, which is why the 816 B row above
-* is quoted rather than the old 22.2 KB figure.)
+ * The tightest separations in the *gun* gates are sites 8↔9 at **816 B** (~200× the 4-byte write)
+ * — those gates live in three adjacent `DSystem` methods (`FixedWrongEquipWeapon`,
+ * `GetOwnedGunConfigById`, `GetCurEquipedGunBattle` are consecutive methods at `0x021D26C0`,
+ * `0x021D2D38`, `0x021D2E9C`), which is inherent to where the gates are, not a hazard: 816 B is
+ * ~17× the 36-byte anchor and ~200× the write, so no anchor search can reach into a neighbouring
+ * window. Their nearest *pre-existing* neighbour is site 3 (`CheckHaveGun`, `0x021D1BB4`) at
+ * 10,956 B.
+ *
+ * (Historic note: when this file had 5 sites, the tightest pair was 22.2 KB, site 3 ↔ site 1.
+ * Both later waves are *closer* to their own new neighbours than that — 816 B for the gun gates,
+ * 316 B for the new glove/drone gates — which is why those figures are quoted rather than the old
+ * 22.2 KB one. Both are still ≥7× the anchor length.)
  *
  * ============================================================================
  * BATTLE-PASS CONSEQUENCE — site 3 lands on the other leg of site 1's AND
@@ -753,21 +1082,25 @@ import kotlin.io.readBytes
 * `UnlockSkinAfterBuyPack` (VA `0x0204F534`) and `UserData.IsBattlePassNewPackAvailable`
 * (TypeDefIndex 3770) call none of these ten sites and are unaffected.
 *
-* ============================================================================
-* REMOVAL / CONSUMPTION GUARDS — none of the ten sites has one
-* ============================================================================
-*  | Site | Any caller that removes or consumes? | Verdict |
-*  |---|---|---|
-*  | 1 `IsGunUnlock` | 1 of 5 (`RemoveGun`, guarded `Dictionary.Remove` on an absent key = no-op) | safe |
-*  | 2 `IsOwnGlove(string)` | No. 12 callers, all reads/filters. | safe |
-*  | 3 `CheckHaveGun` | No. 32 callers, all reads/filters. | safe |
-*  | 4 drone inline `ContainsKey` | No. Single consumer is `_iconOwned.SetActive`. | safe |
-*  | 5 glove inline `List.Contains` | No. Single consumer is `_iconOwned.SetActive`. | safe |
-*  | 6 `WeaponShopView.IsOwnedItem` | No. 9 callers, all button/layout wiring + price display. | safe |
-*  | 7 `FixedWrongEquipWeapon` branch | **Supplies** the write this patch skips (`equipedItems[slot]` = fallback id); removing that branch removes a write, adds none. | safe |
-*  | 8 `GetOwnedGunConfigById` branch | No. Pure return-value producer; sole caller is `GetCurEquipedGun`. | safe |
-*  | 9 `GetCurEquipedGunBattle` branch | No. Pure return-value producer. | safe |
-*  |10 `CheckItemLocked` | No. 3 callers, raid-boss lock icons/taps only. | safe |
+ * ============================================================================
+ * REMOVAL / CONSUMPTION GUARDS — none of the fourteen sites has one
+ * ============================================================================
+ *  | Site | Any caller that removes or consumes? | Verdict |
+ *  |---|---|---|
+ *  | 1 `IsGunUnlock` | 1 of 5 (`RemoveGun`, guarded `Dictionary.Remove` on an absent key = no-op) | safe |
+ *  | 2 `IsOwnGlove(string)` | No. 12 callers, all reads/filters. | safe |
+ *  | 3 `CheckHaveGun` | No. 32 callers, all reads/filters. | safe |
+ *  | 4 drone inline `ContainsKey` | No. Single consumer is `_iconOwned.SetActive`. | safe |
+ *  | 5 glove inline `List.Contains` | No. Single consumer is `_iconOwned.SetActive`. | safe |
+ *  | 6 `WeaponShopView.IsOwnedItem` | No. 9 callers, all button/layout wiring + price display. | safe |
+ *  | 7 `FixedWrongEquipWeapon` branch | **Supplies** the write this patch skips (`equipedItems[slot]` = fallback id); removing that branch removes a write, adds none. | safe |
+ *  | 8 `GetOwnedGunConfigById` branch | No. Pure return-value producer; sole caller is `GetCurEquipedGun`. | safe |
+ *  | 9 `GetCurEquipedGunBattle` branch | No. Pure return-value producer. | safe |
+ *  |10 `CheckItemLocked` | No. 3 callers, raid-boss lock icons/taps only. | safe |
+ *  |11 glove shop inline `Contains` | No. Consumer is button `SetActive` / `set_interactable` / caption. The `Btn_Del_Cheat` / `Btn_Get_Cheat` rows it also flips are ANDed with the `DSystem+0x5DA` dev flag and stay hidden. | safe |
+ *  |12 glove battle inline `Contains` | No. Identical shape to 11 in the NGUI selector. | safe |
+ *  |13 drone `SetupButtonEquip` | No. Method is 0x124 B and has exactly two effects: `_btnEquip.SetActive` and a caption. | safe |
+ *  |14 drone `SetupButtonUnlock` | No. Label text only. | safe |
 *
 * Every patched value is consumed either by `SetActive(bool)` or by a boolean branch, and the
 * underlying collections are never written, so no patched site can shift a collection index or
@@ -878,15 +1211,77 @@ import kotlin.io.readBytes
 * `GetCurEquipedGunBattle`). Patching the callee would rewrite the engine; patching the
 * *narrower* caller is what sites 6–10 do.
 *
-* **`DSystem.EquipedItems(int,int)` / `EquipGun(UpgradeWeaponRecord)` / `SwitchItemsEquiped()` /
-* `CheckEquipIfNeed(int)` — REJECTED: NO GATE.** The whole equip *commit* chain was disassembled
-* and contains **zero** ownership reads: `WeaponShopView.ChangeEquipment` → `EquipedItems` /
-* `SwitchItemsEquiped` → `EquipGun` writes `equipedItems[slot] = gunId` unconditionally. This is
-* the good news half of the gun-usability finding — you *can* commit an equip for any id — and it
-* is also why the fix is sites 7–9 (stop the repair, stop the null record) rather than a patch on
-* the commit itself.
-*
-* **`DSystem.HaveEquipGun(int)` — REJECTED: wrong data.** VA `0x021D61C4` / file `0x021D21C4`.
+ * **`DSystem.EquipedItems(int,int)` / `EquipGun(UpgradeWeaponRecord)` / `SwitchItemsEquiped()` /
+ * `CheckEquipIfNeed(int)` — REJECTED: NO GATE.** The whole equip *commit* chain was disassembled
+ * and contains **zero** ownership reads: `WeaponShopView.ChangeEquipment` → `EquipedItems` /
+ * `SwitchItemsEquiped` → `EquipGun` writes `equipedItems[slot] = gunId` unconditionally. This is
+ * the good news half of the gun-usability finding — you *can* commit an equip for any id — and it
+ * is also why the fix is sites 7–9 (stop the repair, stop the null record) rather than a patch on
+ * the commit itself.
+ *
+ * **The same "no gate on the commit" finding applies to gloves and drones**, which is why sites
+ * 11–14 stop at the button rather than going further. `GlovesView.BtnUse_OnClick`
+ * (`0x02BC030C`) and `ControlGloveSkin.BtnUse_OnClick` (`0x0240E494`) are each a bare
+ * `str w8,[x9,#0x490]`; `DroneShopView.EquipClick` (`0x02BBD1F4`) tail-calls
+ * `DSystem.EquipedDrone(int)` (`0x021D5E38`), which is `ldr x8,[x0,#0x1A0]` /
+ * `str w1,[x8,#0x118]`. All unconditional, no ownership read. **Do not look for a commit-path
+ * gate; there is none to patch.**
+ *
+ * **A null-returning record resolver for gloves/drones — RULED OUT, checked, do not retry.**
+ * This was failure shape (b) for guns (`GetOwnedGunConfigById` / `GetCurEquipedGunBattle`
+ * returning `null` → `GunController.Init` `cbz x0` → `il2cpp_null_reference_throw`), so it was
+ * actively looked for and is **absent** for both categories:
+ *  - **Gloves resolve from the raw int.** `UpgradeWeaponRecord.CurrentGloveRecord(ref int handid)`
+ *    (`0x02A0BF30`) reads `UserData.curHandSkin` (`0x490`), stores it to `*handid`, and rejects
+ *    only `curHandSkin < 1` (`0x02A0BF9C b.lt`) before a config-table lookup. **Zero
+ *    `listHandSkin` access in the entire body.** `GunController.FindGloveAndSkin` (`0x021042CC`)
+ *    is the same (`0x02104384 str w8,[x19,#0x0]`), as are all 132 chained `[userData+0x490]`
+ *    read sites. `BtnUse_OnClick` writes any real glove id, so the guard is always satisfied.
+ *    The vestigial `DSystem.GetHandGlove()` (`0x021DB1E4`), which returns `listHandSkin[0]` and
+ *    *would* be an ownership read, has **0 branch callers and 0 `adrp` page references**, and
+ *    `listHandSkin` is append-only (the sole genuine writer is the dev cheat
+ *    `UnlockGloveById`) — so it can never mean "currently equipped". The live field is
+ *    `curHandSkin`.
+ *  - **Drones resolve via a lookup that is already safe.** `DroneManager.SpawnDrone`
+ *    (`0x02255214`) reads `equippedDrone` straight through to `DownloadDrone` with no membership
+ *    test (`0x02255310 ldr w1,[x8,#0x118]`). The level lookup it uses,
+ *    `DUtil.GetLevelDrone(int)` (`0x028DDF60`), is the exact structural twin of the
+ *    `DUtil.GetLevelItem` that made gun gates G3/G4 safe: on the not-owned path it returns a
+ *    **static default level** (`0x028DE040 ldr x8,[x0,#0xB8]` / `0x028DE048 ldr w0,[x8,#0x20]`)
+ *    — it does not throw and does not return `null`. So forcing ownership yields a
+ *    *well-formed* level-1-equivalent drone with no further patch, and there is no null record to
+ *    protect in the first place.
+ *
+ * **A repair / revert pass over the glove/drone selection — RULED OUT, checked, do not retry.**
+ * This was failure shape (c) for guns (`FixedWrongEquipWeapon` running on every
+ * `SetupEquipment`). `DSystem.SetupEquipment()` (`0x021D25B0`) calls `FixedWrongEquipWeapon` at
+ * `0x021D262C` and then touches **no** glove or drone state before returning at `0x021D26BC`.
+ * The only two routines that clear `curHandSkin` / `equippedDrone` are a matched save/restore
+ * pair — `SetEquipmentToDedault()` (`0x021F0B00`, saves both to `this+0xA2C` / `+0xA30` then sets
+ * `equippedDrone = -1`, `curHandSkin = 0`) and `ResetEquipment()` (`0x021F0B34`, which restores
+ * both) — and an exhaustive BL scan finds exactly **six** callers: `BaseDefenseController
+ * .<PlayMission>b__1`, `CrossbowPvpHistoryView.StartGame` (both call the setter) and
+ * `CrossbowPVPController.ResetBattleData`, `PauseGameUI.Exit`, `BattleResultView.ShowMainResult`
+ * (all three call the restorer). All six are **crossbow-PVP / base-defence mode** scoped — the
+ * game's "strip your loadout for this mode" mechanic, which restores on exit. Not on the glove or
+ * drone path in normal play.
+ *
+ * **A level override — REJECTED ON EVIDENCE, and there is nothing to override.** Neither
+ * `HandSkinRecord` (28 fields) nor `DroneConfig` (18 fields) has any level field, and
+ * `unlockLevel|minLevel|requireLevel|levelLimit|openLevel|levelUnlock|needLevel|maxLevel` does not
+ * exist for these types anywhere in `dump.cs` (the only `levelUnlock` is `GunInfos`, i.e. gun
+ * skins; the `maxLevel` hits are card/rarity records). A global `DSystem.get_level()` override was
+ * nevertheless measured: **98 direct branch sites** feeding XP curves, missions and rank, and zero
+ * gain. Full reasoning in THE LEVEL-GATE QUESTION above. **There is no level gate on gloves or
+ * drones.**
+ *
+ * **A fifth "Btn_Use interactable" gate — DOES NOT EXIST; do not re-derive it from a bad
+ * disassembly.** The `cset w1, ne` at `0x02BBFEE0` / `0x0240E104` mis-renders as
+ * `csinc w1, wzr, wzr, eq` under `llvm-objdump -M no-aliases`, which reads as an inverted
+ * condition and suggests a fifth gate. It is `ne`. See DISASSEMBLY TRAP above for the bit-exact
+ * decode, the `llvm-mc` round trip and the library cross-check.
+ *
+ * **`DSystem.HaveEquipGun(int)` — REJECTED: wrong data.** VA `0x021D61C4` / file `0x021D21C4`.
 * Reads `UserData.equipedItems` (0x110), i.e. "is equipped", not "is owned".
 * `DSystem.OnwedGunValueThan(int)`, `IsGunHavePromoteSystem(int)`,
 * `UnlockPromoteSystemByGunOwned()`, `IfChallengeModeAvailableAllGun/ByEquipGun` — rejected:
@@ -897,9 +1292,9 @@ import kotlin.io.readBytes
 * ============================================================================
 * HONEST SCOPE — this is a READ patch, and here is exactly what that means
 * ============================================================================
-* All ten sites make ownership **reads** — or the branches that hang off them — answer
-* "owned". That is the whole mechanism, and it has a precise limit worth stating rather than
-* glossing — stated once here for the merged patch:
+ * All fourteen sites make ownership **reads** — or the branches that hang off them — answer
+ * "owned". That is the whole mechanism, and it has a precise limit worth stating rather than
+ * glossing — stated once here for the merged patch:
 *
 *  - **Nothing is added to any owned list.** No gun id is inserted into `UserData.inventory`
  *    (0xE8) or `gunList`, no glove id into `UserData.listHandSkin` (0x488), no drone id into
@@ -929,33 +1324,40 @@ import kotlin.io.readBytes
 *    `BattlePass` reward choice, `ControlMap2D` / `ControlMapView` sale notices,
 *    `MissionInfoView` recommend/buy), and a reinstall or save wipe resets everything.
 *    **Only the devs' own cheat methods (below) actually persist an unlock.**
-*  - **Guns: the fix is now complete for the reported bug, but it is still not device-tested.**
-*    The whole five-gate chain is static analysis of the shipped 4.183.0 library; expect the
-*    first device run to reveal at least one more `inventory` reader. If guns still will not
-*    equip after this, the search is NOT back at site 1 — it is at an `inventory` reader this
-*    note did not enumerate.
-*  - **Skins, gloves and drones are structurally different, and all three remain untested.**
-*    Only guns have both a *repair pass* (`FixedWrongEquipWeapon`, site 7) and a *null-returning
-*    record resolver* (sites 8/9), which is why guns uniquely failed. The static evidence:
-*      - **drones — structurally safest.** The commit `DSystem.EquipedDrone(int)` is a raw field
-*        write (`userData.equippedDrone = id`, VA `0x021D5E38`, no ownership read) and
-*        `DroneManager.SpawnDrone` reads that field directly (`0x02255310 ldr w1,[x8,#0x118]`)
-*        with no `droneInventory` check. No repair pass, no null resolver.
-*      - **skins — probably fine.** The apply path (`GunController.FindGloveAndSkin` →
-*        `GunSkinManager.GetCurSkinIndex`, VA `0x0288A04C`) queries `UserData+0x540`
-*        (`gunSkinData`) and never consults `inventory`; there is no `FixedWrongEquipWeapon`
-*        analogue and no null-record resolver for skins.
-*      - **gloves — weakest of the three.** No `UpgradeWeaponRecord`-style resolver and no
-*        repair pass was found, but glove application in battle
-*        (`ControlGloveSkin.RefreshButtons` VA `0x0240E20C`, `GlovesView.RefreshButtons`
-*        `0x02BC0024`) was **not** disassembled far enough to prove it never re-consults
-*        `listHandSkin` (0x488). Flagged unverified.
-*    ⚠️ "No second gate found" is weaker evidence than "a second gate found and fixed" — the gun
-*    case is the proof of that. The user has device-tested **guns only**; nothing here claims
-*    skins, gloves or drones are fixed on hardware.
-*  - **Not covered, and not claimed to be:** `UnlockSkinAfterBuyPack`,
-*    `UserData.IsBattlePassNewPackAvailable`, and the battle-pass *reward selection* surfaces
-*    are affected only as described in BATTLE-PASS CONSEQUENCE, not unlocked.
+ *  - **Guns: device-verified.** The user confirmed guns load, equip and fire after sites 6–10
+ *    landed, which is why the "expect at least one more `inventory` reader" warning written
+ *    earlier in this file is retired: it did not materialise.
+ *  - **Gloves and drones: the display-only failure was reported, the gates are now in, and this
+ *    wave is still not device-tested.** The honest position, stated as evidence tiers:
+ *      - **The diagnosis is strong, and stronger than "no gate found".** Sites 11–14 are gates
+ *        that were *located*, not merely absent: the not-owned branch provably jumps past the
+ *        only `Btn_Use.SetActive(true)` (site 11, confirmed by exhaustive `bl` scan of the method
+ *        range), and site 13's `_btnEquip.SetActive(owned)` is the sole gate with no branch at
+ *        all. This is "a second gate found", not "no second gate found".
+ *      - **The remaining risk is the wiring, not the gate.** `GlovesView.BtnUse_OnClick`,
+ *        `ControlGloveSkin.BtnUse_OnClick` and `DroneShopView.EquipClick` each have **0 `adrp`-based
+ *        page references** in the `il2cpp` section, i.e. they are wired from the inspector via
+ *        runtime metadata slots that are zero on disk. They were identified *by elimination* — each
+ *        is the only method of its class that writes `curHandSkin` / `equippedDrone` — which is
+ *        strong but not a resolved runtime slot. **If a button appears and pressing it does
+ *        nothing, this wiring is the first thing to re-examine**, not sites 11–14.
+ *      - **Sites 11 and 12 must ship together** (see SITES 11 TO 14): a half-fix here is
+ *        indistinguishable from no fix on the battle screen.
+ *      - **`DSystem+0x5DA`, the dev flag ANDed into `Btn_Del_Cheat` / `Btn_Get_Cheat`, was not
+ *        identified.** It was not needed and not patched; sites 11/12 cannot by themselves expose
+ *        those cheat buttons.
+ *  - **Skins remain structurally the safest of the three and were not reported broken.** The
+ *    apply path (`GunController.FindGloveAndSkin` → `GunSkinManager.GetCurSkinIndex`,
+ *    VA `0x0288A04C`) queries `UserData+0x540` (`gunSkinData`) and never consults `inventory`;
+ *    there is no `FixedWrongEquipWeapon` analogue and no null-record resolver for skins. Sites 8
+ *    and 9 already cover the shared gun-record resolver, so skins ride along on the gun fix.
+ *  - **Not covered, and not claimed to be:** `UnlockSkinAfterBuyPack`,
+ *    `UserData.IsBattlePassNewPackAvailable`, and the battle-pass *reward selection* surfaces
+ *    are affected only as described in BATTLE-PASS CONSEQUENCE, not unlocked.
+ *  - **`GetLuckyExtraDamageRate` (`0x02253D30`) reads `droneInventory` and was deliberately NOT
+ *    patched.** It feeds a drone combat *stat*, so forcing it true would be a balance change, not
+ *    an equip fix. Named here so nobody "finishes the job" by writing it.
+
  *
  * If you want the ids genuinely *written* into the owned lists, see the upgrade path below.
  *
@@ -1021,12 +1423,13 @@ import kotlin.io.readBytes
  * become ONE merged APK before any patch executes; the config split is what carries
  * `lib/arm64-v8a/libil2cpp.so`. A `rawResourcePatch` anywhere in the patch set forces
  * `ResourceMode.RAW_ONLY`, so `get(path, true)` resolves the raw-extracted
-* `lib/<abi>/libil2cpp.so`. **All ten writes are SAME-LENGTH in place** — 8-over-8 at sites
-* 1–3, 6 and 10, 4-over-4 at sites 4–5 and 7–9 — so `detectFileChanges()` catches each on
-* `lastModified` → `ApkUtils.applyTo` overlays them into the rebuilt APK →
-* `signWithLegacyFallback`. Only the first 8 (resp. 4) bytes of each 36-byte anchor are written;
-* the other 28/32 are verified and left alone, so the file length never changes and no `lib/`
-* entry is re-added.
+ * `lib/<abi>/libil2cpp.so`. **All fourteen writes are SAME-LENGTH in place** — 8-over-8 at sites
+ * 1–3, 6 and 10, 4-over-4 at sites 4–5, 7–9 and 11–14, **76 bytes total** — so
+ * `detectFileChanges()` catches each on
+ * `lastModified` → `ApkUtils.applyTo` overlays them into the rebuilt APK →
+ * `signWithLegacyFallback`. Only the first 8 (resp. 4) bytes of each 36-byte anchor are written;
+ * the other 28/32 are verified and left alone, so the file length never changes and no `lib/`
+ * entry is re-added.
  *
  * Static file patch (chosen) vs runtime companion `.so`: the `.text` is plaintext on disk,
  * there is NO `.so` integrity / signature / anti-tamper check anywhere in the chain
@@ -1045,7 +1448,8 @@ import kotlin.io.readBytes
 @Suppress("unused")
 val allItemsOwnedPatch = rawResourcePatch(
     name = "All items owned",
-    description = "Every gun, skin, glove and drone shows as unlocked. Pick and equip anything you like.",
+    description = "Every gun, skin, glove and drone shows as unlocked, and you can equip any " +
+        "of them. Your save file is not changed.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_DEAD_TARGET)
@@ -1061,9 +1465,9 @@ val allItemsOwnedPatch = rawResourcePatch(
  *
  * [anchorHex] is the ORIGINAL 36-byte window (must occur exactly ONCE in the library — that
  * uniqueness is what makes the match self-verifying); [replacementHex] is the replacement
- * written over the first bytes of that window — **8 bytes** at the five function-entry sites,
- * **4 bytes** at the five mid-function sites. The two lengths are independent axes on purpose:
- * five of the ten sites carry a 36-byte verification window with only 4 bytes written.
+ * written over the first bytes of that window — **8 bytes** at the six function-entry sites,
+ * **4 bytes** at the nine mid-function sites. The two lengths are independent axes on purpose:
+ * nine of the fourteen sites carry a 36-byte verification window with only 4 bytes written.
  *
  * Named `ItemAnchor`, not `Anchor`, and that is the ONLY deviation from the sibling patches'
  * structure: this file shares package `app.deadtarget.patches.unlock` with
@@ -1077,8 +1481,14 @@ val allItemsOwnedPatch = rawResourcePatch(
  * `BOOL_FALSE`, `BRANCH_KEEP_SLOT`, `NOP_FALLTHROUGH`) rather than reusing the sibling's
  * `STUB_INT64` / `STUB_INT32`.
  *
- * The `Item` prefix is the natural label for the merged 10-site scope (guns, gun skins, gloves,
- * drones, glove tile + the five gun-usability gates) *and* the thing that keeps this file off the
+ * ⚠️ **The same rule applies to any stub added later.** Do not introduce a name the sibling
+ * already uses — `Anchor`, `ARM64_ANCHORS`, `applyAnchors`, `STUB_INT64`, `STUB_INT32` are all
+ * taken. Sites 11–14 added **no new stub constant at all** (they reuse [BOOL_TRUE_W]), so this
+ * collision class is currently empty on this side.
+ *
+ * The `Item` prefix is the natural label for the merged 14-site scope (guns, gun skins, gloves,
+ * drones, glove tile, the five gun-usability gates and the four glove/drone equip gates) *and*
+ * the thing that keeps this file off the
  * sibling's names, so the two requirements point the same way. Note the asymmetry that makes
  * this legal: the collision rule applies to the top-level **class** only — the file-private
  * top-level **functions** `hex`, `indexOfAll` and `toHex` are legitimately duplicated between
@@ -1106,9 +1516,12 @@ private class ItemAnchor(
 private const val BOOL_TRUE = "20008052C0035FD6"
 
 /**
- * `mov w0,#1` alone, **no `ret`** — for the two **mid-body** sites, where the enclosing
- * `Refresh` must continue running so it can load `_iconOwned` and call `SetActive`. This
- * replaces a single 4-byte `bl` word, so the write is 4-over-4.
+ * `mov w0,#1` alone, **no `ret`** — for the nine **mid-body** sites (4, 5, 11, 12, 13, 14, 8, 9
+ * plus the shape shared with site 7's branch edits). Each replaces a single 4-byte word, so the
+ * write is 4-over-4. At sites 4–5 the enclosing `Refresh` must continue so it can load
+ * `_iconOwned` and call `SetActive`; at sites 11–14 the enclosing `RefreshButtons` /
+ * `SetupButton*` must continue so it can reach the `Btn_Use` / `_btnEquip`
+ * `gameObject.SetActive(true)` that is the entire point of the patch.
  */
 private const val BOOL_TRUE_W = "20008052"
 
@@ -1140,14 +1553,16 @@ private const val BRANCH_KEEP_SLOT = "0A000014"
 private const val NOP_FALLTHROUGH = "1F2003D5"
 
 /**
- * The ten sites, in the order documented in the patch KDoc: guns tile, gloves, gun skins,
+ * The fourteen sites, in the order documented in the patch KDoc: guns tile, gloves, gun skins,
  * drone tile, glove tile (display), then the five gun-usability gates (shop button, loadout
- * repair, record resolvers, raid-boss lock). Every entry's [ItemAnchor.anchorHex] is 36 bytes
- * and occurs exactly once in the shipped `libil2cpp.so`; the single hit is the documented
- * `fileOffset` in all ten cases, re-verified in this pass.
+ * repair, record resolvers, raid-boss lock), then the four glove/drone equip gates (shop button,
+ * in-battle selector, drone equip button, drone caption). Every entry's [ItemAnchor.anchorHex]
+ * is 36 bytes and occurs exactly once in the shipped `libil2cpp.so`; the single hit is the
+ * documented `fileOffset` in all fourteen cases, re-verified in this pass.
  *
  * Note the deliberate independence of the two axes: the anchor is always 36 bytes, while the
- * write is 8 bytes at the five entry sites and 4 bytes at the five mid-function sites.
+ * write is 8 bytes at the six entry sites and 4 bytes at the nine mid-function sites. Total
+ * bytes written: **76**.
  */
 private val ARM64_ITEM_ANCHORS = listOf(
     // ---- Site 1: GUN TILE ICON. Function entry: 0xA9BE57FE `stp x21,x20,[sp,#-32]!`, and +0x10
@@ -1309,6 +1724,71 @@ private val ARM64_ITEM_ANCHORS = listOf(
             "F303012A28010037606A01F0",
         replacementHex = BOOL_FALSE,
     ),
+    // ---- Site 11: GLOVES SHOP EQUIP BUTTON. *** MID-FUNCTION INLINE EDIT — NOT AN ENTRY ***
+    // Starts at a `bl` inside GlovesView.RefreshButtons, so no prologue argument applies (same
+    // situation as sites 4/5). Word 0 = 0x9460A6F2 = `bl 0x03BE9A04` = List<int>.Contains;
+    // `ldr x0,[x8,#0x488]` at -0x18 pins the collection to UserData.listHandSkin and
+    // `ldr w1,[x20,#0x10]` at -0x08 puts HandSkinRecord.handID in w1. The next instruction is
+    // `tbz w0,#0,0x02BBFF38`, whose not-owned target is *past* the only Btn_Use.SetActive(true)
+    // (0x02BBFF08) — so the button never appears unless this call reports owned. 4-byte write,
+    // NO `ret`: the method must run on into the Btn_Use block. All 36 bytes still verified.
+    ItemAnchor(
+        label = "GlovesView.RefreshButtons inline listHandSkin.Contains -> true (gloves shop equip)",
+        va = 0x02BBFE3C,
+        fileOffset = 0x02BBBE3C,
+        anchorHex =
+            "F2A64094C0070036951240B9" +
+            "02000014F5031F2AC00240F9" +
+            "C0D61C94201600B408D040F9",
+        replacementHex = BOOL_TRUE_W,
+    ),
+    // ---- Site 12: GLOVES IN-BATTLE EQUIP BUTTON. *** MID-FUNCTION INLINE EDIT *** Byte-for-byte
+    // the same algorithm as site 11 in a different class (NGUI ControlGloveSkin, Btn_Use at
+    // +0x70, virtual set_interactable via slot 0x188). Word 0 = 0x945F6E68 = `bl 0x03BE9A04`,
+    // same helper as site 5 and site 11. NOT optional: equipping from the battle screen never
+    // runs GlovesView.RefreshButtons, so site 11 alone leaves the player stuck there.
+    ItemAnchor(
+        label = "ControlGloveSkin.RefreshButtons inline listHandSkin.Contains -> true (battle gloves equip)",
+        va = 0x0240E064,
+        fileOffset = 0x0240A064,
+        anchorHex =
+            "686E5F94A0070036951240B9" +
+            "02000014F5031F2AC00240F9" +
+            "369E3B94E01400B408D040F9",
+        replacementHex = BOOL_TRUE_W,
+    ),
+    // ---- Site 13: DRONES SHOP EQUIP BUTTON — ESSENTIAL. *** MID-FUNCTION INLINE EDIT *** Word 0 =
+    // 0x942C25D0 = `bl 0x036C6420` = Dictionary<int,int>.ContainsKey, the same shared generic
+    // sites 1/3/6/7/8 use; `ldr x0,[x8,#0xF0]` at -0x18 pins UserData.droneInventory and
+    // `ldr w1,[x20,#0x10]` at -0x08 puts DroneConfig.idItem in w1. Next instruction is
+    // `mov w21,w0` — NO BRANCH AT ALL — then `and w1,w21,#1` feeds
+    // `_btnEquip.gameObject.SetActive(owned)` at 0x02BBCD24. The closest analogue of gun gate G1
+    // (site 6) and the highest-confidence of these four. 4-byte write, NO `ret`.
+    ItemAnchor(
+        label = "DroneShopView.SetupButtonEquip inline droneInventory.ContainsKey -> true (drone equip button)",
+        va = 0x02BBCCE0,
+        fileOffset = 0x02BB8CE0,
+        anchorHex =
+            "D0252C94A80240F9F503002A" +
+            "E00308AA19E31C94E00300B4" +
+            "08D040F9A80300B4604640F9",
+        replacementHex = BOOL_TRUE_W,
+    ),
+    // ---- Site 14: DRONES SHOP CAPTION — COSMETIC, AND THE ONE DROPPABLE SITE IN THIS FILE.
+    // *** MID-FUNCTION INLINE EDIT *** Word 0 = 0x942C2580 = `bl 0x036C6420`, same helper as
+    // site 13. `tbz w0,#0` then selects between two localization slots feeding
+    // DLabel.set_text on the *unlock* button and its price label — nothing else. Delete this
+    // single entry to revert it; sites 11, 12, 13 and every other patch are unaffected.
+    ItemAnchor(
+        label = "DroneShopView.SetupButtonUnlock inline droneInventory.ContainsKey -> true (drone caption, label only)",
+        va = 0x02BBCE20,
+        fileOffset = 0x02BB8E20,
+        anchorHex =
+            "80252C94685240F9281700B4" +
+            "A0000036F40F01F0090140F9" +
+            "942642F904000014141001D0",
+        replacementHex = BOOL_TRUE_W,
+    ),
 )
 
 /**
@@ -1318,7 +1798,7 @@ private val ARM64_ITEM_ANCHORS = listOf(
  *  1. the library is slurped once and every 36-byte anchor is searched for, requiring
  *     **exactly one** occurrence (an 8-byte search would hit 24,734 times and a 12-byte one
  *     still 3 times at the guns site — and site 2 is ambiguous even at 16 bytes, so a shorter
- *     window would corrupt an unrelated function). This applies uniformly to the five
+ *     window would corrupt an unrelated function). This applies uniformly to the nine
  *     mid-function sites too: although their 4-byte instruction encodings are themselves unique
  *     in 85 MB, the full 36 bytes are searched and verified, because the window is what pins the
  *     collection load, the id load and the consumer, and therefore identifies *which*
@@ -1326,11 +1806,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
  *  2. each resolved offset is re-read through a [RandomAccessFile], compared against the
  *     original bytes, and only then overwritten.
  *
- * Every write is the same length as the bytes it replaces — 8-over-8 at the five entry sites,
- * 4-over-4 at the five mid-function sites — so the patcher's `lastModified`-keyed change diff
+ * Every write is the same length as the bytes it replaces — 8-over-8 at the six entry sites,
+ * 4-over-4 at the nine mid-function sites, 76 bytes in total — so the patcher's
+ * `lastModified`-keyed change diff
  * picks it up. Throws [PatchException] with full context if an anchor is missing or ambiguous,
  * or if the bytes on disk are not what we expect — i.e. new game build, unsupported version.
- * Because phase 1 completes for *all ten* anchors before phase 2 opens the file for writing,
+ * Because phase 1 completes for *all fourteen* anchors before phase 2 opens the file for writing,
  * a single bad anchor anywhere means zero bytes are modified.
  */
 private fun applyItemAnchors(lib: File, anchors: List<ItemAnchor>) {
