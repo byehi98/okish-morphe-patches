@@ -1,3 +1,9 @@
+## [1.39.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.38.0...v1.39.0) (2026-10-05)
+
+### ✨ New Features
+
+* **shootyskies:** add ad-free and free store patches ([25f7be4](https://github.com/byehi98/okish-morphe-patches/commit/25f7be44db7cbbebc51fb3554e1c1a690b19e30c))
+
 ## [1.39.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.38.0...v1.39.0-dev.1) (2026-10-05)
 
 ### ✨ New Features
