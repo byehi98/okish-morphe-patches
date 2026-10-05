@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.37.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.37.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;83 patches total
+> **[v1.38.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.38.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;88 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -213,6 +213,39 @@ Direct URL:
 |----------|----------------|-----------|
 | [Fix app opening](#fix-app-opening) | Required so the modified app opens without crashing — skips signature, root and emulator checks. |  |
 | [Free purchases](#free-purchases) | Get paid items for free — tapping buy grants the item instantly without Google Play payment popup. |  |
+
+</details>
+
+<details>
+<summary>📦 Head Basketball&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 4.6.4 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | Get your ad rewards for free. Every "watch ad" button gives you the reward right away — no ad to sit through, no waiting. |  |
+| [Free Store](#free-store) | Everything in the shop is free. Tap an item and you get it instantly — no paying, no waiting, no Google Play involved. |  |
+| [Unlimited Points](#unlimited-points) | Free coins forever. Your point balance always reads as the maximum, so you can afford anything in the shop. You can still spend and save normally. |  |
+
+</details>
+
+<details>
+<summary>📦 Head Soccer&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 7.1.6 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | Every "watch ad" reward is granted instantly — no ad appears, no "failed to load advertisement" popup, and nothing to wait for. |  |
+| [Free Store](#free-store) | Everything in the shop is free. Tap an item and you get it right away — points, characters and presents — with no Google Play payment screen and nothing charged. |  |
 
 </details>
 
@@ -412,7 +445,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.3045 |
+| 1.3050 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

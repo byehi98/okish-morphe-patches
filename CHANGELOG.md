@@ -1,3 +1,27 @@
+## [1.38.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.38.0-dev.3...v1.38.0-dev.4) (2026-10-05)
+
+### ✨ New Features
+
+* **headsoccer:** add free store and ad rewards patches ([06852ac](https://github.com/byehi98/okish-morphe-patches/commit/06852acd6621a464735e5299a069d787bef63fb4))
+
+## [1.38.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.38.0-dev.2...v1.38.0-dev.3) (2026-10-05)
+
+### 🚀 Updated App Support
+
+* **onlyone:** bump target app version to 1.3050 ([a1a02c7](https://github.com/byehi98/okish-morphe-patches/commit/a1a02c7e9be87bd84517cfe732e0af09449ee722))
+
+## [1.38.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.38.0-dev.1...v1.38.0-dev.2) (2026-10-04)
+
+### ✨ New Features
+
+* **headbasketball:** add free ad rewards patch ([670245e](https://github.com/byehi98/okish-morphe-patches/commit/670245e173a77912f5260d32b221f1d50ca4b31a))
+
+## [1.38.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.37.1...v1.38.0-dev.1) (2026-10-04)
+
+### ✨ New Features
+
+* **headbasketball:** add free store and unlimited points patches ([476c337](https://github.com/byehi98/okish-morphe-patches/commit/476c337211527c08b2d87213b4da2517ba957bf3))
+
 ## [1.37.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.37.0...v1.37.1) (2026-10-04)
 
 ### 🚀 Updated App Support
