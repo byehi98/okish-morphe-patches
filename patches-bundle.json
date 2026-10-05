@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-05T02:11:46",
-  "description": "## [1.38.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.38.0-dev.2...v1.38.0-dev.3) (2026-10-05)\n\n### 🚀 Updated App Support\n\n* **onlyone:** bump target app version to 1.3050 ([a1a02c7](https://github.com/byehi98/okish-morphe-patches/commit/a1a02c7e9be87bd84517cfe732e0af09449ee722))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.38.0-dev.3/patches-1.38.0-dev.3.mpp",
+  "created_at": "2026-10-05T05:33:05",
+  "description": "## [1.38.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.38.0-dev.3...v1.38.0-dev.4) (2026-10-05)\n\n### ✨ New Features\n\n* **headsoccer:** add free store and ad rewards patches ([06852ac](https://github.com/byehi98/okish-morphe-patches/commit/06852acd6621a464735e5299a069d787bef63fb4))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.38.0-dev.4/patches-1.38.0-dev.4.mpp",
   "signature_download_url": "",
-  "version": "1.38.0-dev.3"
+  "version": "1.38.0-dev.4"
 }

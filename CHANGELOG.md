@@ -1,3 +1,9 @@
+## [1.38.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.38.0-dev.3...v1.38.0-dev.4) (2026-10-05)
+
+### ✨ New Features
+
+* **headsoccer:** add free store and ad rewards patches ([06852ac](https://github.com/byehi98/okish-morphe-patches/commit/06852acd6621a464735e5299a069d787bef63fb4))
+
 ## [1.38.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.38.0-dev.2...v1.38.0-dev.3) (2026-10-05)
 
 ### 🚀 Updated App Support
