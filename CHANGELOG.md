@@ -1,3 +1,9 @@
+## [1.39.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.39.0...v1.39.1-dev.1) (2026-10-06)
+
+### 🚀 Updated App Support
+
+* **intothedead:** adapt patches for Into the Dead 1 v2.9.5 ([0ad2bfa](https://github.com/byehi98/okish-morphe-patches/commit/0ad2bfa6ddf27cfdefb56e367bdf84948c2bcdcd))
+
 ## [1.39.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.38.0...v1.39.0) (2026-10-05)
 
 ### ✨ New Features

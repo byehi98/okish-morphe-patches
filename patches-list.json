@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.39.0",
+  "version": "1.39.1-dev.1",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -1096,12 +1096,12 @@
           "packageName": "com.sidheinteractive.sif.DR",
           "name": "Into the Dead",
           "description": null,
-          "apkFileType": "APKM",
+          "apkFileType": "XAPK",
           "appIconColor": "#8B0000",
           "signatures": null,
           "targets": [
             {
-              "version": "2.9.3",
+              "version": "2.9.5",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -1122,12 +1122,12 @@
           "packageName": "com.sidheinteractive.sif.DR",
           "name": "Into the Dead",
           "description": null,
-          "apkFileType": "APKM",
+          "apkFileType": "XAPK",
           "appIconColor": "#8B0000",
           "signatures": null,
           "targets": [
             {
-              "version": "2.9.3",
+              "version": "2.9.5",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
