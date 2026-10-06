@@ -1,3 +1,9 @@
+## [1.40.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.39.1...v1.40.0-dev.1) (2026-10-06)
+
+### ✨ New Features
+
+* **grimvalor:** unlock full game. ([7b9c474](https://github.com/byehi98/okish-morphe-patches/commit/7b9c4741fc06179eb9d8c7ac3dcbe26d80efcb80))
+
 ## [1.39.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.39.0...v1.39.1) (2026-10-06)
 
 ### 🐛 Bug Fixes
