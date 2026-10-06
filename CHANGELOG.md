@@ -1,3 +1,9 @@
+## [1.39.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.39.1-dev.1...v1.39.1-dev.2) (2026-10-06)
+
+### 🐛 Bug Fixes
+
+* **intothedead:** fix patch description ([32fb478](https://github.com/byehi98/okish-morphe-patches/commit/32fb47890bd994c5a8d780821e25485f985a972b))
+
 ## [1.39.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.39.0...v1.39.1-dev.1) (2026-10-06)
 
 ### 🚀 Updated App Support
