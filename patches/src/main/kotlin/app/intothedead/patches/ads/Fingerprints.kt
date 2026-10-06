@@ -2,82 +2,118 @@ package app.intothedead.patches.ads
 
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.methodCall
-import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
 /**
- * com.ironsource.unity.androidbridge.AndroidBridge.showRewardedVideo(String)V — public.
+ * Into the Dead 1 — v2.9.5 fingerprints.
  *
- * C# legacy show entry (`IronSource.Agent.ShowRewardedVideo(placement)`). It simply
- * forwards to the SDK: `invoke-static {p1}, IronSource.showRewardedVideo(String)V`.
- * This is the PRIMARY grant trigger — the game's C# hooks `OnRewardedVideoRewarded`.
+ * 2.9.5 UPGRADED the IronSource/LevelPlay Unity plugin and DELETED the entire
+ * legacy Unity bridge (`AndroidBridge`, `AndroidBridge$1..$8`,
+ * `LevelPlayRewardedVideoWrapper`, `LevelPlayInterstitialWrapper`,
+ * `LevelPlayBannerWrapper` and every `UnityLevelPlay*Listener`).
+ * IL2CPP `global-metadata.dat` confirms the C# side migrated in lockstep to the
+ * new API only (`Unity.Services.LevelPlay.LevelPlayRewardedAd` /
+ * `LevelPlayInterstitialAd` / `LevelPlayBannerAd`, with `IronSource.Agent`
+ * wrapper types gone).
  *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:1618
- * (.registers 2 — no locals, so the patch expands registers via cloneParameters()).
+ * Everything here therefore targets the surviving NEW-API bridge in
+ * classes7/com/ironsource/unity/androidbridge/, or the untouched Google Unity
+ * Ads App-Open bridge (which moved classes8 → classes7; fingerprints are
+ * dex-agnostic so no change was needed for those).
  *
- * Filter (exact instruction order): only this method calls
- * IronSource.showRewardedVideo(String); the parameterless
- * showRewardedVideo()V variant calls the no-arg IronSource overload.
+ * See analysis/intothedead2_build/notes/recon.md for the full dead/alive map.
  */
-object ShowRewardedVideoFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
-    name = "showRewardedVideo",
-    returnType = "V",
+
+// ---------------------------------------------------------------------------
+// Rewarded ads, instant grant (LevelPlay new-API bridge, classes7).
+//
+// The C# LevelPlayRewardedAd.ShowAd(placement) entry lands in RewardedAd.showAd.
+// The patch fakes availability (isAdReady, isPlacementCapped, loadAd) and fires a
+// synthetic displayed-rewarded-closed lifecycle in showAd, resolving the reward
+// name and amount LIVE via getReward so no placement or reward-name constant is
+// ever hardcoded.
+// ---------------------------------------------------------------------------
+
+// RewardedAd.isAdReady()Z — public. Forwards to LevelPlayRewardedAd.isAdReady.
+// Smali: classes7/.../RewardedAd.smali (.registers 2).
+// Single filter: only caller of LevelPlayRewardedAd.isAdReady in this class.
+object RewardedAdIsAdReadyFingerprint : Fingerprint(
+    definingClass = "Lcom/ironsource/unity/androidbridge/RewardedAd;",
+    name = "isAdReady",
+    returnType = "Z",
     accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf("Ljava/lang/String;"),
+    parameters = listOf(),
     filters = listOf(
         methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "showRewardedVideo",
-            parameters = listOf("Ljava/lang/String;"),
+            definingClass = "Lcom/unity3d/mediation/rewarded/LevelPlayRewardedAd;",
+            name = "isAdReady",
         )
     )
 )
 
-/**
- * com.ironsource.unity.androidbridge.AndroidBridge.showRewardedVideo()V — public (parameterless).
- *
- * The no-placement legacy show entry (`IronSource.Agent.ShowRewardedVideo()` with no
- * placement — the game uses it for flows where the placement string is optional). It simply
- * forwards to the SDK: `invoke-static {}, IronSource.showRewardedVideo()V`. Patched exactly
- * like the String variant, but the placement name is always "REWARDED_VIDEO" (a real constant
- * in the game's handler match list).
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:1609
- * (.registers 1 — p0 only, ZERO locals, so the patch expands registers via
- * cloneMutable(additionalRegisters = 4) → registers 5: v0-v3 locals + p0).
- *
- * Filter with parameters = listOf() disambiguates the parameterless overload: it calls
- * IronSource.showRewardedVideo()V (no-arg), while showRewardedVideo(String)V calls the
- * String overload.
- */
-object ShowRewardedVideoNoArgFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
-    name = "showRewardedVideo",
+// RewardedAd.isPlacementCapped(String)Z — public static. Forwards to
+// LevelPlayRewardedAd.isPlacementCapped. Smali: RewardedAd.smali (.registers 1,
+// static so no `this` and no locals). Single filter: only caller of
+// LevelPlayRewardedAd.isPlacementCapped here.
+object RewardedAdIsPlacementCappedFingerprint : Fingerprint(
+    definingClass = "Lcom/ironsource/unity/androidbridge/RewardedAd;",
+    name = "isPlacementCapped",
+    returnType = "Z",
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
+    parameters = listOf("Ljava/lang/String;"),
+    filters = listOf(
+        methodCall(
+            definingClass = "Lcom/unity3d/mediation/rewarded/LevelPlayRewardedAd;",
+            name = "isPlacementCapped",
+        )
+    )
+)
+
+// RewardedAd.loadAd()V — public. Forwards to LevelPlayRewardedAd.loadAd.
+// Smali: RewardedAd.smali (.registers 2).
+// Single filter: only caller of LevelPlayRewardedAd.loadAd in this class.
+object RewardedAdLoadAdFingerprint : Fingerprint(
+    definingClass = "Lcom/ironsource/unity/androidbridge/RewardedAd;",
+    name = "loadAd",
     returnType = "V",
     accessFlags = listOf(AccessFlags.PUBLIC),
     parameters = listOf(),
     filters = listOf(
         methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "showRewardedVideo",
-            parameters = listOf(),
+            definingClass = "Lcom/unity3d/mediation/rewarded/LevelPlayRewardedAd;",
+            name = "loadAd",
         )
     )
 )
 
-/**
- * com.ironsource.unity.androidbridge.RewardedAd.showAd(String)V — public.
- *
- * NEW-API show entry (`LevelPlayRewardedAd.ShowAd(placementName)` in C#). It forwards to
- * `LevelPlayRewardedAd.showAd(Activity, String)`. Secondary grant trigger
- * (game events `onAdRewardedEvent` / `IUnityRewardedAdListener` are wired as well).
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/RewardedAd.smali:134
- * (.registers 4 — v0, v1 locals + p0, p1 params).
- *
- * Filter: the only call site of LevelPlayRewardedAd.showAd in this bridge class.
- */
+// RewardedAd.setupRewardedListener(IUnityRewardedAdListener)V — private.
+// Called from the constructor with the C# proxy as p1; wraps it in RewardedAd$1
+// and registers it via LevelPlayRewardedAd.setListener. The patch stores the proxy
+// in a new instance field here so showAd can fire the lifecycle directly.
+// Smali: RewardedAd.smali (.registers 4). Filter order matches smali:
+// anonymous listener build first, then setListener.
+object RewardedAdSetupListenerFingerprint : Fingerprint(
+    definingClass = "Lcom/ironsource/unity/androidbridge/RewardedAd;",
+    name = "setupRewardedListener",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PRIVATE),
+    parameters = listOf("Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;"),
+    filters = listOf(
+        methodCall(
+            definingClass = "Lcom/ironsource/unity/androidbridge/RewardedAd\$1",
+            name = "<init>",
+        ),
+        methodCall(
+            definingClass = "Lcom/unity3d/mediation/rewarded/LevelPlayRewardedAd;",
+            name = "setListener",
+        )
+    )
+)
+
+// RewardedAd.showAd(String)V — public. Forwards to
+// LevelPlayRewardedAd.showAd(Activity, String). Smali: RewardedAd.smali
+// (.registers 4 — v0, v1 locals + p0, p1).
+// Single filter: only caller of LevelPlayRewardedAd.showAd in this class.
 object RewardedAdShowAdFingerprint : Fingerprint(
     definingClass = "Lcom/ironsource/unity/androidbridge/RewardedAd;",
     name = "showAd",
@@ -92,224 +128,16 @@ object RewardedAdShowAdFingerprint : Fingerprint(
     )
 )
 
-/**
- * com.ironsource.unity.androidbridge.RewardedAd.setupRewardedListener(IUnityRewardedAdListener)V — private.
- *
- * Called from BOTH RewardedAd constructors with the C# proxy (`IUnityRewardedAdListener`)
- * as p1. It wraps the proxy in the anonymous RewardedAd$1 SDK listener and registers it with
- * `LevelPlayRewardedAd.setListener(...)`. The patch stores the proxy in a new instance field
- * here so showAd can fire the reward lifecycle directly.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/RewardedAd.smali:80
- * (.registers 4 — v0, v1 locals + p0, p1 params).
- *
- * Filter: the only call site of LevelPlayRewardedAd.setListener in this bridge class.
- */
-object RewardedAdSetupListenerFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/RewardedAd;",
-    name = "setupRewardedListener",
-    returnType = "V",
-    accessFlags = listOf(AccessFlags.PRIVATE),
-    parameters = listOf("Lcom/ironsource/unity/androidbridge/IUnityRewardedAdListener;"),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/unity3d/mediation/rewarded/LevelPlayRewardedAd;",
-            name = "setListener",
-        )
-    )
-)
+// ---------------------------------------------------------------------------
+// Interstitial removal (LevelPlay new-API bridge, classes7).
+//
+// loadAd + showAd never reach the SDK, isAdReady always false, and showAd fires a
+// synthetic onAdDisplayed → onAdClosed on the C# proxy so the game's interstitial
+// state machine always resolves instead of waiting for a close that never comes.
+// ---------------------------------------------------------------------------
 
-/**
- * com.ironsource.unity.androidbridge.LevelPlayInterstitialWrapper.onAdReady(AdInfo)V — public.
- *
- * The SDK → C# "interstitial is loaded and ready" dispatch (legacy LevelPlay path). It
- * posts LevelPlayInterstitialWrapper$1 (which calls the C# proxy's onAdReady) to a
- * background task. Disabling this prevents the C# InterstitialManager from ever
- * transitioning to show — the PRIMARY ready-signal kill (no launch ad, no mid-game ad,
- * no PauseGame → no hang).
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/LevelPlayInterstitialWrapper.smali:112
- * (.registers 3 — v0 local + p0, p1 params).
- *
- * Filter order matches smali exactly: new-instance $1 → invoke-direct $1.<init> (line 123)
- * THEN postBackgroundTask (line 125). onAdReady(AdInfo) is unique vs the SDK's own
- * internal listeners because it dispatches through the Unity bridge's $1 runnable.
- */
-object LevelPlayInterstitialWrapperOnAdReadyFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/LevelPlayInterstitialWrapper;",
-    name = "onAdReady",
-    returnType = "V",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf("Lcom/ironsource/mediationsdk/adunit/adapter/utility/AdInfo;"),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/ironsource/unity/androidbridge/LevelPlayInterstitialWrapper\$1",
-            name = "<init>",
-        ),
-        methodCall(
-            definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridgeUtilities",
-            name = "postBackgroundTask",
-        ),
-    )
-)
-
-/**
- * com.ironsource.unity.androidbridge.AndroidBridge.isInterstitialReady()Z — public.
- *
- * C# `IsInterstitialReady()` poll. Returns the SDK's ready state by delegating to
- * `IronSource.isInterstitialReady()Z`. Forcing false means the C# manager never
- * believes an interstitial exists (defense for the auto-load path).
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:821
- * (.registers 2 — v0 local + p0).
- *
- * Filter: the only bridge method calling IronSource.isInterstitialReady. IronSource's
- * isInterstitialReady()Z has a single no-arg overload, so the filter is unambiguous.
- */
-object AndroidBridgeIsInterstitialReadyFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
-    name = "isInterstitialReady",
-    returnType = "Z",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf(),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "isInterstitialReady",
-        )
-    )
-)
-
-/**
- * com.ironsource.unity.androidbridge.AndroidBridge.loadInterstitial()V — public.
- *
- * C# `CacheInterstitial` → `LoadInterstitial()`. No-op saves the explicit network load.
- * NOTE: the SDK auto-loads after init (no setManualLoadInterstitial in this build), so
- * this is NOT sufficient alone — paired with the ready-kill + ready=false + show-kill.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:910
- * (.registers 1 — p0 only, no locals).
- *
- * Filter: the only bridge method calling IronSource.loadInterstitial.
- */
-object AndroidBridgeLoadInterstitialFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
-    name = "loadInterstitial",
-    returnType = "V",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf(),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "loadInterstitial",
-        )
-    )
-)
-
-/**
- * com.ironsource.unity.androidbridge.AndroidBridge.showInterstitial()V — public (parameterless).
- *
- * C# legacy show entry without placement. Normally forwards to
- * `IronSource.showInterstitial()V`. Instead we fire the synthetic lifecycle
- * onAdOpened("") → onAdShowSucceeded("") → onAdClosed("") on the C# proxy so the game
- * unpauses/continues immediately, falling back to the real show only if the bridge
- * wrapper or listener is unset.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:1591
- * (.registers 1 — p0 only, ZERO locals; the patch must expand registers via
- * cloneMutable(additionalRegisters = 2) → registers 3: v0, v1 locals + p0).
- *
- * Filter with parameters = listOf() disambiguates the parameterless overload: it calls
- * IronSource.showInterstitial()V (no-arg), while showInterstitial(String)V calls the
- * String overload.
- */
-object AndroidBridgeShowInterstitialFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
-    name = "showInterstitial",
-    returnType = "V",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf(),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "showInterstitial",
-            parameters = listOf(),
-        )
-    )
-)
-
-/**
- * com.ironsource.unity.androidbridge.AndroidBridge.showInterstitial(String)V — public.
- *
- * C# legacy show entry WITH placement (`GetInterstitial` → `ShowInterstitial(placement)`).
- * Normally forwards to `IronSource.showInterstitial(String)V`. Replaced with the same
- * synthetic close-lifecycle dispatch as the parameterless variant.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:1600
- * (.registers 2 — p0, p1, ZERO locals; the patch expands registers via cloneParameters() →
- * registers 4: v0, v1 locals + p0, p1).
- *
- * Filter with parameters = listOf("Ljava/lang/String;") disambiguates the String overload.
- */
-object AndroidBridgeShowInterstitialStringFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
-    name = "showInterstitial",
-    returnType = "V",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf("Ljava/lang/String;"),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "showInterstitial",
-            parameters = listOf("Ljava/lang/String;"),
-        )
-    )
-)
-
-/**
- * com.ironsource.unity.androidbridge.AndroidBridge.loadBanner(
- *   String, int, int, int, String, boolean, boolean, float, float)V — public.
- *
- * C# `LoadBanner` (PikPok Advertising.LoadBanner/GetExistingBanner). No-op = the banner
- * view is never created → nothing displays. displayBanner/hideBanner/destroyBanner are
- * all null-safe (verified: AndroidBridge$6/$7/$8 run() null-check mBannerContainer
- * before touching the banner and wrap in try/catch), so no downstream NPE.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:867
- * (.registers 12 — v0, v1 locals + p0..p9 params). The body monitor-guards, sets
- * mIsBannerLoadCalled, then invokes the private loadAndShowBanner (line 893).
- *
- * Filter: loadBanner is the ONLY caller of the private loadAndShowBanner (verified:
- * single invoke-direct/range at line 893), so that call uniquely identifies this method.
- * (NOTE: the notes suggested AndroidBridge$5.<init> + Handler.post — those live inside
- * loadAndShowBanner, NOT in loadBanner itself — this filter is the correct one.)
- */
-object AndroidBridgeLoadBannerFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
-    name = "loadBanner",
-    returnType = "V",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf(
-        "Ljava/lang/String;", "I", "I", "I", "Ljava/lang/String;",
-        "Z", "Z", "F", "F",
-    ),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
-            name = "loadAndShowBanner",
-        )
-    )
-)
-
-/**
- * com.ironsource.unity.androidbridge.InterstitialAd.loadAd()V — public.
- *
- * NEW-API load entry (`Unity.Services.LevelPlay.LevelPlayInterstitialAd` in C#). Forwards
- * to `LevelPlayInterstitialAd.loadAd()`. No-op = never loads via the new API.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/InterstitialAd.smali:123
- * (.registers 2 — v0 local + p0).
- */
+// InterstitialAd.loadAd()V — public. Forwards to LevelPlayInterstitialAd.loadAd.
+// Smali: InterstitialAd.smali (.registers 2).
 object InterstitialAdLoadAdFingerprint : Fingerprint(
     definingClass = "Lcom/ironsource/unity/androidbridge/InterstitialAd;",
     name = "loadAd",
@@ -324,15 +152,8 @@ object InterstitialAdLoadAdFingerprint : Fingerprint(
     )
 )
 
-/**
- * com.ironsource.unity.androidbridge.InterstitialAd.isAdReady()Z — public.
- *
- * NEW-API readiness poll. Forcing false keeps the C# LevelPlayInterstitialAd manager from
- * believing a loaded ad exists.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/InterstitialAd.smali:110
- * (.registers 2 — v0 local + p0).
- */
+// InterstitialAd.isAdReady()Z — public. Forwards to
+// LevelPlayInterstitialAd.isAdReady. Smali: InterstitialAd.smali (.registers 2).
 object InterstitialAdIsAdReadyFingerprint : Fingerprint(
     definingClass = "Lcom/ironsource/unity/androidbridge/InterstitialAd;",
     name = "isAdReady",
@@ -347,19 +168,33 @@ object InterstitialAdIsAdReadyFingerprint : Fingerprint(
     )
 )
 
-/**
- * com.ironsource.unity.androidbridge.InterstitialAd.showAd(String)V — public.
- *
- * NEW-API show entry. Forwards to `LevelPlayInterstitialAd.showAd(Activity, String)`.
- * No-op = never displays via the new API. (No synthetic close-callback: the game's
- * InterstitialManager drives the legacy provider; if a future test shows the new API in
- * use, upgrade to a synthetic onAdDisplayed→onAdClosed with a stored listener field.)
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/InterstitialAd.smali:134
- * (.registers 4 — v0, v1 locals + p0, p1).
- *
- * Filter: the only bridge method calling LevelPlayInterstitialAd.showAd.
- */
+// InterstitialAd.setupInterstitialListener(IUnityInterstitialAdListener)V — private.
+// Interstitial counterpart of RewardedAd.setupRewardedListener: called from the
+// constructor with the C# proxy as p1, wraps it in InterstitialAd$1 and registers
+// it via LevelPlayInterstitialAd.setListener. Stores the proxy in a new instance
+// field for the showAd synthetic lifecycle.
+// Smali: InterstitialAd.smali (.registers 4).
+object InterstitialAdSetupListenerFingerprint : Fingerprint(
+    definingClass = "Lcom/ironsource/unity/androidbridge/InterstitialAd;",
+    name = "setupInterstitialListener",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PRIVATE),
+    parameters = listOf("Lcom/ironsource/unity/androidbridge/IUnityInterstitialAdListener;"),
+    filters = listOf(
+        methodCall(
+            definingClass = "Lcom/ironsource/unity/androidbridge/InterstitialAd\$1",
+            name = "<init>",
+        ),
+        methodCall(
+            definingClass = "Lcom/unity3d/mediation/interstitial/LevelPlayInterstitialAd;",
+            name = "setListener",
+        )
+    )
+)
+
+// InterstitialAd.showAd(String)V — public. Forwards to
+// LevelPlayInterstitialAd.showAd(Activity, String).
+// Smali: InterstitialAd.smali (.registers 4 — v0, v1 locals + p0, p1).
 object InterstitialAdShowAdFingerprint : Fingerprint(
     definingClass = "Lcom/ironsource/unity/androidbridge/InterstitialAd;",
     name = "showAd",
@@ -374,14 +209,12 @@ object InterstitialAdShowAdFingerprint : Fingerprint(
     )
 )
 
-/**
- * com.ironsource.unity.androidbridge.BannerAd.load()V — public.
- *
- * NEW-API banner load (`LevelPlayBannerAdView`). No-op = new-API banner never loads.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/BannerAd.smali:770
- * (.registers 2 — v0 local + p0).
- */
+// ---------------------------------------------------------------------------
+// Banner removal (LevelPlay new-API bridge, classes7).
+// ---------------------------------------------------------------------------
+
+// BannerAd.load()V — public. Forwards to LevelPlayBannerAdView.loadAd.
+// Smali: BannerAd.smali (.registers 2 — v0 local + p0).
 object BannerAdLoadFingerprint : Fingerprint(
     definingClass = "Lcom/ironsource/unity/androidbridge/BannerAd;",
     name = "load",
@@ -396,17 +229,9 @@ object BannerAdLoadFingerprint : Fingerprint(
     )
 )
 
-/**
- * com.ironsource.unity.androidbridge.BannerAd.showAd()V — public.
- *
- * NEW-API banner show. Posts BannerAd$2 on the UI thread to set view visibility. No-op =
- * an empty banner view never occupies layout.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/BannerAd.smali:803
- * (.registers 3 — v0, v1 locals + p0).
- *
- * Filter: showAd() is the only method building BannerAd$2.
- */
+// BannerAd.showAd()V — public. Posts BannerAd$2 on the UI thread to set view
+// visibility. Smali: BannerAd.smali (.registers 3 — v0, v1 locals + p0).
+// Filter: showAd() is the only method building BannerAd$2.
 object BannerAdShowAdFingerprint : Fingerprint(
     definingClass = "Lcom/ironsource/unity/androidbridge/BannerAd;",
     name = "showAd",
@@ -421,26 +246,15 @@ object BannerAdShowAdFingerprint : Fingerprint(
     )
 )
 
-/**
- * com.google.unity.ads.UnityAppOpenAd.loadAd(String, AdRequest)V — public.
- *
- * PRIMARY App Open Ad load entry. C# `LoadAppOpenAd` (PikPok.Advertising) →
- * JNI → this method. Normally posts UnityAppOpenAd$$ExternalSyntheticLambda0
- * to the UI thread which calls `AppOpenAd.load(...)` (the real network load).
- * No-op = nothing ever loads → `isAdAvailable()` false → the C# `ShowAppOpenAd`
- * gate skips → `show()` hits its null-guard. Kills the ad at the source.
- *
- * Confirmed smali: classes8/com/google/unity/ads/UnityAppOpenAd.smali:309
- * (.registers 5 — v0, v1 locals + p0, p1, p2 params; no try/catch/monitor).
- * The body (lines 323-329) is: iget activity → new-instance $$ExternalSyntheticLambda0
- * → invoke-direct $$ExternalSyntheticLambda0.<init> → runOnUiThread.
- *
- * Filter (order matches smali exactly): the $$ExternalSyntheticLambda0 build is
- * unique to loadAd (grep-verified: no other method constructs it), and
- * Activity.runOnUiThread is the final call. NOTE: the notes' suggested
- * self-call `methodCall(UnityAppOpenAd, loadAd)` does NOT exist in the body —
- * this filter pair is the verified reality.
- */
+// ---------------------------------------------------------------------------
+// App Open Ad removal (Google Unity Ads bridge, classes7 in 2.9.5 — was classes8).
+// ---------------------------------------------------------------------------
+
+// UnityAppOpenAd.loadAd(String, AdRequest)V — public. PRIMARY App Open Ad load
+// entry (C# `LoadAppOpenAd` → JNI). Posts UnityAppOpenAd$$ExternalSyntheticLambda0
+// to the UI thread which performs the real `AppOpenAd.load(...)`.
+// Smali: UnityAppOpenAd.smali (.registers 5). No-op kills it at the source, so
+// `isAdAvailable()` stays false and the C# show gate skips.
 object UnityAppOpenAdLoadAdFingerprint : Fingerprint(
     definingClass = "Lcom/google/unity/ads/UnityAppOpenAd;",
     name = "loadAd",
@@ -459,25 +273,9 @@ object UnityAppOpenAdLoadAdFingerprint : Fingerprint(
     )
 )
 
-/**
- * com.google.unity.ads.UnityAppOpenAd.show()V — public.
- *
- * PRIMARY direct show entry. C# `ShowAppOpenAd` → JNI → this method. Normally
- * null-checks appOpenAd, then posts UnityAppOpenAd$$ExternalSyntheticLambda1 to
- * the UI thread which calls `AppOpenAd.show(activity)` — the REAL full-screen
- * display. No-op = even if some path (e.g. a late load completing) produces a
- * non-null appOpenAd, show() never displays it. Belt-and-braces on loadAd.
- *
- * Confirmed smali: classes8/com/google/unity/ads/UnityAppOpenAd.smali:414
- * (.registers 3 — v0, v1 locals + p0; null-guard branch + UI-thread post, no
- * try/catch/monitor). The display branch (lines 433-439) is: iget activity →
- * new-instance $$ExternalSyntheticLambda1 → invoke-direct <init> → runOnUiThread.
- *
- * Filter (order matches smali exactly): the $$ExternalSyntheticLambda1 build is
- * unique to show() (grep-verified), followed by Activity.runOnUiThread. No other
- * show method exists (no overloads), and parameters = listOf() pins the no-arg
- * form.
- */
+// UnityAppOpenAd.show()V — public. PRIMARY direct show entry. Null-checks
+// appOpenAd, then posts UnityAppOpenAd$$ExternalSyntheticLambda1 which calls the
+// real `AppOpenAd.show(activity)`. Smali: UnityAppOpenAd.smali (.registers 3).
 object UnityAppOpenAdShowFingerprint : Fingerprint(
     definingClass = "Lcom/google/unity/ads/UnityAppOpenAd;",
     name = "show",
@@ -496,22 +294,11 @@ object UnityAppOpenAdShowFingerprint : Fingerprint(
     )
 )
 
-/**
- * com.google.unity.ads.UnityAppOpenAd.pollAd(String)V — public.
- *
- * SECONDARY AdMob preloader path. `AppOpenAd.pollAd(ctx, adUnitId)` can populate
- * the appOpenAd field WITHOUT loadAd (Google Play Services preloaded cache).
- * No-op = the preloader path can never supply an ad, closing the one route that
- * could still populate appOpenAd after loadAd is disabled.
- *
- * Confirmed smali: classes8/com/google/unity/ads/UnityAppOpenAd.smali:334
- * (.registers 9 — v0..v6 locals + p0, p1 params; if-nez branches, NO try/catch —
- * a single return-void at index 0 leaves the branches unreachable dead code,
- * which the verifier accepts; matches the repo's loadBanner no-op convention).
- *
- * Filter: pollAd() is the ONLY method calling AppOpenAd.pollAd (grep-verified
- * single invoke-static at line 348), so one filter is unambiguous.
- */
+// UnityAppOpenAd.pollAd(String)V — public. SECONDARY AdMob preloader path.
+// `AppOpenAd.pollAd(ctx, adUnitId)` can populate appOpenAd WITHOUT loadAd.
+// Smali: UnityAppOpenAd.smali (.registers 9 — v0..v6 locals + p0, p1).
+// No-op leaves the branches unreachable dead code, which the verifier accepts
+// (matches the repo's existing no-op convention).
 object UnityAppOpenAdPollAdFingerprint : Fingerprint(
     definingClass = "Lcom/google/unity/ads/UnityAppOpenAd;",
     name = "pollAd",
@@ -526,29 +313,11 @@ object UnityAppOpenAdPollAdFingerprint : Fingerprint(
     )
 )
 
-/**
- * com.google.unity.ads.UnityAppStateEventNotifier.startListening()V — public.
- *
- * SECONDARY auto-show trigger kill. Called by C# to register this notifier as a
- * ProcessLifecycleOwner observer. Normally posts UnityAppStateEventNotifier$1 to
- * the UI thread; $1.run() calls ProcessLifecycleOwner.get().getLifecycle().
- * addObserver(this), and every subsequent onStart() fires
- * `onAppStateChanged(false)` → C# ShowAppOpenAd auto-fires on foreground.
- * No-op = the notifier is never registered → onStart/onStop lifecycle callbacks
- * never reach C# → the app-open show never auto-triggers. Covers any future C#
- * change. No side effects: this notifier exists only for App-Open ads.
- *
- * Confirmed smali: classes8/com/google/unity/ads/UnityAppStateEventNotifier.smali:141
- * (.registers 3 — v0, v1 locals + p0; no try/catch/monitor). The body (lines
- * 145-151) is: iget activity → new-instance UnityAppStateEventNotifier$1 →
- * invoke-direct $1.<init> → runOnUiThread.
- *
- * Filter (order matches smali exactly): the UnityAppStateEventNotifier$1 build
- * is unique to startListening (stopListening builds $2 — grep-verified), followed
- * by Activity.runOnUiThread. NOTE: the notes' suggested
- * `methodCall(ProcessLifecycleOwner, get)` lives INSIDE $1.run(), not in
- * startListening — this filter pair is the verified reality.
- */
+// UnityAppStateEventNotifier.startListening()V — public. SECONDARY auto-show
+// trigger kill: registers this notifier as a ProcessLifecycleOwner observer, so
+// every foreground onStart() fires `onAppStateChanged(false)` → C# auto-shows the
+// App Open Ad. No-op = the notifier is never registered, so the auto-trigger
+// never arms. Smali: UnityAppStateEventNotifier.smali (.registers 3).
 object UnityAppStateEventNotifierStartListeningFingerprint : Fingerprint(
     definingClass = "Lcom/google/unity/ads/UnityAppStateEventNotifier;",
     name = "startListening",
@@ -564,136 +333,5 @@ object UnityAppStateEventNotifierStartListeningFingerprint : Fingerprint(
             definingClass = "Landroid/app/Activity",
             name = "runOnUiThread",
         ),
-    )
-)
-
-/**
- * com.ironsource.unity.androidbridge.AndroidBridge.isRewardedVideoAvailable()Z — public.
- *
- * C# `IsVideoAvailable(placementId)` (PikPok.Advertising) polls this before showing a
- * rewarded video. In the real game it reflects whether the SDK actually loaded an ad
- * (auto-load or `loadRewardedVideo`); with no network/fill it is false, so the game's
- * `ShowVideoIfAvailable` gate blocks the tap and the instant-reward path never runs.
- * Patching it to true lets the game believe a video is always available.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:832
- * (.registers 2 — v0 local + p0). Filter: the only bridge method calling
- * IronSource.isRewardedVideoAvailable (no overloads).
- */
-object AndroidBridgeIsRewardedVideoAvailableFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
-    name = "isRewardedVideoAvailable",
-    returnType = "Z",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf(),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "isRewardedVideoAvailable",
-        )
-    )
-)
-
-/**
- * com.ironsource.unity.androidbridge.AndroidBridge.isRewardedVideoPlacementCapped(String)Z — public.
- *
- * C# `IsRewardedVideoPlacementCapped(placementId)` — if the tapped placement is reported
- * capped the game refuses to show. Forcing false means no placement can block the flow.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:843
- * (.registers 2 — v0 local + p0, p1). Filter: the only bridge method calling
- * IronSource.isRewardedVideoPlacementCapped.
- */
-object AndroidBridgeIsRewardedVideoPlacementCappedFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
-    name = "isRewardedVideoPlacementCapped",
-    returnType = "Z",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf("Ljava/lang/String;"),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "isRewardedVideoPlacementCapped",
-        )
-    )
-)
-
-/**
- * com.ironsource.unity.androidbridge.AndroidBridge.loadRewardedVideo()V — public.
- *
- * C# `CacheVideo(placementId)` / manual-load entry (`IronSource.Agent.LoadRewardedVideo`).
- * Normally starts a real network load; on completion the SDK fires wrapper.onAdReady →
- * manual listener onAdReady OR (auto) wrapper.onAdAvailable → regular listener
- * onAdAvailable, which the C# provider turns into the `VideoReady` event → the game
- * marks its Video object Ready and enables/accepts the watch button.
- *
- * With no fill the event never fires, so the game never considers a video ready.
- * This patch fires BOTH synthetic readiness callbacks synchronously ("{}" adInfo, exactly
- * like the real forwarders $1/$8 do), then falls through to the real load only if the
- * bridge is unset. C# then raises VideoReady → ShowVideoIfAvailable passes →
- * showRewardedVideo runs the instant-reward lifecycle.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/AndroidBridge.smali:919
- * (.registers 1 — p0 only, ZERO locals; expand via cloneMutable(additionalRegisters = 2) →
- * registers 3: v0, v1 locals + p0, then swap the original out of the class).
- */
-object AndroidBridgeLoadRewardedVideoFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/AndroidBridge;",
-    name = "loadRewardedVideo",
-    returnType = "V",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf(),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/ironsource/mediationsdk/IronSource;",
-            name = "loadRewardedVideo",
-        )
-    )
-)
-
-/**
- * com.ironsource.unity.androidbridge.RewardedAd.isAdReady()Z — public.
- *
- * NEW-API readiness poll (`LevelPlayRewardedAd.IsAdReady()` in C#). Forcing true means
- * the new API never reports an unloaded ad — safety net in case any path polls it.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/RewardedAd.smali:110
- * (.registers 2 — v0 local + p0).
- */
-object RewardedAdIsAdReadyFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/RewardedAd;",
-    name = "isAdReady",
-    returnType = "Z",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf(),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/unity3d/mediation/rewarded/LevelPlayRewardedAd;",
-            name = "isAdReady",
-        )
-    )
-)
-
-/**
- * com.ironsource.unity.androidbridge.RewardedAd.loadAd()V — public.
- *
- * NEW-API load entry. Fires a synthetic onAdLoaded("{}") on the stored C# listener
- * (mUnityRewardedAdListener, set by Section 2) so a new-API flow also believes the ad is
- * ready; falls back to the real load if the listener is unset.
- *
- * Confirmed smali: classes7/com/ironsource/unity/androidbridge/RewardedAd.smali:123
- * (.registers 2 — v0 local + p0; cloneParameters() → registers 4).
- */
-object RewardedAdLoadAdFingerprint : Fingerprint(
-    definingClass = "Lcom/ironsource/unity/androidbridge/RewardedAd;",
-    name = "loadAd",
-    returnType = "V",
-    accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf(),
-    filters = listOf(
-        methodCall(
-            definingClass = "Lcom/unity3d/mediation/rewarded/LevelPlayRewardedAd;",
-            name = "loadAd",
-        )
     )
 )

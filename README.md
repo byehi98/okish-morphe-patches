@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.39.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.39.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;90 patches total
+> **[v1.39.1-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.39.1-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;90 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -51,6 +51,22 @@ Direct URL:
 | [Full IAP Unlock](#full-iap-unlock) | Unlocks every purchase in the game for free. Tap buy and it is yours — no Google Play payment screen appears and you are never charged. Subscriptions like VIP membership show as pre-owned, so just open them, no purchase needed. |  |
 | [IAP Grant Engine](#iap-grant-engine) | Helper that makes the game approve every purchase on your own device, including subscriptions like VIP membership, so bought items land in your account without paying anything. |  |
 | [IAP Grant Trigger](#iap-grant-trigger) | Wakes up that helper every time you open the game, so free purchases and subscriptions keep working. |  |
+
+</details>
+
+<details>
+<summary>📦 Into the Dead&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 2.9.5 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Ad Removal & Instant Boost Rewards](#ad-removal-instant-boost-rewards) | Removes all ads (interstitials, banners, app-open) and grants rewarded-video perk boosts instantly on tap (no ad watch) using the correct reward name PERKS_BOOST, verified against a real rewarded event. |  |
+| [Into the Dead Billing Bypass](#into-the-dead-billing-bypass) | Unlocks all in-app purchases for free and bypasses SHA1withRSA receipt verification: every store item is granted instantly without launching the Google Play payment dialog, and any fabricated receipt is accepted. |  |
 
 </details>
 
@@ -372,22 +388,6 @@ Direct URL:
 | [Instant rewards](#instant-rewards) | Reward buttons (free revive, double coins) pay out instantly without playing any ad video (native libil2cpp.so patch). |  |
 | [Remove ads](#remove-ads) | Stops all interstitial/commercial-break ads between games (native libil2cpp.so patch, rewarded videos handled by the instant-rewards patch). |  |
 | [Unlimited coins](#unlimited-coins) | Coin save reads always return ~1.34 billion coins (native libil2cpp.so patch on Org.TotalCoins). |  |
-
-</details>
-
-<details>
-<summary>📦 Into the Dead&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
-<br>
-
-**🎯 Supported versions:**
-
-| 2.9.3 |
-| :---: |
-
-| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
-|----------|----------------|-----------|
-| [Into the Dead 2 Ad Removal & Instant Boost Rewards](#into-the-dead-2-ad-removal-instant-boost-rewards) | Removes all ads (interstitials, banners, app-open) and grants rewarded-video perk boosts instantly on tap (no ad watch) using the correct reward name PERKS_BOOST, verified against a real rewarded event. |  |
-| [Into the Dead Billing Bypass](#into-the-dead-billing-bypass) | Unlocks all in-app purchases for free and bypasses SHA1withRSA receipt verification: every store item is granted instantly without launching the Google Play payment dialog, and any fabricated receipt is accepted. |  |
 
 </details>
 

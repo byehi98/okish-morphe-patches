@@ -8,10 +8,10 @@ object Constants {
     val COMPATIBILITY_INTO_THE_DEAD = Compatibility(
         name = "Into the Dead",
         packageName = "com.sidheinteractive.sif.DR",
-        apkFileType = ApkFileType.APKM,
+        apkFileType = ApkFileType.XAPK,
         appIconColor = 0x8B0000,
         targets = listOf(
-            AppTarget(version = "2.9.3")
+            AppTarget(version = "2.9.5")
         )
     )
 }
