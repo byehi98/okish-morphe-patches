@@ -105,7 +105,7 @@ import com.android.tools.smali.dexlib2.immutable.ImmutableField
  */
 @Suppress("unused")
 val intoTheDeadAdRemovalInstantBoostRewardsPatch = bytecodePatch(
-    name = "Into the Dead 2 Ad Removal & Instant Boost Rewards",
+    name = "Ad Removal & Instant Boost Rewards",
     description = "Removes all ads (interstitials, banners, app-open) and grants rewarded-video perk boosts instantly on tap (no ad watch) using the correct reward name PERKS_BOOST, verified against a real rewarded event.",
     default = true
 ) {
