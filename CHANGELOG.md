@@ -1,3 +1,9 @@
+## [1.40.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.40.0-dev.2...v1.40.0-dev.3) (2026-10-07)
+
+### ✨ New Features
+
+* **swampattack:** add ad removal and free store patches ([0991c07](https://github.com/byehi98/okish-morphe-patches/commit/0991c07611a9b31b8bd3c7ff3252f0bfaf7fcbdb))
+
 ## [1.40.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.40.0-dev.1...v1.40.0-dev.2) (2026-10-07)
 
 ### 🚀 Updated App Support
