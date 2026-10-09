@@ -12,10 +12,7 @@ import app.swampattack2.patches.shared.Constants.COMPATIBILITY_SWAMP_ATTACK_2
  * verified against the shipped smali and turned into an immediate `return-void`:
  *
  * * **Interstitials** — `showInterstitial(String,String,String,MetaAdsShowCallback)`
- *   never reaches the SDK. (Belt-and-braces: the native engine's
- *   `AreInterstitialsDisabled` hook already stops the C# funnel —
- *   `InterstitialAdManager.TryShowInterstitial` — before any Java is called; this
- *   layer keeps interstitials out even if the native engine is disabled.)
+ *   never reaches the SDK.
  * * **Banners** — `createBannerWithPosition/Coords` never create, load or attach a
  *   view (UnityBanners.createAdView → retrieveOrCreateAdView + load() + attach
  *   lambda — create* alone can put a banner on screen, so show/load/create are all
@@ -29,24 +26,21 @@ import app.swampattack2.patches.shared.Constants.COMPATIBILITY_SWAMP_ATTACK_2
  * Firebase/Metica remote config: the block is at the SDK boundary, below any
  * server-driven gating.
  *
- * **Rewarded is deliberately NOT touched here.** Reward videos are completed
- * natively by the bundled engine: the `AreVideoAdsDisabled` hook makes
- * `VideoAdManager.ShowVideoClip` take the app's own "ads disabled" branch, which
- * invokes `RewardedVideoCompleted(completed=true, skipped=true)` in-process —
- * the stored completion action fires and the reward lands instantly with no ad,
- * no mediation, no Java callback to wait on (so it cannot hang). Blocking
- * `UnityBridge.showRewarded` instead would need a real ad callback object and
- * would strand the C# wait. Keep the native engine (Unlimited Currency Engine
- * + Trigger, both default-on) enabled for instant rewards; with this patch alone,
- * opt-in "watch ad" offers still behave like the stock game (real ad, real reward).
+ * **Rewarded is deliberately NOT touched here.** Blocking `UnityBridge.showRewarded`
+ * would need a real ad callback object and could strand the C# wait for the
+ * reward. Rewarded offers are instead completed in-engine by the static
+ * `InstantRewardedPatch` (forces `PlayerData.AreVideoAdsDisabled` true, so
+ * `VideoAdManager.ShowVideoClip` takes the app's own ads-disabled branch and
+ * grants instantly): with both patches, opt-in "watch ad" offers grant
+ * immediately with no ad.
  *
- * Disjoint from the engine's native gates (different layer, no shared state);
- * safe to enable alongside the currency patches. Anchors: notes/ads.md A1/A4.
+ * Standalone: no trigger, no native companion — safe alongside the static
+ * currency patch. Anchors: notes/ads.md A1/A4.
  */
 @Suppress("unused")
 val adsRemovalPatch = bytecodePatch(
     name = "Swamp Attack 2: Remove Ads",
-    description = "Removes all ads. No more forced ads between levels, no banners. When the game offers a reward for watching an ad, you still get the reward.",
+    description = "Removes forced ads. No more ads between levels, no banners.",
     default = true,
 ) {
     compatibleWith(COMPATIBILITY_SWAMP_ATTACK_2)
