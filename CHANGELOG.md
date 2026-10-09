@@ -1,3 +1,9 @@
+## [1.40.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.40.0-dev.3...v1.40.0-dev.4) (2026-10-09)
+
+### ✨ New Features
+
+* **swampattack2:** add unlimited currency and ad removal ([b54a9d7](https://github.com/byehi98/okish-morphe-patches/commit/b54a9d77cbd4b3ddf863397f68cdb1eaea289816))
+
 ## [1.40.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.40.0-dev.2...v1.40.0-dev.3) (2026-10-07)
 
 ### ✨ New Features

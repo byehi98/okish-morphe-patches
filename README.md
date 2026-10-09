@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.40.0-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.40.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;93 patches total
+> **[v1.40.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.40.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;96 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -587,6 +587,23 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Smash Hit Premium Unlock](#smash-hit-premium-unlock) | Unlocks premium and all game modes without purchase. |  |
+
+</details>
+
+<details>
+<summary>📦 Swamp Attack 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.3.9 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Swamp Attack 2: Remove Ads](#swamp-attack-2-remove-ads) | Removes all ads. No more forced ads between levels, no banners. When the game offers a reward for watching an ad, you still get the reward. |  |
+| [Swamp Attack 2: Unlimited Currency Engine](#swamp-attack-2-unlimited-currency-engine) | Unlimited coins and gems. Buying things never lowers your balance, you earn 10x more, and your wallet always shows 99,999,999. Also removes ads and gives ad rewards instantly. Note: the number shown in the game doesn't matter — whatever it displays, your currency is unlimited. If it ever changes or looks wrong, simply restart the game and the currency will be unlimited again. |  |
+| [Swamp Attack 2: Unlimited Currency Trigger](#swamp-attack-2-unlimited-currency-trigger) | Starts the Unlimited Currency helper when the game opens. Required for the Unlimited Currency Engine to work. |  |
 
 </details>
 
