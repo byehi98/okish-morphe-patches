@@ -1,3 +1,9 @@
+## [1.41.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.40.0...v1.41.0-dev.1) (2026-10-09)
+
+### ✨ New Features
+
+* **swampattack2:** implement static native patches for currency and ads ([3187a08](https://github.com/byehi98/okish-morphe-patches/commit/3187a086c41c307d65077143f791ef516150f9f4))
+
 ## [1.40.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.39.1...v1.40.0) (2026-10-09)
 
 ### ✨ New Features

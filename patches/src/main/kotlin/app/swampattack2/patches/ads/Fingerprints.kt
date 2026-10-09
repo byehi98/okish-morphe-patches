@@ -19,10 +19,11 @@ import com.android.tools.smali.dexlib2.AccessFlags
 // lists below are exactly what the smali headers show.
 //
 // Deliberately absent:
-// * showRewarded / loadRewarded — rewarded is handled NATIVELY by the
-//   engine (AreVideoAdsDisabled hook completes the reward in-engine before
-//   any Java is reached); blocking the Java method would need a real ad
-//   callback object and could hang the C# wait.
+// * showRewarded / loadRewarded — rewarded is completed NATIVELY by the
+//   static InstantRewardedPatch (AreVideoAdsDisabled → true, so the engine
+//   grants the reward in-engine before any Java is reached); blocking the
+//   Java method would need a real ad callback object and could hang the
+//   C# wait.
 // * hide*/destroy*/start*AutoRefresh/setWidth/update*Position — all operate
 //   on an existing MeticaAdView; with create/load/show blocked no view ever
 //   exists, so they are unreachable no-ops.

@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.40.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.40.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;97 patches total
+> **[v1.41.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.41.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;97 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -602,9 +602,9 @@ Direct URL:
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Swamp Attack 2: Remove Ads](#swamp-attack-2-remove-ads) | Removes all ads. No more forced ads between levels, no banners. When the game offers a reward for watching an ad, you still get the reward. |  |
-| [Swamp Attack 2: Unlimited Currency Engine](#swamp-attack-2-unlimited-currency-engine) | Unlimited coins and gems. Buying things never lowers your balance, you earn 10x more, and your wallet always shows 99,999,999. Also removes ads and gives ad rewards instantly. Note: the number shown in the game doesn't matter — whatever it displays, your currency is unlimited. If it ever changes or looks wrong, simply restart the game and the currency will be unlimited again. |  |
-| [Swamp Attack 2: Unlimited Currency Trigger](#swamp-attack-2-unlimited-currency-trigger) | Starts the Unlimited Currency helper when the game opens. Required for the Unlimited Currency Engine to work. |  |
+| [Swamp Attack 2: Instant Rewarded Ads](#swamp-attack-2-instant-rewarded-ads) | Watch-ad offers grant their reward instantly with no ad. Forced interstitials stay gone. |  |
+| [Swamp Attack 2: Remove Ads](#swamp-attack-2-remove-ads) | Removes forced ads. No more ads between levels, no banners. |  |
+| [Swamp Attack 2: Unlimited Currency](#swamp-attack-2-unlimited-currency) | Never run out of coins, gems or other resources. Buying things never lowers your balance. Note: ignore the coins/diamonds value shown — even if it shows less than the item price, just tap the item and it will be granted. |  |
 
 </details>
 
