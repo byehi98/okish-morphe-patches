@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.39.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.39.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;90 patches total
+> **[v1.40.0-dev.5](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.40.0-dev.5)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;97 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -255,13 +255,30 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 7.1.6 |
+| 7.1.7 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Free Ad Rewards](#free-ad-rewards) | Every "watch ad" reward is granted instantly — no ad appears, no "failed to load advertisement" popup, and nothing to wait for. |  |
 | [Free Store](#free-store) | Everything in the shop is free. Tap an item and you get it right away — points, characters and presents — with no Google Play payment screen and nothing charged. |  |
+
+</details>
+
+<details>
+<summary>📦 Swamp Attack&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 4.8.7.0 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Store](#free-store) | Everything in the shop is granted instantly and free — double coins, more gifts and the any-purchase perks — with no Google Play payment screen, no account and nothing charged. |  |
+| [Instant Rewards](#instant-rewards) | Rewarded videos give their reward instantly — no ad ever plays. Free revive, double coins, free items, etc. all work without watching anything. |  |
+| [Remove Ads](#remove-ads) | Forced ads are gone for good — interstitials never load or show, even offline and regardless of server settings. Rewarded videos you choose to watch still work. |  |
 
 </details>
 
@@ -293,6 +310,21 @@ Direct URL:
 |----------|----------------|-----------|
 | [FreeJobAlert Ad Removal](#freejobalert-ad-removal) | Removes all Google AdMob ads (banner, interstitial, rewarded, app open, native). |  |
 | [FreeJobAlert License Bypass](#freejobalert-license-bypass) | Bypasses the Pairip Play Store installation check so the app launches normally. |  |
+
+</details>
+
+<details>
+<summary>📦 Grimvalor&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.2.13 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Full game unlock](#full-game-unlock) | Full Game Unlocked. |  |
 
 </details>
 
@@ -556,6 +588,23 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Smash Hit Premium Unlock](#smash-hit-premium-unlock) | Unlocks premium and all game modes without purchase. |  |
+
+</details>
+
+<details>
+<summary>📦 Swamp Attack 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.3.9 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Swamp Attack 2: Remove Ads](#swamp-attack-2-remove-ads) | Removes all ads. No more forced ads between levels, no banners. When the game offers a reward for watching an ad, you still get the reward. |  |
+| [Swamp Attack 2: Unlimited Currency Engine](#swamp-attack-2-unlimited-currency-engine) | Unlimited coins and gems. Buying things never lowers your balance, you earn 10x more, and your wallet always shows 99,999,999. Also removes ads and gives ad rewards instantly. Note: the number shown in the game doesn't matter — whatever it displays, your currency is unlimited. If it ever changes or looks wrong, simply restart the game and the currency will be unlimited again. |  |
+| [Swamp Attack 2: Unlimited Currency Trigger](#swamp-attack-2-unlimited-currency-trigger) | Starts the Unlimited Currency helper when the game opens. Required for the Unlimited Currency Engine to work. |  |
 
 </details>
 

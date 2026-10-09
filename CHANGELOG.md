@@ -1,3 +1,33 @@
+## [1.40.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.40.0-dev.4...v1.40.0-dev.5) (2026-10-09)
+
+### ✨ New Features
+
+* **swampattack:** add instant rewarded ads patch ([457f67c](https://github.com/byehi98/okish-morphe-patches/commit/457f67c701926ae668182a3fec51b6fff7399176))
+
+## [1.40.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.40.0-dev.3...v1.40.0-dev.4) (2026-10-09)
+
+### ✨ New Features
+
+* **swampattack2:** add unlimited currency and ad removal ([b54a9d7](https://github.com/byehi98/okish-morphe-patches/commit/b54a9d77cbd4b3ddf863397f68cdb1eaea289816))
+
+## [1.40.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.40.0-dev.2...v1.40.0-dev.3) (2026-10-07)
+
+### ✨ New Features
+
+* **swampattack:** add ad removal and free store patches ([0991c07](https://github.com/byehi98/okish-morphe-patches/commit/0991c07611a9b31b8bd3c7ff3252f0bfaf7fcbdb))
+
+## [1.40.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.40.0-dev.1...v1.40.0-dev.2) (2026-10-07)
+
+### 🚀 Updated App Support
+
+* **headsoccer:** bump app target version to 7.1.7 ([927bf04](https://github.com/byehi98/okish-morphe-patches/commit/927bf04f3d2bd2938e0a1624b48a1db8cc7054f8))
+
+## [1.40.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.39.1...v1.40.0-dev.1) (2026-10-06)
+
+### ✨ New Features
+
+* **grimvalor:** unlock full game. ([7b9c474](https://github.com/byehi98/okish-morphe-patches/commit/7b9c4741fc06179eb9d8c7ac3dcbe26d80efcb80))
+
 ## [1.39.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.39.0...v1.39.1) (2026-10-06)
 
 ### 🐛 Bug Fixes
