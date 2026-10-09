@@ -1,3 +1,9 @@
+## [1.40.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.40.0-dev.4...v1.40.0-dev.5) (2026-10-09)
+
+### ✨ New Features
+
+* **swampattack:** add instant rewarded ads patch ([457f67c](https://github.com/byehi98/okish-morphe-patches/commit/457f67c701926ae668182a3fec51b6fff7399176))
+
 ## [1.40.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.40.0-dev.3...v1.40.0-dev.4) (2026-10-09)
 
 ### ✨ New Features

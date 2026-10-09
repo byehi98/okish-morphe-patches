@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.40.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.40.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;96 patches total
+> **[v1.40.0-dev.5](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.40.0-dev.5)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;97 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -266,7 +266,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Swamp Attack&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<summary>📦 Swamp Attack&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -277,6 +277,7 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Free Store](#free-store) | Everything in the shop is granted instantly and free — double coins, more gifts and the any-purchase perks — with no Google Play payment screen, no account and nothing charged. |  |
+| [Instant Rewards](#instant-rewards) | Rewarded videos give their reward instantly — no ad ever plays. Free revive, double coins, free items, etc. all work without watching anything. |  |
 | [Remove Ads](#remove-ads) | Forced ads are gone for good — interstitials never load or show, even offline and regardless of server settings. Rewarded videos you choose to watch still work. |  |
 
 </details>
