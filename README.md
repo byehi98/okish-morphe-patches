@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.41.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.41.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;97 patches total
+> **[v1.42.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.42.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;100 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -262,6 +262,23 @@ Direct URL:
 |----------|----------------|-----------|
 | [Free Ad Rewards](#free-ad-rewards) | Every "watch ad" reward is granted instantly — no ad appears, no "failed to load advertisement" popup, and nothing to wait for. |  |
 | [Free Store](#free-store) | Everything in the shop is free. Tap an item and you get it right away — points, characters and presents — with no Google Play payment screen and nothing charged. |  |
+
+</details>
+
+<details>
+<summary>📦 Progressbar95&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.1110 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Store](#free-store) | Tap any shop item to get it free. No payment, no Google Play popup. |  |
+| [License Fix](#license-fix) | Stops license checks from blocking the game on patched installs. |  |
+| [No Ads + Free Rewards](#no-ads-free-rewards) | Blocks all ads and gives reward-ad gifts instantly, no video needed. |  |
 
 </details>
 
@@ -597,7 +614,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.3.9 |
+| 1.3.10 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
