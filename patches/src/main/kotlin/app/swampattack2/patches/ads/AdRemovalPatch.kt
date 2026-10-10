@@ -5,7 +5,7 @@ import app.morphe.util.returnEarly
 import app.swampattack2.patches.shared.Constants.COMPATIBILITY_SWAMP_ATTACK_2
 
 /**
- * Swamp Attack 2 v1.3.9 · **Remove Ads** — forced ads can never reach the screen.
+ * Swamp Attack 2 v1.3.10 · **Remove Ads** — forced ads can never reach the screen.
  *
  * Cuts every display surface at the Metica ↔ Unity ad-SDK bridge
  * (`Lcom/metica/unity_bridge/UnityBridge;`, smali/classes9). Each target below is

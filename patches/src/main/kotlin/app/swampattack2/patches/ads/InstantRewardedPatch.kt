@@ -8,7 +8,7 @@ import kotlin.io.readBytes
 import kotlin.io.writeBytes
 
 /**
- * Swamp Attack 2 v1.3.9 · **Instant Rewarded Ads (static native patch)**.
+ * Swamp Attack 2 v1.3.10 · **Instant Rewarded Ads (static native patch)**.
  *
  * Unity IL2CPP title: the rewarded flow lives 100 % in `libil2cpp.so`
  * (see notes/ads.md §1/§3, targets N1/N2/N7). With the old runtime engine
@@ -20,19 +20,19 @@ import kotlin.io.writeBytes
  * This patch statically forces the app's OWN "ads disabled" getters to
  * return true — the exact semantics the old engine provided at runtime:
  *
- * * `PlayerData.get_AreVideoAdsDisabled()` (arm64 RVA `0x1CD0D2C`,
+ * * `PlayerData.get_AreVideoAdsDisabled()` (arm64 RVA `0x1CDBFCC`,
  *   arm32 RVA `0xEA8068`) → `ShowVideoClip` takes its in-engine
  *   ads-disabled branch: `RewardedVideoCompleted(completed=true,
  *   skipped=true)` → the stored `Action` fires natively → the reward lands
  *   INSTANTLY with no mediation, no Java, no SDK wait (cannot hang).
  *   `GetAvailabilityStatus` then reports Available (pacing/caps still
  *   honored), so offer buttons stay alive.
- * * `PlayerData.get_AreInterstitialsDisabled()` (arm64 RVA `0x1CD0CFC`,
+ * * `PlayerData.get_AreInterstitialsDisabled()` (arm64 RVA `0x1CDBF9C`,
  *   arm32 RVA `0xEA8030`) → `TryShowInterstitial` early-returns; no forced
  *   interstitial is ever requested (belt-and-braces with the Java
  *   `../ads/AdRemovalPatch`, which stays the display-layer block).
  *
- * Disassembly-verified (arm64 `ShowVideoClip`: `bl 0x1CD0D2C; tbz w0,#0`
+ * Disassembly-verified (arm64 `ShowVideoClip`: `bl 0x1CDBFCC; tbz w0,#0`
  * → disabled path `mov w1,#1; mov w3,#1; bl RewardedVideoCompleted`).
  *
  * Each site's first 8 bytes are overwritten with a return-true stub, so the
@@ -46,9 +46,9 @@ import kotlin.io.writeBytes
  * no `sp` imbalance, no link-register leak (`ret` / `bx lr` returns to the
  * untouched caller).
  *
- * arm64 file offset = RVA − 0x4000 (R-E LOAD off 0x1905AB0 = vaddr
- * 0x1909AB0, verified from the ELF program headers of the issue XAPK's own
- * config.arm64_v8a.apk split). arm32 file offset = RVA (single R-E LOAD at
+ * arm64 file offset = RVA − 0x4000 (R-E LOAD off 0x1910680 = vaddr
+ * 0x1914680, verified from the ELF program headers of the 1.3.10 XAPK's own
+ * config.arm64_v8a.apk split — see notes/gates-1.3.10.md). arm32 file offset = RVA (single R-E LOAD at
  * off 0 / vaddr 0). Both getters share identical first-16-byte prologues
  * per ABI — that is fine because each site is written at its PINNED offset
  * and gated on its exact expected bytes; a mismatch SKIPS that site
@@ -119,14 +119,14 @@ private const val REWARD_STUB_ARM32 = "0100A0E31EFF2FE1"
 private val ARM64_REWARD_SITES = listOf(
     RewardGate(
         label = "player.AreInterstitialsDisabled -> true (no forced interstitials)",
-        rva = 0x1CD0CFC,
-        fileOffset = 0x1CCCCFC,
+        rva = 0x1CDBF9C,
+        fileOffset = 0x1CD7F9C,
         expectWords = arrayOf("F81F0FFE", "F9400C08", "B4000128", "F9406100"),
     ),
     RewardGate(
         label = "player.AreVideoAdsDisabled -> true (instant rewarded)",
-        rva = 0x1CD0D2C,
-        fileOffset = 0x1CCCD2C,
+        rva = 0x1CDBFCC,
+        fileOffset = 0x1CD7FCC,
         expectWords = arrayOf("F81F0FFE", "F9400C08", "B4000128", "F9406100"),
     ),
 )

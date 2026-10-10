@@ -5,7 +5,7 @@ import app.morphe.patcher.methodCall
 import com.android.tools.smali.dexlib2.AccessFlags
 
 // ---------------------------------------------------------------------------
-// Swamp Attack 2 v1.3.9 — UnityBridge (Metica ↔ Unity ad-SDK bridge) fingerprints.
+// Swamp Attack 2 v1.3.10 — UnityBridge (Metica ↔ Unity ad-SDK bridge) fingerprints.
 //
 // All targets live in Lcom/metica/unity_bridge/UnityBridge; (smali/classes9/UnityBridge.smali)
 // — the Medica SDK is NOT obfuscated, so names/parameters are stable. Every
