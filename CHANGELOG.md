@@ -1,3 +1,9 @@
+## [1.42.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.41.1-dev.1...v1.42.0-dev.1) (2026-10-10)
+
+### ✨ New Features
+
+* **progressbar95:** add ad-free, license, and premium patches ([ce8e807](https://github.com/byehi98/okish-morphe-patches/commit/ce8e8072a3028fb44db5169d6a3fe30a07131bae))
+
 ## [1.41.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.41.0...v1.41.1-dev.1) (2026-10-10)
 
 ### 🚀 Updated App Support
