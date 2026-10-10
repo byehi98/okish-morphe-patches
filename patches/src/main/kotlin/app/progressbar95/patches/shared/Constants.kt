@@ -1,0 +1,17 @@
+package app.progressbar95.patches.shared
+
+import app.morphe.patcher.patch.ApkFileType
+import app.morphe.patcher.patch.AppTarget
+import app.morphe.patcher.patch.Compatibility
+
+object Constants {
+    val COMPATIBILITY_PROGRESSBAR95 = Compatibility(
+        name = "Progressbar95",
+        packageName = "com.spookyhousestudios.progressbar95",
+        apkFileType = ApkFileType.XAPK,
+        appIconColor = 0x00ACC1,
+        targets = listOf(
+            AppTarget(version = "1.1110")
+        )
+    )
+}
