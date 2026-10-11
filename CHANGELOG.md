@@ -1,3 +1,14 @@
+## [1.42.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.41.0...v1.42.0) (2026-10-11)
+
+### ✨ New Features
+
+* **progressbar95:** add ad-free, license, and premium patches ([ce8e807](https://github.com/byehi98/okish-morphe-patches/commit/ce8e8072a3028fb44db5169d6a3fe30a07131bae))
+
+### 🚀 Updated App Support
+
+* **adda247:** bump adda247 app target version ([c53e1c0](https://github.com/byehi98/okish-morphe-patches/commit/c53e1c0033f81293bc3ec13b71ecd6429c74978f))
+* **swampattack2:** update patches for v1.3.10 compatibility ([15cb2cf](https://github.com/byehi98/okish-morphe-patches/commit/15cb2cf1929a9f9290d79efaa7444ab6058f2600))
+
 ## [1.42.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.42.0-dev.1...v1.42.0-dev.2) (2026-10-11)
 
 ### 🚀 Updated App Support
