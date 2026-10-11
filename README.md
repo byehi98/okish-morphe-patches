@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.42.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.42.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;100 patches total
+> **[v1.43.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.43.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;102 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -452,6 +452,22 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
+
+</details>
+
+<details>
+<summary>📦 Lemmings: Puzzle Survival&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 9.4.4 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Lemmings: Free Store](#lemmings-free-store) | Everything in the shop is free. Tap an item and you get it right away — no Google Play payment sheet, no purchase-failed popup, nothing charged. |  |
+| [Lemmings: VIP Unlock](#lemmings-vip-unlock) | Unlocks VIP status without paying. VIP banners, rewards and bonuses show as active — no subscription needed. |  |
 
 </details>
 
