@@ -1,3 +1,9 @@
+## [1.43.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.42.0...v1.43.0) (2026-10-11)
+
+### ✨ New Features
+
+* **lemmings:** add free store and VIP unlock ([7f3b4ea](https://github.com/byehi98/okish-morphe-patches/commit/7f3b4ea8fecec47f0429a19be8680bfcbd7f60e5))
+
 ## [1.43.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.42.0...v1.43.0-dev.1) (2026-10-11)
 
 ### ✨ New Features
