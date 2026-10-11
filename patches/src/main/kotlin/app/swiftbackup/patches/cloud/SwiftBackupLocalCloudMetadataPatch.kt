@@ -20,17 +20,24 @@ import com.android.tools.smali.dexlib2.immutable.ImmutableMethodParameter
 private const val LOCAL_DB = "Lapp/morphe/extension/swiftbackup/LocalDb;"
 private const val INIT_METHOD = "morpheLocalDbInit"
 
+// Looked up by name from LocalDb; keep in sync with the extension.
+private const val SEED_METHOD = "morpheLocalDbSeed"
+private const val DOWNLOAD_METHOD = "morpheCloudDownload"
+private const val UPLOAD_METHOD = "morpheCloudUpload"
+private const val CLOUD_FILE_NAME = "morphe_local_db.json"
+
 /**
  * Cloud-backup metadata lives in the vendor's Firebase Realtime Database, whose rules reject
  * accounts without a server-verified purchase ("Permission denied" on every read/write under users/<uid>).
  * This keeps the database client permanently offline and backs it with a JSON file instead:
  * the tree is seeded as server data on Repo init and every outgoing write is stored locally,
- * echoed back as a server overwrite and acked. Metadata is device-local (not synced, lost on data wipe).
+ * echoed back as a server overwrite and acked. The extension also syncs the file to the root folder
+ * of the connected cloud (SMB, WebDAV, ...), so other devices and reinstalls see the same backups.
  */
 @Suppress("unused")
 val swiftBackupLocalCloudMetadataPatch = bytecodePatch(
     name = "Swift Backup Local Cloud Metadata",
-    description = "Makes cloud backups work by keeping their metadata on the device instead of the Swift Backup server.",
+    description = "Makes cloud backups work by keeping their metadata on the device and the connected cloud instead of the Swift Backup server.",
     default = true
 ) {
     compatibleWith(COMPATIBILITY_SWIFTBACKUP)
@@ -60,54 +67,156 @@ val swiftBackupLocalCloudMetadataPatch = bytecodePatch(
             return-void
         """.trimIndent())
 
-        // Static helper on wz5: interrupt the connection for good, pin a root listener so the
-        // server sync tree keeps the whole tree, then seed it from the local file.
-        // 5 locals + 1 param: p0 = v5.
+        // Static helpers added to wz5. The extension only sees them reflectively, so every
+        // obfuscated app/SDK type stays in this file.
         val connectionClass = PersistentConnectionPutFingerprint.classDef
-        connectionClass.methods.add(
+        val helper = connectionClass.type
+
+        fun addStaticHelper(
+            name: String,
+            parameters: List<String>,
+            returnType: String,
+            registerCount: Int,
+            smali: String
+        ) = connectionClass.methods.add(
             MutableMethod(
                 ImmutableMethod(
-                    connectionClass.type,
-                    INIT_METHOD,
-                    listOf(ImmutableMethodParameter("Lwj6;", null, null)),
-                    "V",
+                    helper,
+                    name,
+                    parameters.map { ImmutableMethodParameter(it, null, null) },
+                    returnType,
                     AccessFlags.PUBLIC.value or AccessFlags.STATIC.value,
                     null,
                     null,
-                    MutableMethodImplementation(6)
+                    MutableMethodImplementation(registerCount)
                 )
-            ).apply {
-                addInstructions(0, """
-                    iget-object v0, v5, Lwj6;->c:Lwz5;
-                    const-string v1, "morphe-local-db"
-                    invoke-virtual {v0, v1}, Lwz5;->c(Ljava/lang/String;)V
-                    sget-object v0, Lgy5;->d:Lgy5;
-                    new-instance v1, Lqc6;
-                    sget-object v2, Loc6;->f:Loc6;
-                    invoke-direct {v1, v0, v2}, Lqc6;-><init>(Lgy5;Loc6;)V
-                    const-class v2, Laj8;
-                    invoke-static {v2}, $LOCAL_DB->noopListener(Ljava/lang/Class;)Ljava/lang/Object;
-                    move-result-object v2
-                    check-cast v2, Laj8;
-                    new-instance v3, Lbj8;
-                    invoke-direct {v3, v5, v2, v1}, Lbj8;-><init>(Lwj6;Laj8;Lqc6;)V
-                    iget-object v4, v5, Lwj6;->n:Lbv7;
-                    const/4 v1, 0x0
-                    invoke-virtual {v4, v3, v1}, Lbv7;->d(Lez2;Z)Ljava/util/List;
-                    move-result-object v1
-                    invoke-virtual {v5, v1}, Lwj6;->j(Ljava/util/List;)V
-                    invoke-static {}, $LOCAL_DB->load()Ljava/lang/Object;
-                    move-result-object v1
-                    sget-object v2, Lqv2;->e:Lqv2;
-                    invoke-static {v1, v2}, Lxh8;->a(Ljava/lang/Object;Lqn5;)Lqn5;
-                    move-result-object v1
-                    invoke-virtual {v4, v0, v1}, Lbv7;->g(Lgy5;Lqn5;)Ljava/util/List;
-                    move-result-object v0
-                    invoke-virtual {v5, v0}, Lwj6;->j(Ljava/util/List;)V
-                    return-void
-                """.trimIndent())
-            }
+            ).apply { addInstructionsWithLabels(0, smali.trimIndent()) }
         )
+
+        // Registers: parameters are spelled as absolute registers (p0 = registerCount - 1).
+        // Interrupt the connection for good, pin a root listener so the server sync tree keeps
+        // the whole tree, seed it, then hand the Repo to the extension for cloud syncing.
+        addStaticHelper(INIT_METHOD, listOf("Lwj6;"), "V", 6, """
+            iget-object v0, v5, Lwj6;->c:Lwz5;
+            const-string v1, "morphe-local-db"
+            invoke-virtual {v0, v1}, Lwz5;->c(Ljava/lang/String;)V
+            sget-object v0, Lgy5;->d:Lgy5;
+            new-instance v1, Lqc6;
+            sget-object v2, Loc6;->f:Loc6;
+            invoke-direct {v1, v0, v2}, Lqc6;-><init>(Lgy5;Loc6;)V
+            const-class v2, Laj8;
+            invoke-static {v2}, $LOCAL_DB->noopListener(Ljava/lang/Class;)Ljava/lang/Object;
+            move-result-object v2
+            check-cast v2, Laj8;
+            new-instance v3, Lbj8;
+            invoke-direct {v3, v5, v2, v1}, Lbj8;-><init>(Lwj6;Laj8;Lqc6;)V
+            iget-object v4, v5, Lwj6;->n:Lbv7;
+            const/4 v1, 0x0
+            invoke-virtual {v4, v3, v1}, Lbv7;->d(Lez2;Z)Ljava/util/List;
+            move-result-object v1
+            invoke-virtual {v5, v1}, Lwj6;->j(Ljava/util/List;)V
+            invoke-static {v5}, $helper->$SEED_METHOD(Lwj6;)V
+            const-class v0, $helper
+            const-string v1, "n"
+            invoke-static {v5, v0, v1}, $LOCAL_DB->attach(Ljava/lang/Object;Ljava/lang/Class;Ljava/lang/String;)V
+            return-void
+        """)
+
+        // Applies the local tree as a server overwrite at the root. Must run on the Repo run loop.
+        addStaticHelper(SEED_METHOD, listOf("Lwj6;"), "V", 4, """
+            invoke-static {}, $LOCAL_DB->load()Ljava/lang/Object;
+            move-result-object v0
+            sget-object v1, Lqv2;->e:Lqv2;
+            invoke-static {v0, v1}, Lxh8;->a(Ljava/lang/Object;Lqn5;)Lqn5;
+            move-result-object v0
+            iget-object v1, v3, Lwj6;->n:Lbv7;
+            sget-object v2, Lgy5;->d:Lgy5;
+            invoke-virtual {v1, v2, v0}, Lbv7;->g(Lgy5;Lqn5;)Ljava/util/List;
+            move-result-object v0
+            invoke-virtual {v3, v0}, Lwj6;->j(Ljava/util/List;)V
+            return-void
+        """)
+
+        // Active cloud client (jh1) if a cloud is connected and it is a generic file-based one
+        // (v52: SMB, WebDAV, ...); null otherwise.
+        addStaticHelper("morpheCloudClient", listOf(), "Ljh1;", 2, """
+            invoke-static {}, Lqb1;->d()Z
+            move-result v0
+            if-eqz v0, :none
+            invoke-static {}, Lqb1;->c()Ltb1;
+            move-result-object v0
+            instance-of v1, v0, Lv52;
+            if-eqz v1, :none
+            check-cast v0, Lv52;
+            invoke-virtual {v0}, Lv52;->o()Ljh1;
+            move-result-object v0
+            return-object v0
+            :none
+            const/4 v0, 0x0
+            return-object v0
+        """)
+
+        addStaticHelper("morpheCloudPath", listOf("Ljh1;"), "Ljava/lang/String;", 3, """
+            invoke-interface {v2}, Ljh1;->g()Ldd1;
+            move-result-object v0
+            invoke-virtual {v0}, Ldd1;->getMainCloudFolderName()Ljava/lang/String;
+            move-result-object v0
+            const-string v1, "/$CLOUD_FILE_NAME"
+            invoke-virtual {v0, v1}, Ljava/lang/String;->concat(Ljava/lang/String;)Ljava/lang/String;
+            move-result-object v0
+            return-object v0
+        """)
+
+        // null: no usable client. Empty array: connected, but nothing stored yet.
+        addStaticHelper(DOWNLOAD_METHOD, listOf(), "[B", 3, """
+            invoke-static {}, $helper->morpheCloudClient()Ljh1;
+            move-result-object v0
+            if-nez v0, :client
+            const/4 v0, 0x0
+            return-object v0
+            :client
+            invoke-static {v0}, $helper->morpheCloudPath(Ljh1;)Ljava/lang/String;
+            move-result-object v1
+            invoke-interface {v0, v1}, Ljh1;->r(Ljava/lang/String;)Z
+            move-result v2
+            if-nez v2, :exists
+            const/4 v0, 0x0
+            new-array v0, v0, [B
+            return-object v0
+            :exists
+            const/4 v2, 0x0
+            invoke-interface {v0, v1, v2}, Ljh1;->c(Ljava/lang/String;Lt15;)Ltc4;
+            move-result-object v0
+            iget-object v1, v0, Ltc4;->a:Ljava/io/InputStream;
+            invoke-static {v1}, Lcy0;->E(Ljava/io/InputStream;)[B
+            move-result-object v1
+            invoke-virtual {v0}, Ltc4;->close()V
+            return-object v1
+        """)
+
+        // Same upload the app uses for its own cloud id file (ah case 15 wraps a byte array).
+        // v0..v5 are laid out for the range call: client, source, path, length (wide), null.
+        addStaticHelper(UPLOAD_METHOD, listOf("[B"), "Z", 8, """
+            invoke-static {}, $helper->morpheCloudClient()Ljh1;
+            move-result-object v0
+            if-nez v0, :client
+            const/4 v0, 0x0
+            return v0
+            :client
+            invoke-static {v0}, $helper->morpheCloudPath(Ljh1;)Ljava/lang/String;
+            move-result-object v2
+            new-instance v6, Lah;
+            const/16 v1, 0xf
+            invoke-direct {v6, v7, v1}, Lah;-><init>(Ljava/lang/Object;I)V
+            new-instance v1, Lc62;
+            invoke-direct {v1, v6}, Lc62;-><init>(Lbt3;)V
+            array-length v3, v7
+            int-to-long v3, v3
+            const/4 v5, 0x0
+            invoke-interface/range {v0 .. v5}, Ljh1;->e(Lc62;Ljava/lang/String;JLcz;)V
+            const/4 v0, 0x1
+            return v0
+        """)
 
         val initMethod = RepoDeferredInitFingerprint.method
 
@@ -138,6 +247,6 @@ val swiftBackupLocalCloudMetadataPatch = bytecodePatch(
             "invoke-static {v$repoRegister}, Lwz5;->$INIT_METHOD(Lwj6;)V"
         )
 
-        println("SwiftBackup: Firebase database client redirected to local store (connection interrupted, writes kept on device)")
+        println("SwiftBackup: Firebase database client redirected to local store (connection interrupted, metadata synced to the connected cloud)")
     }
 }

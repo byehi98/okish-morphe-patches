@@ -16,10 +16,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Local replacement for Swift Backup's Firebase Realtime Database backend.
  * Keeps the whole tree in memory and mirrors it to a JSON file in the app's files dir.
+ * The file is also synced to the root folder of the connected cloud (next to the backups),
+ * so the backup list survives a reinstall and is visible to other devices using the same share.
  * Called from smali injected by the "Swift Backup Local Cloud Metadata" patch.
  */
 @SuppressWarnings({"unchecked", "rawtypes", "unused"})
@@ -28,8 +33,25 @@ public final class LocalDb {
     private static final String FILE_NAME = "morphe_local_db.json";
     private static final String FALLBACK_DIR = "/data/data/org.swiftapps.swiftbackup/files";
 
+    private static final String STATE_FILE_NAME = "morphe_local_db.state";
+    private static final long SYNC_INTERVAL_SECONDS = 20;
+    private static final long PULL_INTERVAL_MS = 5 * 60 * 1000;
+
     private static Map<String, Object> root;
     private static File file;
+
+    // Cloud sync state. syncedRev is the remote revision the local tree was last reconciled with.
+    private static long syncedRev;
+    private static boolean dirty;
+    private static long writeSeq;
+    private static boolean stateLoaded;
+    private static long lastPull;
+    private static ScheduledExecutorService executor;
+
+    // Obfuscated app objects, handed over by the patched code and only used reflectively.
+    private static Object repo;
+    private static Class<?> helper;
+    private static String repoPostMethod;
 
     private LocalDb() {
     }
@@ -41,16 +63,7 @@ public final class LocalDb {
         try {
             File f = file();
             if (f.isFile()) {
-                byte[] bytes = new byte[(int) f.length()];
-                try (FileInputStream in = new FileInputStream(f)) {
-                    int off = 0;
-                    while (off < bytes.length) {
-                        int n = in.read(bytes, off, bytes.length - off);
-                        if (n < 0) break;
-                        off += n;
-                    }
-                }
-                Object parsed = fromJson(new JSONObject(new String(bytes, "UTF-8")));
+                Object parsed = fromJson(new JSONObject(new String(readAll(f), "UTF-8")));
                 if (parsed instanceof Map) root = (Map<String, Object>) parsed;
             }
         } catch (Throwable t) {
@@ -81,10 +94,167 @@ public final class LocalDb {
                 put(segments, data);
             }
             save();
+            loadState();
+            writeSeq++;
+            if (!dirty) {
+                dirty = true;
+                saveState();
+            }
         } catch (Throwable t) {
             log("write failed", t);
         }
         return get(segments);
+    }
+
+    /**
+     * Called once the database client is set up.
+     *
+     * @param repo           the Firebase Repo.
+     * @param helper         class holding the injected static helpers
+     *                       (morpheLocalDbSeed, morpheCloudDownload, morpheCloudUpload).
+     * @param repoPostMethod name of the Repo method that posts a Runnable to its run loop.
+     */
+    public static synchronized void attach(Object repo, Class<?> helper, String repoPostMethod) {
+        LocalDb.repo = repo;
+        LocalDb.helper = helper;
+        LocalDb.repoPostMethod = repoPostMethod;
+        if (executor == null) {
+            executor = Executors.newSingleThreadScheduledExecutor();
+            executor.scheduleWithFixedDelay(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        sync();
+                    } catch (Throwable t) {
+                        log("sync failed", t);
+                    }
+                }
+            }, 5, SYNC_INTERVAL_SECONDS, TimeUnit.SECONDS);
+        }
+    }
+
+    /** Reconciles the local tree with the copy stored on the connected cloud. */
+    private static void sync() throws Exception {
+        long now = System.currentTimeMillis();
+        synchronized (LocalDb.class) {
+            load();
+            loadState();
+            if (!dirty && lastPull != 0 && now - lastPull < PULL_INTERVAL_MS) return;
+        }
+        // null: no usable cloud client. Empty: connected, but no remote copy yet.
+        byte[] remote = (byte[]) helper.getMethod("morpheCloudDownload").invoke(null);
+        if (remote == null) return;
+        long remoteRev = 0;
+        Map<String, Object> remoteData = null;
+        if (remote.length > 0) {
+            JSONObject o = new JSONObject(new String(remote, "UTF-8"));
+            remoteRev = o.optLong("rev", 0);
+            Object data = fromJson(o.optJSONObject("data"));
+            if (data instanceof Map) remoteData = (Map<String, Object>) data;
+        }
+
+        boolean adopted = false;
+        byte[] upload = null;
+        long uploadSeq;
+        synchronized (LocalDb.class) {
+            if (remoteData != null && remoteRev != syncedRev) {
+                // Another device (or a previous install) changed the remote copy.
+                // Unsynced local entries win; everything else comes from the remote.
+                root = root.isEmpty() ? remoteData : (Map<String, Object>) merge(remoteData, root);
+                syncedRev = remoteRev;
+                adopted = true;
+                save();
+                saveState();
+            }
+            uploadSeq = writeSeq;
+            if (dirty || (remoteData == null && !root.isEmpty())) {
+                JSONObject o = new JSONObject();
+                o.put("rev", syncedRev + 1);
+                o.put("data", toJson(root));
+                upload = o.toString().getBytes("UTF-8");
+            }
+        }
+        if (adopted) reseed();
+        if (upload != null) {
+            Object ok = helper.getMethod("morpheCloudUpload", byte[].class).invoke(null, (Object) upload);
+            if (!Boolean.TRUE.equals(ok)) return;
+            synchronized (LocalDb.class) {
+                syncedRev++;
+                if (writeSeq == uploadSeq) dirty = false;
+                saveState();
+            }
+        }
+        lastPull = now;
+    }
+
+    /** Pushes the current tree into the database client again, on its run loop. */
+    private static void reseed() throws Exception {
+        final Object repo = LocalDb.repo;
+        repo.getClass().getMethod(repoPostMethod, Runnable.class).invoke(repo, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    helper.getMethod("morpheLocalDbSeed", repo.getClass()).invoke(null, repo);
+                } catch (Throwable t) {
+                    log("reseed failed", t);
+                }
+            }
+        });
+    }
+
+    private static Object merge(Object base, Object overlay) {
+        if (!(base instanceof Map) || !(overlay instanceof Map)) return overlay;
+        Map<String, Object> out = new HashMap<>((Map<String, Object>) base);
+        for (Map.Entry<String, Object> e : ((Map<String, Object>) overlay).entrySet()) {
+            Object existing = out.get(e.getKey());
+            out.put(e.getKey(), existing == null ? e.getValue() : merge(existing, e.getValue()));
+        }
+        return out;
+    }
+
+    private static void loadState() {
+        if (stateLoaded) return;
+        stateLoaded = true;
+        try {
+            File f = new File(file().getParentFile(), STATE_FILE_NAME);
+            if (f.isFile()) {
+                JSONObject o = new JSONObject(new String(readAll(f), "UTF-8"));
+                syncedRev = o.optLong("rev", 0);
+                dirty = o.optBoolean("dirty", false);
+            } else {
+                // Tree from before syncing existed: push it on first contact.
+                dirty = root != null && !root.isEmpty();
+            }
+        } catch (Throwable t) {
+            log("loadState failed", t);
+        }
+    }
+
+    private static void saveState() {
+        try {
+            JSONObject o = new JSONObject();
+            o.put("rev", syncedRev);
+            o.put("dirty", dirty);
+            File f = new File(file().getParentFile(), STATE_FILE_NAME);
+            try (FileOutputStream out = new FileOutputStream(f)) {
+                out.write(o.toString().getBytes("UTF-8"));
+            }
+        } catch (Throwable t) {
+            log("saveState failed", t);
+        }
+    }
+
+    private static byte[] readAll(File f) throws Exception {
+        byte[] bytes = new byte[(int) f.length()];
+        try (FileInputStream in = new FileInputStream(f)) {
+            int off = 0;
+            while (off < bytes.length) {
+                int n = in.read(bytes, off, bytes.length - off);
+                if (n < 0) break;
+                off += n;
+            }
+        }
+        return bytes;
     }
 
     private static void put(List<String> path, Object value) {
