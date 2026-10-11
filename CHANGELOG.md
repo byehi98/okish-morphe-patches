@@ -1,3 +1,9 @@
+## [1.42.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.42.0-dev.1...v1.42.0-dev.2) (2026-10-11)
+
+### 🚀 Updated App Support
+
+* **adda247:** bump adda247 app target version ([c53e1c0](https://github.com/byehi98/okish-morphe-patches/commit/c53e1c0033f81293bc3ec13b71ecd6429c74978f))
+
 ## [1.42.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.41.1-dev.1...v1.42.0-dev.1) (2026-10-10)
 
 ### ✨ New Features
