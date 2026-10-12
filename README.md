@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.43.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.43.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;102 patches total
+> **[v1.44.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.44.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;103 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -642,7 +642,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Swift Backup&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<summary>📦 Swift Backup&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -652,6 +652,7 @@ Direct URL:
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
+| [Swift Backup Local Cloud Metadata](#swift-backup-local-cloud-metadata) | Makes cloud backups work by keeping their metadata on the device and the connected cloud instead of the Swift Backup server. |  |
 | [Swift Backup Premium Unlock](#swift-backup-premium-unlock) | Unlocks all Premium features. |  |
 | [Swift Backup Tamper Protection](#swift-backup-tamper-protection) | Stops the app from closing itself on patched installs. |  |
 | [Swift Backup Web Login](#swift-backup-web-login) | Makes Google sign-in work for connecting cloud accounts. |  |

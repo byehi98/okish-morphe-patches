@@ -1,3 +1,10 @@
+## [1.44.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.43.0...v1.44.0-dev.1) (2026-10-12)
+
+### ✨ New Features
+
+* **swiftbackup:** keep cloud backup metadata on device ([3886838](https://github.com/byehi98/okish-morphe-patches/commit/388683841529e48687026e153842073d57f7ed6d))
+* **swiftbackup:** sync cloud backup metadata to the connected cloud ([73937a4](https://github.com/byehi98/okish-morphe-patches/commit/73937a4e335ee3d18ac174e6dfb852077541f319))
+
 ## [1.43.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.42.0...v1.43.0) (2026-10-11)
 
 ### ✨ New Features
