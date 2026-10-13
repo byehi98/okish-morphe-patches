@@ -1,3 +1,9 @@
+## [1.44.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.0-dev.3...v1.44.0-dev.4) (2026-10-13)
+
+### ✨ New Features
+
+* **crashofcars:** add core patches ([3afcd89](https://github.com/byehi98/okish-morphe-patches/commit/3afcd89044d453ce0a4257023bb8e7f9260c147c))
+
 ## [1.44.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.0-dev.2...v1.44.0-dev.3) (2026-10-13)
 
 ### 🚀 Updated App Support
