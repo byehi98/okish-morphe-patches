@@ -8,10 +8,10 @@ import java.io.RandomAccessFile
 import kotlin.io.readBytes
 
 /**
- * Dead Target: Offline Games 3D 4.183.0 (583009063) — Unlimited ALL in-game currency.
+ * Dead Target: Offline Games 3D 4.184.0 — Unlimited ALL in-game currency.
  *
  * Dead Target is Unity IL2CPP: the smali layer is SDK plumbing only, every economy read
- * lives in `libil2cpp.so` (85,048,024 bytes, arm64-v8a, plaintext `.text`). All five
+ * lives in `libil2cpp.so` (85,096,080 bytes, arm64-v8a, plaintext `.text`). All five
  * currencies are `DSystem` instance getters, so the value comes back in **x0** (AArch64
  * ABI) and the cheapest correct edit is to make each getter *return a constant*.
  *
@@ -25,34 +25,34 @@ import kotlin.io.readBytes
  * SITES — five DSystem getters, byte-verified against the shipped libil2cpp.so
  * ============================================================================
  * ⚠️ **Il2CppDumper `script.json` Address is a VIRTUAL address.** Dead Target's
- * executable LOAD segment maps `file 0x1C1273C -> VA 0x1C1673C`, i.e. **delta = +0x4000**,
+ * executable LOAD segment maps `file 0x1C165CC -> VA 0x1C1A5CC`, i.e. **delta = +0x4000**,
  * so **file offset = VA − 0x4000**. Re-verified by parsing the ELF program headers
  * (LOAD R E, off=0x1c1273c vaddr=0x1c1673c). Same trap documented in
  * AliensDriveMeCrazy's KDoc. Writing at the raw VA silently corrupts the library.
  *
  *  | Currency    | Method                            | VA        | File offset | Ret   |
  *  |-------------|-----------------------------------|-----------|-------------|-------|
- *  | Cash        | DProject.DSystem.get_gameMoney    | 0x0218FD78| 0x0218BD78  | int64 |
- *  | Gold        | DProject.DSystem.get_payMoney     | 0x021965DC| 0x021925DC  | int64 |
- *  | Diamonds    | DProject.DSystem.get_Diamond      | 0x02197234| 0x02193234  | int64 |
- *  | Tapjoy pts  | DProject.DSystem.get_tapjoyMoney  | 0x02196464| 0x02192464  | int32 |
- *  | Mascot coin | DProject.DSystem.get_mascotCoin   | 0x02198A2C| 0x02194A2C  | int32 |
+ *  | Cash        | DProject.DSystem.get_gameMoney    | 0x02193D24| 0x0218FD24  | int64 |
+ *  | Gold        | DProject.DSystem.get_payMoney     | 0x0219A588| 0x02196588  | int64 |
+ *  | Diamonds    | DProject.DSystem.get_Diamond      | 0x0219B1E0| 0x021971E0  | int64 |
+ *  | Tapjoy pts  | DProject.DSystem.get_tapjoyMoney  | 0x0219A410| 0x02196410  | int32 |
+ *  | Mascot coin | DProject.DSystem.get_mascotCoin   | 0x0219C9D8| 0x021989D8  | int32 |
  *
  * Original 36 bytes at each file offset (the anchor) → 12-byte replacement:
  *
- *  Cash       0x0218BD78  FF 83 01 D1 FE 13 00 F9 F8 5F 03 A9 F6 57 04 A9 F4 4F 05 A9
- *                        D4 7C 01 B0 88 0A 49 39 F3 03 00 AA C8 00 00 37
+ *  Cash       0x0218FD24  FF 83 01 D1 FE 13 00 F9 F8 5F 03 A9 F6 57 04 A9 F4 4F 05 A9
+ *                        91 47 7D 01 90 88 0A 78 39 F3 03 00 AA C8 00 00 37
  *             →           E0 3F 99 D2 40 73 A7 F2 C0 03 5F D6
- *  Gold       0x021925DC  FF 43 01 D1 FE 0B 00 F9 F8 5F 02 A9 F6 57 03 A9 F4 4F 04 A9
- *                        94 7C 01 D0 88 2A 49 39 F3 03 00 AA C8 00 00 37
+ *  Gold       0x02196588  FF 43 01 D1 FE 0B 00 F9 F8 5F 02 A9 F6 57 03 A9 F4 4F 04 A9
+ *                        D4 7C 01 B0 88 2A 78 39 F3 03 00 AA C8 00 00 37
  *             →           E0 3F 99 D2 40 73 A7 F2 C0 03 5F D6
- *  Diamonds   0x02193234  FF 43 01 D1 FE 0B 00 F9 F8 5F 02 A9 F6 57 03 A9 F4 4F 04 A9
- *                        94 7C 01 B0 88 42 49 39 F3 03 00 AA C8 00 00 37
+ *  Diamonds   0x021971E0  FF 43 01 D1 FE 0B 00 F9 F8 5F 02 A9 F6 57 03 A9 F4 4F 04 A9
+ *                        D4 7C 01 90 88 42 78 39 F3 03 00 AA C8 00 00 37
  *             →           E0 3F 99 D2 40 73 A7 F2 C0 03 5F D6
- *  Tapjoy     0x02192464  FE 0F 1F F8 08 D0 40 F9 88 00 00 B4 00 81 40 B9 FE 07 41 F8
- *                        C0 03 5F D6 9D FB F3 97 FE 0F 1F F8 08 D0 40 F9
+ *  Tapjoy     0x02196410  FE 0F 1F F8 08 D0 40 F9 88 00 00 B4 00 81 40 B9 FE 07 41 F8
+ *                        C0 03 5F D6 57 FB F3 97 FE 0F 1F F8 08 D0 40 F9
  *             →           E0 3F 99 52 40 73 A7 72 C0 03 5F D6
- *  Mascot     0x02194A2C  FE 0F 1E F8 F4 4F 01 A9 08 D0 40 F9 A8 00 00 B4 00 51 41 B9
+ *  Mascot     0x021989D8  FE 0F 1E F8 F4 4F 01 A9 08 D0 40 F9 A8 00 00 B4 00 51 41 B9
  *                        F4 4F 41 A9 FE 07 42 F8 C0 03 5F D6 F3 03 00 AA
  *             →           E0 3F 99 52 40 73 A7 72 C0 03 5F D6
  *
@@ -100,7 +100,7 @@ import kotlin.io.readBytes
  * ANCHOR UNIQUENESS — 12 bytes would be dangerously ambiguous, 36 bytes is exact
  * ============================================================================
  * The 12-byte prologues are NOT unique anywhere in the 85 MB lib:
- *   cash 313 hits · gold 418 hits · diamonds 418 hits (gold and diamonds share a
+ *   cash 312 hits · gold 418 hits · diamonds 418 hits (gold and diamonds share a
  *   byte-identical first 12 bytes) · tapjoy 40 hits · mascot 6 hits.
  * A 12-byte search would return an arbitrary earlier hit and corrupt an unrelated function.
  *
@@ -217,51 +217,51 @@ private const val STUB_INT32 = "E03F99524073A772C0035FD6"
 private val ARM64_ANCHORS = listOf(
     Anchor(
         label = "DSystem.get_gameMoney -> 999,999,999 (cash, int64)",
-        va = 0x0218FD78,
-        fileOffset = 0x0218BD78,
+        va = 0x02193D24,
+        fileOffset = 0x0218FD24,
         anchorHex =
             "FF8301D1FE1300F9F85F03A9" +
-            "F65704A9F44F05A9D47C01B0" +
-            "880A4939F30300AAC8000037",
+            "F65704A9F44F05A9147D0190" +
+            "880A7839F30300AAC8000037",
         replacementHex = STUB_INT64,
     ),
     Anchor(
         label = "DSystem.get_payMoney -> 999,999,999 (gold, int64)",
-        va = 0x021965DC,
-        fileOffset = 0x021925DC,
+        va = 0x0219A588,
+        fileOffset = 0x02196588,
         anchorHex =
             "FF4301D1FE0B00F9F85F02A9" +
-            "F65703A9F44F04A9947C01D0" +
-            "882A4939F30300AAC8000037",
+            "F65703A9F44F04A9D47C01B0" +
+            "882A7839F30300AAC8000037",
         replacementHex = STUB_INT64,
     ),
     Anchor(
         label = "DSystem.get_Diamond -> 999,999,999 (diamonds, int64)",
-        va = 0x02197234,
-        fileOffset = 0x02193234,
+        va = 0x0219B1E0,
+        fileOffset = 0x021971E0,
         anchorHex =
             "FF4301D1FE0B00F9F85F02A9" +
-            "F65703A9F44F04A9947C01B0" +
-            "88424939F30300AAC8000037",
+            "F65703A9F44F04A9D47C0190" +
+            "88427839F30300AAC8000037",
         replacementHex = STUB_INT64,
     ),
     Anchor(
         label = "DSystem.get_tapjoyMoney -> 999,999,999 (tapjoy points, int32)",
-        va = 0x02196464,
-        fileOffset = 0x02192464,
+        va = 0x0219A410,
+        fileOffset = 0x02196410,
         // This getter is 32 bytes; bytes 32..36 are the adjacent setter's first two
         // instructions — kept in the anchor because that is what makes it unique, but
         // NEVER written (the replacement is 12 bytes).
         anchorHex =
             "FE0F1FF808D040F9880000B4" +
             "008140B9FE0741F8C0035FD6" +
-            "9DFBF397FE0F1FF808D040F9",
+            "57FBF397FE0F1FF808D040F9",
         replacementHex = STUB_INT32,
     ),
     Anchor(
         label = "DSystem.get_mascotCoin -> 999,999,999 (mascot coin, int32)",
-        va = 0x02198A2C,
-        fileOffset = 0x02194A2C,
+        va = 0x0219C9D8,
+        fileOffset = 0x021989D8,
         anchorHex =
             "FE0F1EF8F44F01A908D040F9" +
             "A80000B4005141B9F44F41A9" +
@@ -276,7 +276,7 @@ private val ARM64_ANCHORS = listOf(
  * Two-phase so a bad build fails with **zero** bytes written:
  *  1. the library is slurped once and every 36-byte anchor is searched for, requiring
  *     **exactly one** occurrence (12 bytes alone is hopelessly ambiguous —
- *     313/418/418/40/6 hits — and a wrong hit would corrupt an unrelated function);
+ *     312/418/418/40/6 hits — and a wrong hit would corrupt an unrelated function);
  *  2. each resolved offset is re-read through a [RandomAccessFile], compared against the
  *     original bytes, and only then overwritten.
  *
