@@ -1,3 +1,16 @@
+## [1.44.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.43.0...v1.44.0) (2026-10-14)
+
+### ✨ New Features
+
+* **crashofcars:** add core patches ([3afcd89](https://github.com/byehi98/okish-morphe-patches/commit/3afcd89044d453ce0a4257023bb8e7f9260c147c))
+* **swiftbackup:** keep cloud backup metadata on device ([3886838](https://github.com/byehi98/okish-morphe-patches/commit/388683841529e48687026e153842073d57f7ed6d))
+* **swiftbackup:** sync cloud backup metadata to the connected cloud ([73937a4](https://github.com/byehi98/okish-morphe-patches/commit/73937a4e335ee3d18ac174e6dfb852077541f319))
+
+### 🚀 Updated App Support
+
+* **deadtarget:** update patches for 4.184.0 ([b057701](https://github.com/byehi98/okish-morphe-patches/commit/b0577016b8cb6b6c991455dacf7e9bd592c4e3b6))
+* **onlyone:** bump app target version to 1.3052 ([7fe84aa](https://github.com/byehi98/okish-morphe-patches/commit/7fe84aae14dfc6f1a74ee8e45a5d5b3666f61c72))
+
 ## [1.44.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.0-dev.3...v1.44.0-dev.4) (2026-10-13)
 
 ### ✨ New Features
