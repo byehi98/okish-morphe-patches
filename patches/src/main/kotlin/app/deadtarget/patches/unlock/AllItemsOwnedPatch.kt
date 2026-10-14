@@ -8,10 +8,10 @@ import java.io.RandomAccessFile
 import kotlin.io.readBytes
 
 /**
- * Dead Target: Offline Games 3D 4.183.0 (583009063) — All items owned.
+ * Dead Target: Offline Games 3D 4.184.0 — All items owned.
  *
  * Dead Target is Unity IL2CPP: the smali layer is SDK plumbing only, every ownership decision
- * lives in `libil2cpp.so` (85,048,024 bytes, arm64-v8a, plaintext `.text`). This patch forces
+ * lives in `libil2cpp.so` (85,096,080 bytes, arm64-v8a, plaintext `.text`). This patch forces
  * the game's own ownership *reads* to answer "owned", so **everything unlockable reads as
  * owned** — and, because the **equip** gates below were merged in after device testing, it can
  * actually be equipped: every gun, gun skin, glove and drone shows as unlocked, can be selected,
@@ -28,26 +28,34 @@ import kotlin.io.readBytes
  *    display-only failure shape was reported on device for gloves and drones.
  * Same shape as ../unlock/UnlimitedCurrencyPatch.kt and ../ads/InstantRewardedVideoPatch.kt.
  *
+ * NOTE on versions: the site table, the 36-byte anchor dumps and [ARM64_ITEM_ANCHORS] below
+ * are the **4.184.0** re-hunt (see `analysis/deadtarget/notes/all-items-owned-4.184.0.md`;
+ * shared generics are now `Dictionary<int,int>.ContainsKey` @ 0x36D03DC and
+ * `List<int>.Contains` @ 0x3BF39C0). The long per-site disassembly prose further down still
+ * quotes 4.183.0 VAs as the original derivation record — argument structure is unchanged,
+ * only the addresses moved (DSystem cluster +0x3FAC, WeaponShopView/Raidboss +0x3F14,
+ * Refresh methods +0x44C; within-method offsets identical).
+ *
  * ============================================================================
  * THE FOURTEEN SITES — five DISPLAY (1–5) + five GUN-USE gates (6–10)
  *                    + four GLOVE/DRONE-EQUIP gates (11–14)
  * ============================================================================
  *  | # | What                | Predicate / site                        | VA        | File offset | Write | Kind          |
  *  |---|---------------------|-----------------------------------------|-----------|-------------|-------|---------------|
- *  | 1 | GUNS tile icon      | `DSystem.IsGunUnlock(int)`              | 0x021DB470| 0x021D7470  | 8 B   | entry stub    |
- *  | 2 | GLOVES (primary)    | `DSystem.IsOwnGlove(string)`            | 0x021C9314| 0x021C5314  | 8 B   | entry stub    |
- *  | 3 | SKINS               | `DSystem.CheckHaveGun(int)`             | 0x021D5BB4| 0x021D1BB4  | 8 B   | entry stub    |
- *  | 4 | DRONES              | inline `droneInventory.ContainsKey`     | 0x02635630| 0x02631630  | 4 B   | **mid-body**  |
- *  | 5 | GLOVES tile icon    | inline `listHandSkin.Contains`          | 0x0264D228| 0x02649228  | 4 B   | **mid-body**  |
- *  | 6 | GUNS shop button    | `WeaponShopView.IsOwnedItem(int)`       | 0x020A8708| 0x020A4708  | 8 B   | entry stub    |
- *  | 7 | GUNS loadout wipe   | `DSystem.FixedWrongEquipWeapon()` branch| 0x021D290C| 0x021CE90C  | 4 B   | **branch**    |
- *  | 8 | GUNS record resolve | `GetOwnedGunConfigById(int)` branch     | 0x021D2DB0| 0x021CEDB0  | 4 B   | **branch**    |
- *  | 9 | GUNS battle resolve | `GetCurEquipedGunBattle(int)` branch    | 0x021D30E4| 0x021CF0E4  | 4 B   | **branch**    |
- *  |10 | RAID-BOSS item lock | `RaidbossSelectionView.CheckItemLocked` | 0x0206B9A8| 0x020679A8  | 8 B   | entry stub    |
- *  |11 | GLOVES shop equip   | inline `listHandSkin.Contains` in `GlovesView.RefreshButtons` | 0x02BBFE3C| 0x02BBBE3C | 4 B | **mid-body** |
- *  |12 | GLOVES battle equip | inline `listHandSkin.Contains` in `ControlGloveSkin.RefreshButtons` | 0x0240E064| 0x0240A064 | 4 B | **mid-body** |
- *  |13 | DRONES shop equip  | inline `droneInventory.ContainsKey` in `DroneShopView.SetupButtonEquip` | 0x02BBCCE0| 0x02BB8CE0 | 4 B | **mid-body** |
- *  |14 | DRONES button label | inline `droneInventory.ContainsKey` in `DroneShopView.SetupButtonUnlock` | 0x02BBCE20| 0x02BB8E20 | 4 B | **mid-body**, *label only* |
+ *  | 1 | GUNS tile icon      | `DSystem.IsGunUnlock(int)`              | 0x021DF41C| 0x021DB41C  | 8 B   | entry stub    |
+ *  | 2 | GLOVES (primary)    | `DSystem.IsOwnGlove(string)`            | 0x021CD2C0| 0x021C92C0  | 8 B   | entry stub    |
+ *  | 3 | SKINS               | `DSystem.CheckHaveGun(int)`             | 0x021D9B60| 0x021D5B60  | 8 B   | entry stub    |
+ *  | 4 | DRONES              | inline `droneInventory.ContainsKey`     | 0x0263A17C| 0x0263617C  | 4 B   | **mid-body**  |
+ *  | 5 | GLOVES tile icon    | inline `listHandSkin.Contains`          | 0x02651D74| 0x0264DD74  | 4 B   | **mid-body**  |
+ *  | 6 | GUNS shop button    | `WeaponShopView.IsOwnedItem(int)`       | 0x020AC61C| 0x020A861C  | 8 B   | entry stub    |
+ *  | 7 | GUNS loadout wipe   | `DSystem.FixedWrongEquipWeapon()` branch| 0x021D68B8| 0x021D28B8  | 4 B   | **branch**    |
+ *  | 8 | GUNS record resolve | `GetOwnedGunConfigById(int)` branch     | 0x021D6D5C| 0x021D2D5C  | 4 B   | **branch**    |
+ *  | 9 | GUNS battle resolve | `GetCurEquipedGunBattle(int)` branch    | 0x021D7090| 0x021D3090  | 4 B   | **branch**    |
+ *  |10 | RAID-BOSS item lock | `RaidbossSelectionView.CheckItemLocked` | 0x0206F8BC| 0x0206B8BC  | 8 B   | entry stub    |
+ *  |11 | GLOVES shop equip   | inline `listHandSkin.Contains` in `GlovesView.RefreshButtons` | 0x02BC8FB8| 0x02BC4FB8 | 4 B | **mid-body** |
+ *  |12 | GLOVES battle equip | inline `listHandSkin.Contains` in `ControlGloveSkin.RefreshButtons` | 0x02412BB0| 0x0240EBB0 | 4 B | **mid-body** |
+ *  |13 | DRONES shop equip  | inline `droneInventory.ContainsKey` in `DroneShopView.SetupButtonEquip` | 0x02BC5E5C| 0x02BC1E5C | 4 B | **mid-body** |
+ *  |14 | DRONES button label | inline `droneInventory.ContainsKey` in `DroneShopView.SetupButtonUnlock` | 0x02BC5F9C| 0x02BC1F9C | 4 B | **mid-body**, *label only* |
  *
  * ⚠️ Sites 1–3, 6 and 10 overwrite a **function entry**, so the stub is `mov w0,#1 ; ret`
  * (site 10 inverts it: `mov w0,#0 ; ret`, because it returns *locked*, not owned). Sites 4–5
@@ -64,61 +72,61 @@ import kotlin.io.readBytes
  *
  * Original 36-byte anchors (verbatim from the shipped library; each occurs exactly once):
  *
- *  1 IsGunUnlock  0x021D7470  FE 57 BE A9 F4 4F 01 A9 75 7A 01 B0 A8 2E 50 39
- *                          F3 03 01 2A F4 03 00 AA C8 00 00 37 E0 5E 01 F0
- *                          00 AC 40 F9
+ *  1 IsGunUnlock  0x021DB41C  FE 57 BE A9 F4 4F 01 A9 B5 7A 01 90 A8 2E 7F 39
+ *                          F3 03 01 2A F4 03 00 AA C8 00 00 37 20 5F 01 D0
+ *                          00 54 40 F9
  *                  →           20 00 80 52 C0 03 5F D6              (8 B)
- *  2 IsOwnGlove   0x021C5314  FE 0F 1D F8 F6 57 01 A9 F4 4F 02 A9
- *                          F6 7A 01 F0 95 5F 01 90 C8 1A 50 39 B5 7A 45 F9
+ *  2 IsOwnGlove   0x021C92C0  FE 0F 1D F8 F6 57 01 A9 F4 4F 02 A9
+ *                          36 7B 01 D0 B5 5F 01 F0 C8 1A 7F 39 B5 22 45 F9
  *                          F4 03 01 AA F3 03 00 AA
  *                  →           20 00 80 52 C0 03 5F D6              (8 B)
- *  3 CheckHaveGun 0x021D1BB4  FE 57 BE A9 F4 4F 01 A9 95 7A 01 F0
- *                          A8 4E 50 39 F3 03 01 2A F4 03 00 AA C8 00 00 37
- *                          20 5F 01 B0 00 AC 40 F9
+ *  3 CheckHaveGun 0x021D5B60  FE 57 BE A9 F4 4F 01 A9 D5 7A 01 D0
+ *                          A8 4E 7F 39 F3 03 01 2A F4 03 00 AA C8 00 00 37
+ *                          60 5F 01 90 00 54 40 F9
  *                  →           20 00 80 52 C0 03 5F D6              (8 B)
- *  4 drone inline 0x02631630  7C 43 42 94 68 22 40 F9 08 08 00 B4
+ *  4 drone inline 0x0263617C  98 58 42 94 68 22 40 F9 08 08 00 B4
  *                          01 00 00 12 E0 03 08 AA E2 03 1F AA
- *                          73 F1 8A 94 60 1E 40 F9 40 07 00 B4
+ *                          26 07 8B 94 60 1E 40 F9 40 07 00 B4
  *                  →           20 00 80 52                          (4 B)
- *  5 glove inline 0x02649228  F7 71 56 94 02 00 00 14 20 00 80 52 68 26 40 F9
+ *  5 glove inline 0x0264DD74  13 87 56 94 02 00 00 14 20 00 80 52 68 26 40 F9
  *                          68 03 00 B4 01 00 00 12 E0 03 08 AA E2 03 1F AA
- *                          73 92 8A 94
+ *                          26 A8 8A 94
  *                  →           20 00 80 52                          (4 B)
- *  6 IsOwnedItem  0x020A4708  FE 57 BE A9 F4 4F 01 A9 F5 83 01 F0 A8 82 6E 39
- *                          F3 03 01 2A F4 03 00 AA C8 00 00 37 80 68 01 D0
- *                          00 AC 40 F9
+ *  6 IsOwnedItem  0x020A861C  FE 57 BE A9 F4 4F 01 A9 35 84 01 F0 A8 82 5D 39
+ *                          F3 03 01 2A F4 03 00 AA C8 00 00 37 C0 68 01 B0
+ *                          00 54 40 F9
  *                  →           20 00 80 52 C0 03 5F D6              (8 B)
- *  7 FixedWrong…  0x021CE90C  40 01 00 37 68 D2 40 F9 88 09 00 B4 00 89 40 F9
+ *  7 FixedWrong…  0x021D28B8  40 01 00 37 68 D2 40 F9 88 09 00 B4 00 89 40 F9
  *                          20 09 00 B4 63 03 40 F9 DF 02 00 71 42 17 9A
  *                          1A E1 03 14 2A
  *                  →           0A 00 00 14                          (4 B)
- *  8 GetOwnedGun… 0x021CEDB0  C0 06 00 36 28 5F 01 D0 08 E9 46 F9 00 01 40 F9
- *                          08 E0 40 B9 48 00 00 35 02 09 F3 97 E0 03 13
+ *  8 GetOwnedGun… 0x021D2D5C  C0 06 00 36 68 5F 01 B0 08 91 46 F9 00 01 40 F9
+ *                          08 E0 40 B9 48 00 00 35 BC 08 F3 97 E0 03 13
  *                          2A E1 03 1A AA
  *                  →           1F 20 03 D5                          (4 B)
- *  9 GetCurEqu…   0x021CF0E4  A0 06 00 36 28 5F 01 B0 08 E9 46 F9 93 12 40 B9
- *                          00 01 40 F9 08 E0 40 B9 48 00 00 35 34 08 F3 97
+ *  9 GetCurEqu…   0x021D3090  A0 06 00 36 68 5F 01 90 08 91 46 F9 93 12 40 B9
+ *                          00 01 40 F9 08 E0 40 B9 48 00 00 35 EE 07 F3 97
  *                          E0 03 13 2A
  *                  →           1F 20 03 D5                          (4 B)
- * 10 CheckItemLock 0x020679A8 FE 57 BE A9 F4 4F 01 A9 F4 85 01 90 75 6A 01 B0
- *                          88 46 65 39 B5 56 46 F9 F3 03 01 2A 28 01 00 37
- *                          60 6A 01 F0
+ * 10 CheckItemLock 0x0206B8BC FE 57 BE A9 F4 4F 01 A9 34 86 01 90 B5 6A 01 90
+ *                          88 46 65 39 B5 FE 45 F9 F3 03 01 2A 28 01 00 37
+ *                          A0 6A 01 D0
  *                  →           00 00 80 52 C0 03 5F D6              (8 B)
- * 11 GlovesView     0x02BBBE3C F2 A6 40 94 C0 07 00 36 95 12 40 B9 02 00 00 14
- *                          F5 03 1F 2A C0 02 40 F9 C0 D6 1C 94 20 16 00 B4
+ * 11 GlovesView     0x02BC4FB8 82 AA 40 94 C0 07 00 36 95 12 40 B9 02 00 00 14
+ *                          F5 03 1F 2A C0 02 40 F9 46 DA 1C 94 20 16 00 B4
  *                          08 D0 40 F9
  *                  →           20 00 80 52                          (4 B)
- * 12 ControlGlove…  0x0240A064 68 6E 5F 94 A0 07 00 36 95 12 40 B9 02 00 00 14
- *                          F5 03 1F 2A C0 02 40 F9 36 9E 3B 94 E0 14 00 B4
+ * 12 ControlGlove…  0x0240EBB0 84 83 5F 94 A0 07 00 36 95 12 40 B9 02 00 00 14
+ *                          F5 03 1F 2A C0 02 40 F9 48 B3 3B 94 E0 14 00 B4
  *                          08 D0 40 F9
  *                  →           20 00 80 52                          (4 B)
- * 13 SetupBtnEquip  0x02BB8CE0 D0 25 2C 94 A8 02 40 F9 F5 03 00 2A E0 03 08
- *                          AA 19 E3 1C 94 E0 03 00 B4 08 D0 40 F9 A8 03 00
+ * 13 SetupBtnEquip  0x02BC1E5C 60 29 2C 94 A8 02 40 F9 F5 03 00 2A E0 03 08
+ *                          AA 9F E6 1C 94 E0 03 00 B4 08 D0 40 F9 A8 03 00
  *                          B4 60 46 40 F9
  *                  →           20 00 80 52                          (4 B)
- * 14 SetupBtnUnlock 0x02BB8E20 80 25 2C 94 68 52 40 F9 28 17 00 B4 A0 00 00 36
- *                          F4 0F 01 F0 09 01 40 F9 94 26 42 F9 04 00 00 14
- *                          14 10 01 D0
+ * 14 SetupBtnUnlock 0x02BC1F9C 10 29 2C 94 68 52 40 F9 28 17 00 B4 A0 00 00 36
+ *                          14 10 01 F0 09 01 40 F9 94 CE 41 F9 04 00 00 14
+ *                          34 10 01 90
  *                  →           20 00 80 52                          (4 B)
  *
  * Every write is **same-length in place** — 8-over-8 at sites 1–3, 6, 10, 4-over-4 at sites
@@ -639,16 +647,16 @@ import kotlin.io.readBytes
  *  1. **Word 0 decodes as a `BL` to the shared generic collection helper** — re-decoded from the
  *     library bytes, not taken on trust:
  *
- *     | Site | file word | LE word | target | helper |
- *     |---|---|---|---|---|
- *     | 11 | `F2 A6 40 94` | `0x9460A6F2` | `0x03BE9A04` | `List<int>.Contains` |
- *     | 12 | `68 6E 5F 94` | `0x945F6E68` | `0x03BE9A04` | `List<int>.Contains` |
- *     | 13 | `D0 25 2C 94` | `0x942C25D0` | `0x036C6420` | `Dictionary<int,int>.ContainsKey` |
- *     | 14 | `80 25 2C 94` | `0x942C2580` | `0x036C6420` | `Dictionary<int,int>.ContainsKey` |
- *
- *     `0x03BE9A04` is the *same* function site 5 replaces and that `DSystem.IsOwnGlove(int)`
- *     tail-branches to (`0x021DB2C0: b 0x3be9a04`); `0x036C6420` is the *same* shared generic
- *     sites 1, 3, 6, 7 and 8 all route through. Identical helper to the already-proven sites.
+  *     | Site | file word | LE word | target | helper |
+  *     |---|---|---|---|---|
+  *     | 11 | `82 AA 40 94` | `0x9440AA82` | `0x3BF39C0` | `List<int>.Contains` |
+  *     | 12 | `84 83 5F 94` | `0x945F8384` | `0x3BF39C0` | `List<int>.Contains` |
+  *     | 13 | `60 29 2C 94` | `0x942C2960` | `0x36D03DC` | `Dictionary<int,int>.ContainsKey` |
+  *     | 14 | `10 29 2C 94` | `0x942C2910` | `0x36D03DC` | `Dictionary<int,int>.ContainsKey` |
+  *
+  *     `0x3BF39C0` is the *same* function site 5 replaces and that `DSystem.IsOwnGlove(int)`
+  *     tail-branches to on 4.184.0; `0x36D03DC` is the *same* shared generic
+  *     sites 1, 3, 6, 7 and 8 all route through on 4.184.0. Identical helper to the already-proven sites.
  *  2. **The receiver is pinned by the collection load inside the anchor.** Sites 11/12 carry
  *     `ldr x0,[x8,#0x488]` = `UserData+0x488` = `listHandSkin` (`List<int>`) at −0x18; sites
  *     13/14 carry `ldr x0,[x8,#0xF0]` = `UserData+0xF0` = `droneInventory`
@@ -868,16 +876,16 @@ import kotlin.io.readBytes
  *  - sites 8/9 `nop` → `1F 20 03 D5` (0xD503201F): always fall through to the happy path.
  *
  * Encodings cross-validated against the library itself rather than hand-assembled, counted
- * over the full 85,048,024 bytes:
+ * over the full 85,096,080 bytes:
  *
  *  | byte string | meaning | occurrences | used by |
  *  |---|---|---|---|
- *  | `20008052C0035FD6` | `mov w0,#1 ; ret` | **1,735** | sites 1–3, 6 |
- *  | `20008052`         | `mov w0,#1`       | **9,104** | sites 4–5, 11–14 |
- *  | `C0035FD6`         | `ret` alone       | 196,005 | — |
- *  | `00008052C0035FD6` | `mov w0,#0 ; ret` | 0       | site 10 |
- *  | `0A000014`         | `b #+0x28`        | 4,297   | site 7 |
- *  | `1F2003D5`         | `nop`             | 3,664   | sites 8–9 |
+  *  | `20008052C0035FD6` | `mov w0,#1 ; ret` | **1,735** | sites 1–3, 6 |
+  *  | `20008052`         | `mov w0,#1`       | **9,113** | sites 4–5, 11–14 |
+  *  | `C0035FD6`         | `ret` alone       | 196,005 | — |
+  *  | `00008052C0035FD6` | `mov w0,#0 ; ret` | 0       | site 10 |
+  *  | `0A000014`         | `b #+0x28`        | 4,291   | site 7 |
+  *  | `1F2003D5`         | `nop`             | 3,664   | sites 8–9 |
  *
  * All six rows were re-counted in this pass (whole-file byte search). The 1,735 figure matches
  * the number cited in ../unlock/UnlimitedCurrencyPatch.kt and ../ads/InstantRewardedVideoPatch.kt,
@@ -1570,14 +1578,14 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // gates are sites 6–10. Unchanged from the originally shipped patch.
     ItemAnchor(
         label = "DSystem.IsGunUnlock -> true (gun tile icon: inventory.ContainsKey tail-call)",
-        va = 0x021DB470,
-        fileOffset = 0x021D7470,
+        va = 0x021DF41C,
+        fileOffset = 0x021DB41C,
         // Word 0 = 0xA9BE57FE `stp x21,x20,[sp,#-32]!` (genuine entry); +0x10 holds
         // `mov x19,x1` = idGun. Only the first 8 bytes are ever written.
         anchorHex =
-            "FE57BEA9F44F01A9757A01B0" +
-            "A82E5039F303012AF40300AA" +
-            "C8000037E05E01F000AC40F9",
+            "FE57BEA9F44F01A9B57A0190" +
+            "A82E7F39F303012AF40300AA" +
+            "C8000037205F01D0005440F9",
         replacementHex = BOOL_TRUE,
     ),
     // ---- Site 2: GLOVES (primary). Function entry: 0xF81D0FFE `str x30,[sp,#-0x30]!`, and
@@ -1585,14 +1593,14 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // (2 hits, the other being DSystem.GetSkinIndex), so 36 bytes is required, not padding.
     ItemAnchor(
         label = "DSystem.IsOwnGlove(string) -> true (gloves: hand-skin picName check)",
-        va = 0x021C9314,
-        fileOffset = 0x021C5314,
+        va = 0x021CD2C0,
+        fileOffset = 0x021C92C0,
         // Word 0 = 0xF81D0FFE `str x30,[sp,#-0x30]!` (genuine entry); +0x1C holds
         // `mov x20,x1` = glovename. Only the first 8 bytes are ever written.
         anchorHex =
             "FE0F1DF8F65701A9F44F02A9" +
-            "F67A01F0955F0190C81A5039" +
-            "B57A45F9F40301AAF30300AA",
+            "367B01D0B55F01F0C81A7F39" +
+            "B52245F9F40301AAF30300AA",
         replacementHex = BOOL_TRUE,
     ),
     // ---- Site 3: SKINS. Function entry: 0xA9BE57FE `stp x30,x21,[sp,#-0x20]!`, and entry+0x10
@@ -1601,48 +1609,48 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // in this game gun-skin ownership IS gun ownership, at a second entry point.
     ItemAnchor(
         label = "DSystem.CheckHaveGun -> true (gun skins: ownership is gunList.ContainsKey)",
-        va = 0x021D5BB4,
-        fileOffset = 0x021D1BB4,
+        va = 0x021D9B60,
+        fileOffset = 0x021D5B60,
         // Word 0 = 0xA9BE57FE `stp x30,x21,[sp,#-0x20]!` (genuine entry); +0x10 holds
         // `mov w19,w1` = idGunRecommend. Only the first 8 bytes are ever written.
         anchorHex =
-            "FE57BEA9F44F01A9957A01F0" +
-            "A84E5039F303012AF40300AA" +
-            "C8000037205F01B000AC40F9",
+            "FE57BEA9F44F01A9D57A01D0" +
+            "A84E7F39F303012AF40300AA" +
+            "C8000037605F0190005440F9",
         replacementHex = BOOL_TRUE,
     ),
     // ---- Site 4: DRONES. *** MID-FUNCTION INLINE EDIT — NOT AN ENTRY *** The anchor starts at
     // a `bl` inside DroneItemCtrl.Refresh, NOT at the method's first word, so no prologue
-    // argument applies. Word 0 = 0x9442437C = `bl 0x036C6420` = Dictionary<int,int>.ContainsKey;
+    // argument applies. Word 0 = 0x94425898 = `bl 0x36D03DC` = Dictionary<int,int>.ContainsKey;
     // `ldr x0,[x9,#0xF0]` at -0x18 pins the collection to UserData.droneInventory and
     // `ldr w1,[x8,#0x10]` at -0x08 puts DroneConfig.id in w1. 4-byte write, NO `ret`: the
     // method must continue to `ldr x8,[x19,#0x40]` / `_iconOwned.SetActive`. All 36 bytes are
     // still verified even though only the first 4 are written.
     ItemAnchor(
         label = "DroneItemCtrl.Refresh inline droneInventory.ContainsKey -> true (drone tile)",
-        va = 0x02635630,
-        fileOffset = 0x02631630,
+        va = 0x0263A17C,
+        fileOffset = 0x0263617C,
         anchorHex =
-            "7C434294682240F9080800B4" +
+            "98584294682240F9080800B4" +
             "01000012E00308AAE2031FAA" +
-            "73F18A94601E40F9400700B4",
+            "26078B94601E40F9400700B4",
         replacementHex = BOOL_TRUE_W,
     ),
     // ---- Site 5: GLOVES tile icon. *** MID-FUNCTION INLINE EDIT — NOT AN ENTRY *** Starts at a
-    // `bl` inside GloveItemCtrl.Refresh. Word 0 = 0x945671F7 = `bl 0x03BE9A04` =
+    // `bl` inside GloveItemCtrl.Refresh. Word 0 = 0x94568713 = `bl 0x3BF39C0` =
     // List<int>.Contains; `ldr x0,[x8,#0x488]` at -0x18 pins the collection to
     // UserData.listHandSkin and `ldr w1,[x19,#0x70]` at -0x08 puts this._gloveId in w1. Needed
     // on top of site 2 because this tile inlines the test instead of calling IsOwnGlove. Note
     // the `20008052` at +0x08 is the game's OWN gloveId==0 "always owned" shortcut at
-    // 0x0264D230, not something this patch writes. 4-byte write, NO `ret`.
+    // 0x02651D7C, not something this patch writes. 4-byte write, NO `ret`.
     ItemAnchor(
         label = "GloveItemCtrl.Refresh inline listHandSkin.Contains -> true (glove tile icon)",
-        va = 0x0264D228,
-        fileOffset = 0x02649228,
+        va = 0x02651D74,
+        fileOffset = 0x0264DD74,
         anchorHex =
-            "F77156940200001420008052" +
+            "138756940200001420008052" +
             "682640F9680300B401000012" +
-            "E00308AAE2031FAA73928A94",
+            "E00308AAE2031FAA26A88A94",
         replacementHex = BOOL_TRUE_W,
     ),
     // ---- Site 6: GUNS SHOP ACTION BUTTON. Function entry: 0xA9BE57FE `stp x30,x21,[sp,#-0x20]!`
@@ -1654,12 +1662,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // over the Unlock/Buy wiring. 8-byte entry write.
     ItemAnchor(
         label = "WeaponShopView.IsOwnedItem -> true (gun shop button: Equip/Upgrade not Buy)",
-        va = 0x020A8708,
-        fileOffset = 0x020A4708,
+        va = 0x020AC61C,
+        fileOffset = 0x020A861C,
         anchorHex =
-            "FE57BEA9F44F01A9F58301F0" +
-            "A8826E39F303012AF40300AA" +
-            "C8000037806801D000AC40F9",
+            "FE57BEA9F44F01A9358401F0" +
+            "A8825D39F303012AF40300AA" +
+            "C8000037C06801B0005440F9",
         replacementHex = BOOL_TRUE,
     ),
     // ---- Site 7: GUNS LOADOUT REPAIR. *** MID-FUNCTION BRANCH EDIT — NOT AN ENTRY *** Word 0 =
@@ -1670,8 +1678,8 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // 4-byte write, NO `ret`: the loop must continue and the routine must finish its other work.
     ItemAnchor(
         label = "DSystem.FixedWrongEquipWeapon -> always keep the equipped gun slot",
-        va = 0x021D290C,
-        fileOffset = 0x021CE90C,
+        va = 0x021D68B8,
+        fileOffset = 0x021D28B8,
         anchorHex =
             "4001003768D240F9880900B4" +
             "008940F9200900B4630340F9" +
@@ -1686,12 +1694,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // throwing or returning null. 4-byte write, NO `ret`.
     ItemAnchor(
         label = "DSystem.GetOwnedGunConfigById -> do not return null for an un-owned gun",
-        va = 0x021D2DB0,
-        fileOffset = 0x021CEDB0,
+        va = 0x021D6D5C,
+        fileOffset = 0x021D2D5C,
         anchorHex =
-            "C0060036285F01D008E946F9" +
+            "C0060036685F01B0089146F9" +
             "000140F908E040B948000035" +
-            "0209F397E003132AE1031FAA",
+            "BC08F397E003132AE1031FAA",
         replacementHex = NOP_FALLTHROUGH,
     ),
     // ---- Site 9: GUN BATTLE-PREP RECORD RESOLVER. *** MID-FUNCTION BRANCH EDIT *** Same shape on
@@ -1701,12 +1709,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // Anchor is 36 B even though the note reported a 32 B minimum — see ANCHOR UNIQUENESS.
     ItemAnchor(
         label = "DSystem.GetCurEquipedGunBattle -> do not return null for an un-owned gun",
-        va = 0x021D30E4,
-        fileOffset = 0x021CF0E4,
+        va = 0x021D7090,
+        fileOffset = 0x021D3090,
         anchorHex =
-            "A0060036285F01B008E946F9" +
+            "A0060036685F0190089146F9" +
             "931240B9000140F908E040B9" +
-            "480000353408F397E003132A",
+            "48000035EE07F397E003132A",
         replacementHex = NOP_FALLTHROUGH,
     ),
     // ---- Site 10: RAID-BOSS MODE ITEM LOCK. Function entry: 0xA9BE57FE `stp x30,x21,[sp,#-0x20]!`
@@ -1716,17 +1724,17 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // mode-scoped gate in this file. 8-byte entry write.
     ItemAnchor(
         label = "RaidbossSelectionView.CheckItemLocked -> false (raid-boss items never locked)",
-        va = 0x0206B9A8,
-        fileOffset = 0x020679A8,
+        va = 0x0206F8BC,
+        fileOffset = 0x0206B8BC,
         anchorHex =
-            "FE57BEA9F44F01A9F4850190" +
-            "756A01B088466539B55646F9" +
-            "F303012A28010037606A01F0",
+            "FE57BEA9F44F01A934860190" +
+            "B56A019088465439B5FE45F9" +
+            "F303012A28010037A06A01D0",
         replacementHex = BOOL_FALSE,
     ),
     // ---- Site 11: GLOVES SHOP EQUIP BUTTON. *** MID-FUNCTION INLINE EDIT — NOT AN ENTRY ***
     // Starts at a `bl` inside GlovesView.RefreshButtons, so no prologue argument applies (same
-    // situation as sites 4/5). Word 0 = 0x9460A6F2 = `bl 0x03BE9A04` = List<int>.Contains;
+    // situation as sites 4/5). Word 0 = 0x9440AA82 = `bl 0x3BF39C0` = List<int>.Contains;
     // `ldr x0,[x8,#0x488]` at -0x18 pins the collection to UserData.listHandSkin and
     // `ldr w1,[x20,#0x10]` at -0x08 puts HandSkinRecord.handID in w1. The next instruction is
     // `tbz w0,#0,0x02BBFF38`, whose not-owned target is *past* the only Btn_Use.SetActive(true)
@@ -1734,31 +1742,31 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // NO `ret`: the method must run on into the Btn_Use block. All 36 bytes still verified.
     ItemAnchor(
         label = "GlovesView.RefreshButtons inline listHandSkin.Contains -> true (gloves shop equip)",
-        va = 0x02BBFE3C,
-        fileOffset = 0x02BBBE3C,
+        va = 0x02BC8FB8,
+        fileOffset = 0x02BC4FB8,
         anchorHex =
-            "F2A64094C0070036951240B9" +
+            "82AA4094C0070036951240B9" +
             "02000014F5031F2AC00240F9" +
-            "C0D61C94201600B408D040F9",
+            "46DA1C94201600B408D040F9",
         replacementHex = BOOL_TRUE_W,
     ),
     // ---- Site 12: GLOVES IN-BATTLE EQUIP BUTTON. *** MID-FUNCTION INLINE EDIT *** Byte-for-byte
     // the same algorithm as site 11 in a different class (NGUI ControlGloveSkin, Btn_Use at
-    // +0x70, virtual set_interactable via slot 0x188). Word 0 = 0x945F6E68 = `bl 0x03BE9A04`,
+    // +0x70, virtual set_interactable via slot 0x188). Word 0 = 0x945F8384 = `bl 0x3BF39C0`,
     // same helper as site 5 and site 11. NOT optional: equipping from the battle screen never
     // runs GlovesView.RefreshButtons, so site 11 alone leaves the player stuck there.
     ItemAnchor(
         label = "ControlGloveSkin.RefreshButtons inline listHandSkin.Contains -> true (battle gloves equip)",
-        va = 0x0240E064,
-        fileOffset = 0x0240A064,
+        va = 0x02412BB0,
+        fileOffset = 0x0240EBB0,
         anchorHex =
-            "686E5F94A0070036951240B9" +
+            "84835F94A0070036951240B9" +
             "02000014F5031F2AC00240F9" +
-            "369E3B94E01400B408D040F9",
+            "48B33B94E01400B408D040F9",
         replacementHex = BOOL_TRUE_W,
     ),
     // ---- Site 13: DRONES SHOP EQUIP BUTTON — ESSENTIAL. *** MID-FUNCTION INLINE EDIT *** Word 0 =
-    // 0x942C25D0 = `bl 0x036C6420` = Dictionary<int,int>.ContainsKey, the same shared generic
+    // 0x942C2960 = `bl 0x36D03DC` = Dictionary<int,int>.ContainsKey, the same shared generic
     // sites 1/3/6/7/8 use; `ldr x0,[x8,#0xF0]` at -0x18 pins UserData.droneInventory and
     // `ldr w1,[x20,#0x10]` at -0x08 puts DroneConfig.idItem in w1. Next instruction is
     // `mov w21,w0` — NO BRANCH AT ALL — then `and w1,w21,#1` feeds
@@ -1766,27 +1774,27 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // (site 6) and the highest-confidence of these four. 4-byte write, NO `ret`.
     ItemAnchor(
         label = "DroneShopView.SetupButtonEquip inline droneInventory.ContainsKey -> true (drone equip button)",
-        va = 0x02BBCCE0,
-        fileOffset = 0x02BB8CE0,
+        va = 0x02BC5E5C,
+        fileOffset = 0x02BC1E5C,
         anchorHex =
-            "D0252C94A80240F9F503002A" +
-            "E00308AA19E31C94E00300B4" +
+            "60292C94A80240F9F503002A" +
+            "E00308AA9FE61C94E00300B4" +
             "08D040F9A80300B4604640F9",
         replacementHex = BOOL_TRUE_W,
     ),
     // ---- Site 14: DRONES SHOP CAPTION — COSMETIC, AND THE ONE DROPPABLE SITE IN THIS FILE.
-    // *** MID-FUNCTION INLINE EDIT *** Word 0 = 0x942C2580 = `bl 0x036C6420`, same helper as
+    // *** MID-FUNCTION INLINE EDIT *** Word 0 = 0x942C2910 = `bl 0x36D03DC`, same helper as
     // site 13. `tbz w0,#0` then selects between two localization slots feeding
     // DLabel.set_text on the *unlock* button and its price label — nothing else. Delete this
     // single entry to revert it; sites 11, 12, 13 and every other patch are unaffected.
     ItemAnchor(
         label = "DroneShopView.SetupButtonUnlock inline droneInventory.ContainsKey -> true (drone caption, label only)",
-        va = 0x02BBCE20,
-        fileOffset = 0x02BB8E20,
+        va = 0x02BC5F9C,
+        fileOffset = 0x02BC1F9C,
         anchorHex =
-            "80252C94685240F9281700B4" +
-            "A0000036F40F01F0090140F9" +
-            "942642F904000014141001D0",
+            "10292C94685240F9281700B4" +
+            "A0000036141001B0090140F9" +
+            "94CE41F90400001434100190",
         replacementHex = BOOL_TRUE_W,
     ),
 )

@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.43.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.43.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;102 patches total
+> **[v1.44.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.44.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;108 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -92,7 +92,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 4.183.0 |
+| 4.184.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -118,6 +118,25 @@ Direct URL:
 | [Big Hunter PairIP License Bypass](#big-hunter-pairip-license-bypass) | Disables the PairIP license check (installer verification + Google Play licensing service validation + paywall/exit dialog). Required for patched APKs — the original check fails on any non-Play signature and force-closes the app. |  |
 | [Big Hunter Remove Ads](#big-hunter-remove-ads) | Interstitial ads are never shown (show() short-circuits via the ad-not-ready path on all three network bridges: AdMob, AppLovin, Unity Ads). |  |
 | [Big Hunter Rewards Without Ads](#big-hunter-rewards-without-ads) | Rewarded video requests grant the reward immediately via the game's own native rewardCallback() without loading or showing any ad (AdMob, AppLovin, Unity Ads). |  |
+
+</details>
+
+<details>
+<summary>📦 Crash of Cars&nbsp;&nbsp;•&nbsp;&nbsp;5 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.9.34 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Crash of Cars Anti-hacking Check](#crash-of-cars-anti-hacking-check) | Stops the game's built-in tamper detector from flagging the app as modified. The game ships a native check that fingerprints classes.dex and quietly marks the app as not genuine whenever the fingerprint does not match the one it was built with — which is exactly what happens the moment any mod is applied, since changing the app inevitably changes that fingerprint. With this on, the game keeps reporting itself as a normal, unmodified install, so purchases and other store features are not silently suppressed. |  |
+| [Crash of Cars Free IAP](#crash-of-cars-free-iap) | Every store item — coin packs, gem bundles, remove ads and the starter bundles — is granted the instant you tap Buy, and no Google Play payment sheet ever opens. Because nothing is fetched from Play, purchases work fully offline with no Play account, and remove-ads stays unlocked across restarts since the entitlement is re-delivered from a fake owned-purchases list at every launch. |  |
+| [Crash of Cars Instant Ad Rewards](#crash-of-cars-instant-ad-rewards) | Turns every "watch a video" offer into an instant payout. Coins, gems and boosters that the game offers in exchange for sitting through a rewarded advert are credited the moment you tap, with no video to play, no countdown and no waiting — and the offer stays repeatable afterwards, so you can claim it as often as you like. Works with no internet connection and the reward stays credited after restarting the game. |  |
+| [Crash of Cars No Ads](#crash-of-cars-no-ads) | Removes the full-screen advert that plays at the end of every race, so the results screen comes up straight away instead of behind an ad you have to sit through or skip. The race still finishes normally — the game is told the advert opened and closed exactly as it would have been, so nothing gets stuck waiting for it. Works offline and survives restarts, because no part of the ad display depends on a network round trip. |  |
+| [Crash of Cars Sideload / APK Expansion Bypass](#crash-of-cars-sideload-apk-expansion-bypass) | IMPORTANT: this patch only removes the licensing gate — it does NOT supply the game data. The 153 MB expansion file must already be on your device before the game will start. Copy main.<versionCode>.com.notdoppler.crashofcars.obb into Android/obb/com.notdoppler.crashofcars/ (on most phones that is the internal Android/obb folder, not the one on the SD card) using a file manager or an ADB push. If the file is missing or in the wrong place the game will still stall on the loading screen no matter what this patch does. Aside from that: lets the game start from a sideloaded APK instead of a Google Play install. The downloader refuses to use the expansion file even when it is present because Play's licensing server rejects a re-signed package, so the game stops on "Download failed because you may not have purchased this app" before it ever reaches the menu. This forces the expansion downloader past both gates: it always reports success instead of a stale or unlicensed error, and it always takes the licensed path when Play answers. The expansion data is still md5-verified file by file exactly as shipped, so a genuinely incomplete or corrupt download is still reported rather than silently ignored. |  |
 
 </details>
 
@@ -510,7 +529,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.3050 |
+| 1.3052 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -642,7 +661,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Swift Backup&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<summary>📦 Swift Backup&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -652,6 +671,7 @@ Direct URL:
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
+| [Swift Backup Local Cloud Metadata](#swift-backup-local-cloud-metadata) | Makes cloud backups work by keeping their metadata on the device and the connected cloud instead of the Swift Backup server. |  |
 | [Swift Backup Premium Unlock](#swift-backup-premium-unlock) | Unlocks all Premium features. |  |
 | [Swift Backup Tamper Protection](#swift-backup-tamper-protection) | Stops the app from closing itself on patched installs. |  |
 | [Swift Backup Web Login](#swift-backup-web-login) | Makes Google sign-in work for connecting cloud accounts. |  |

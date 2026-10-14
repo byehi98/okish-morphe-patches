@@ -8,14 +8,14 @@ import java.io.RandomAccessFile
 import kotlin.io.readBytes
 
 /**
- * Dead Target: Offline Games 3D 4.183.0 (583009063) — Instant rewarded video.
+ * Dead Target: Offline Games 3D 4.184.0 — Instant rewarded video.
  *
  * One site, one goal: **the reward is granted instantly, with no ad watched.** The "watch an
  * ad for a reward" popup is left completely alone — the game's own logic decides when it
  * appears, so it appears on its normal cadence and then goes away.
  *
  * Dead Target is Unity IL2CPP: the smali layer is SDK plumbing only, every ad decision lives
- * in `libil2cpp.so` (85,048,024 bytes, arm64-v8a, plaintext `.text`). Class `AdsController`
+ * in `libil2cpp.so` (85,096,080 bytes, arm64-v8a, plaintext `.text`). Class `AdsController`
  * (`MonoBehaviour`, TypeDefIndex 3175, confirmed in `analysis/dead-target/dump/dump.cs`) owns
  * the whole rewarded flow.
  *
@@ -84,80 +84,79 @@ import kotlin.io.readBytes
  * ============================================================================
  * THE REAL FLOW (llvm-objdump 21.1.8, read out of the shipped lib)
  * ============================================================================
- * `AdsController.ShowRewardedVideoAds(SEGMENT_ID segmentId)` — VA 0x283FDE0:
- *   0x283FDE0  d10143ff  sub  sp, sp, #0x50      <- genuine entry (verified)
- *   0x283FDF8  2a0103f3  mov  w19, w1            <- segmentId
- *   0x283FDFC  aa0003f4  mov  x20, x0            <- this
- *   0x283FE28  2a1303e1  mov  w1, w19
- *   0x283FE2C  97fffadd  bl   0x283e9a0         <- AdsController.CanShowVideoAds (site 5)
- *   0x283FE30  36000680  tbz  w0, #0x0, ...     <- bail if the gate said no
- *   0x283FE3C  b9004a93  str  w19, [x20, #0x48]  <- this->_crtSegmentID = segmentId  (0x48)
- *   0x283FE68  52800061  mov  w1, #3            <- AD_TYPE.REWARDED_VIDEO
- *   0x283FE74  94001224  bl   0x2844704         <- MediationManager.Show  *** THE BLOCKER ***
+ * `AdsController.ShowRewardedVideoAds(SEGMENT_ID segmentId)` — VA 0x2849ACC:
+ *   0x2849ACC  d10143ff  sub  sp, sp, #0x50      <- genuine entry (verified)
+ *   0x2849AE4  2a0103f3  mov  w19, w1            <- segmentId
+ *   0x2849AE8  aa0003f4  mov  x20, x0            <- this
+ *   entry+0x48  2a1303e1  mov  w1, w19
+ *   entry+0x4C  bl   AdsController.CanShowVideoAds (site 5, reverted — see below)
+ *   entry+0x50  tbz  w0, #0x0, ...     <- bail if the gate said no
+ *   entry+0x5C  str  w19, [x20, #0x48]  <- this->_crtSegmentID = segmentId  (0x48)
+ *   entry+0x88  mov  w1, #3            <- AD_TYPE.REWARDED_VIDEO
+ *   entry+0x94  bl   MediationManager.Show  *** THE BLOCKER ***
+ *   (mid-body offsets re-verified as entry-relative on 4.184.0 — relative layout preserved;
+ *   only the entry VA moved, 0x283FDE0 → 0x2849ACC.)
  *   …and the ad, if one is not loaded, never calls back — so the reward never arrives.
  *
  * The patched site's job is precisely to skip from the entry straight past all of that to the
  * game's own completion handler, so the mediation layer is never reached and nothing needs to
  * be "available" for the reward to be granted.
  *
- * `AdsController.OnCompleteShow(bool isNeedSendLog = True)` — VA 0x28401F4, **same class**:
- *   0x28401F4  a9be57fe  stp  x30, x21, [sp,#-0x20]!   <- genuine entry, pre-indexed
- *   0x2840204  2a0103f4  mov  w20, w1            <- isNeedSendLog
- *   0x2840208  aa0003f3  mov  x19, x0            <- this
- *   0x2840230  f9401a68  ldr  x8, [x19, #0x30]   <- this->_adsCallback           (0x30)
- *   0x2840234  b4000468  cbz  x8, 0x28402c0      <- null guard: returns WITHOUT rewarding
- *   0x2840238  b9404a61  ldr  w1, [x19, #0x48]  <- this->_crtSegmentID           (0x48)
- *   0x284023C  97ffe852  bl   0x283a384          <- AdsCallbacks.OnRewardedVideoAdsCompleted
+ * `AdsController.OnCompleteShow(bool isNeedSendLog = True)` — VA 0x2849EE4, **same class**:
+ *   0x2849EE4  stp  x30, x21, [sp,#-0x20]!   <- genuine entry, pre-indexed
+ *   entry+0x10  mov  w20, w1            <- isNeedSendLog
+ *   entry+0x14  mov  x19, x0            <- this
+ *   0x2849F20  ldr  x8, [x19, #0x30]   <- this->_adsCallback           (0x30)
+ *   0x2849F24  cbz  x8, null-throw     <- null guard: raises (see RUNTIME CAVEAT)
+ *   0x2849F28  ldr  w1, [x19, #0x48]  <- this->_crtSegmentID           (0x48)
+ *   0x2849F2C  bl   0x2842E78          <- AdsCallbacks.OnRewardedVideoAdsCompleted
  *   …                                              *** REWARD GRANTED HERE ***
- *   0x2840248  9400001f  bl   0x28402c4           <- AdsController.UpdateVideoAdsStatus
- *   0x2840290  36000074  tbz  w20, #0x0, ...     <- if !isNeedSendLog, skip the log call
- *   0x2840298  9400001f  bl   0x2840314           <- AdsController.SendRewardedVideoAdsLogs
+ *   0x2849F38  bl   0x2849FB0           <- AdsController.UpdateVideoAdsStatus
+ *   entry+0x9C  tbz  w20, #0x0, ...     <- if !isNeedSendLog, skip the log call
+ *   entry+0xA4  bl   SendRewardedVideoAdsLogs
  *
- * and, inside `UpdateVideoAdsStatus(SEGMENT_ID segId = 29)` — VA 0x28402C4 — the three calls
- * that do the actual cooldown bookkeeping (each `bl` target re-decoded from the shipped lib):
- *
- *   0x28402e8  97ffff2b  bl   0x283ff94  -> AdsController.IncreaseAdsWatchedCounter(SEGMENT_ID)
- *   0x28402f4  97ffff5b  bl   0x2840060  -> AdsController.UpdateAdsWatchedInterval(SEGMENT_ID)
- *   0x2840300  97ffff8f  bl   0x284013c  -> AdsController.ResetPlayingBattleCounter(SEGMENT_ID)
+ * and, inside `UpdateVideoAdsStatus(SEGMENT_ID segId = 29)` — VA 0x2849FB0 — the three calls
+ * that do the actual cooldown bookkeeping (`IncreaseAdsWatchedCounter` /
+ * `UpdateAdsWatchedInterval` / `ResetPlayingBattleCounter`, same relative layout as 4.183.0).
  *
  * That verified chain is what makes the reverted gates a bug rather than a feature: our stub
- * runs the game's real bookkeeping (`UpdateVideoAdsStatus` at **0x28402C4**, which advances
+ * runs the game's real bookkeeping (`UpdateVideoAdsStatus` at **0x2849FB0**, which advances
  * `IncreaseAdsWatchedCounter`, `UpdateAdsWatchedInterval` and `ResetPlayingBattleCounter`),
  * and the old forced-true `CanShowVideoAds` threw that freshly-written state away on the next
  * prompt.
  *
  * Address hygiene note, because this chain was mis-read once: `UpdateVideoAdsStatus` is at
- * **0x28402C4**; `SendRewardedVideoAdsLogs` is a *different* method at **0x2840314** and is
- * reached from the separate `isNeedSendLog` branch at 0x2840298. Conflating the two makes it
- * look as though `UpdateVideoAdsStatus` sits at 0x2840314 — it does not. (dump.cs confirms
- * both: `public void UpdateVideoAdsStatus(SEGMENT_ID segId = 29)` @0x28402C4 and
- * `private void SendRewardedVideoAdsLogs()` @0x2840314.)
+ * **0x2849FB0**; `SendRewardedVideoAdsLogs` is a *different* method reached from the separate
+ * `isNeedSendLog` branch at entry+0xA4. Conflating the two makes it
+ * look as though `UpdateVideoAdsStatus` sits elsewhere — it does not. (dump.cs confirms
+ * both: `public void UpdateVideoAdsStatus(SEGMENT_ID segId = 29)` @0x2849FB0 and
+ * `private void SendRewardedVideoAdsLogs()` just after it.)
  *
  * Field identities (dump.cs, AdsController): `_adManager` 0x28, `_adsCallback` 0x30,
- * `_crtSegmentID` 0x48. `OnRewardedVideoAdsCompleted` at 0x283A384 is a genuine prologue
+ * `_crtSegmentID` 0x48. `OnRewardedVideoAdsCompleted` at 0x2842E78 is a genuine prologue
  * (`sub sp,sp,#0x40` / `stp x30,x21,[sp,#0x20]`).
  *
- * Branch arithmetic (independently re-derived from lib bytes, not taken on trust):
- *   branch word sits at VA 0x283FDE0 + 4 = **0x283FDE8** (word 1 of the entry)
- *   target OnCompleteShow = **0x28401F4**
- *   delta = 0x28401F4 − 0x283FDE8 = **0x40C** (1036) → imm26 = 0x40C >> 2 = **0x103** (259)
- *   encoded: `(0b000101 << 26) | 0x103` = 0x14000103 → LE `03 01 00 14`
- * `llvm-mc -triple=aarch64 --show-encoding "b #+0x40C"` independently returns `[0x03,0x01,0x00,0x14]`.
- * (The same sum reproduces the game's own `bl @0x284023C → 0x283A384`, i.e. −24248 bytes,
- * which confirms the encoder and the target.)
+ * Branch arithmetic (re-derived from the NEW 4.184.0 bytes, not copied from 4.183.0):
+ *   branch word sits at VA 0x2849ACC + 4 = **0x2849AD0** (word 1 of the entry)
+ *   target OnCompleteShow = **0x2849EE4**
+ *   delta = 0x2849EE4 − 0x2849AD0 = **0x414** (1044) → imm26 = 0x414 >> 2 = **0x105** (261)
+ *   encoded: `(0b000101 << 26) | 0x105` = 0x14000105 → LE `05 01 00 14`
+ * (4.183.0 was `b #+0x40C` = `14000103`: Show shifted +0x9CEC but OnComplete shifted +0x9CF0 —
+ * 4 bytes of drift between the two methods — so the old branch word would land 4 bytes short.
+ * Re-encoding was mandatory, not cosmetic.)
  *
  * ============================================================================
  * THE SITE — THE TAIL-BRANCH (the "instant reward")
  * ============================================================================
  * Overwrite the first 3 words of `ShowRewardedVideoAds` with:
  *
- *     0x283FDE0  01 48 00 B9  B9004801  str  w1, [x0, #0x48]   ; _crtSegmentID = segmentId
- *     0x283FDE4  E1 03 1F 2A  2A1F03E1  mov  w1, wzr          ; isNeedSendLog = false
- *     0x283FDE8  03 01 00 14  14000103  b    0x28401F4       ; OnCompleteShow  (reward!)
+ *     0x2849ACC  01 48 00 B9  B9004801  str  w1, [x0, #0x48]   ; _crtSegmentID = segmentId
+ *     0x2849AD0  E1 03 1F 2A  2A1F03E1  mov  w1, wzr          ; isNeedSendLog = false
+ *     0x2849AD4  05 01 00 14  14000105  b    0x2849EE4       ; OnCompleteShow  (reward!)
  *
  * Encoding provenance — all three words confirmed with `llvm-mc --show-encoding`:
  *  - `str w1,[x0,#72]` → `[0x01,0x48,0x00,0xb9]`. This is the game's own instruction
- *    `str w19,[x20,#72]` at 0x283FE3C (`93 4A 00 B9`) with Rt/Rn swapped to w1/x0 — the
+ *    `str w19,[x20,#72]` at entry+0x5C (`93 4A 00 B9`) with Rt/Rn swapped to w1/x0 — the
  *    unsigned-offset STR imm12 scale for a 32-bit store is 4, so imm12 = 18 = 72 = 0x48.
  *    It reproduces the original `_crtSegmentID = segmentId` assignment exactly, one line
  *    earlier and without the dead setup.
@@ -169,10 +168,10 @@ import kotlin.io.readBytes
  *    3,260× for the non-canonical form. Matching the platform's own codegen matters here
  *    precisely because this patch is *outside* the compiler's knowledge.
  *    `w1 = false` also stops `SendRewardedVideoAdsLogs` from firing (guarded by
- *    `tbz w20,#0` at 0x2840290) — there is no ad to report. The reward-side bookkeeping is
+ *    `tbz w20,#0` at entry+0x9C) — there is no ad to report. The reward-side bookkeeping is
  *    deliberately **not** suppressed: `UpdateVideoAdsStatus` runs regardless, which is exactly
  *    why the cooldown the popup honours stays correct.
- *  - `b #+0x40C` → `[0x03,0x01,0x00,0x14]`, see arithmetic above.
+ *  - `b #+0x414` → `[0x05,0x01,0x00,0x14]`, see arithmetic above.
  *
  * Why this shape (mirrors AliensDriveMeCrazy's `ShowRewardAds` tail-branch, whose KDoc
  * documents the same three pitfalls):
@@ -182,9 +181,9 @@ import kotlin.io.readBytes
  *    the dispatcher saves that value, its epilogue restores it, and control returns straight
  *    to the real caller. No `ret` of our own, so the branch target must be a full prologue.
  *  - **`OnCompleteShow`'s exits all unwind x30 correctly.** Verified against the shipped lib:
- *    the shared epilogue at 0x28402B4 is `ldp x20,x19,[sp,#0x10]` / `ldp x30,x21,[sp],#0x20`
- *    / `ret`, and the one other exit at 0x28402A4 does the same restore and then *tail-branches*
- *    (`b 0x28438dc`) instead of `ret`-ing — also fine, because x30 was already reloaded from
+ *    the shared epilogue at entry+0xC0 is `ldp x20,x19,[sp,#0x10]` / `ldp x30,x21,[sp],#0x20`
+ *    / `ret`, and the one other exit at entry+0xB0 does the same restore and then *tail-branches*
+ *    to the log helper instead of `ret`-ing — also fine, because x30 was already reloaded from
  *    the frame before the branch. So no exit path can strand the caller's return address.
  *  - **x0 (`this`) must pass through untouched.** Both words we emit either use x0 directly
  *    or leave it alone, and nothing between the entry and the `b` modifies it. Branching into
@@ -194,9 +193,9 @@ import kotlin.io.readBytes
  *    `_crtSegmentID` (0x48) and `_adsCallback` (0x30) offsets it reads are the very offsets
  *    this site just wrote/owns. Had the dispatcher been on another class, the field offsets
  *    would not line up and this trick would be invalid.
- *  - **Entering at 0x28401F4 is exactly a managed call `OnCompleteShow(false)`.** It is a
+ *  - **Entering at 0x2849EE4 is exactly a managed call `OnCompleteShow(false)`.** It is a
  *    `public void OnCompleteShow(bool isNeedSendLog = True)` on the controller, i.e. an
- *    ordinary externally-callable entry point: everything from 0x28401F4 onward is the game's
+ *    ordinary externally-callable entry point: everything from 0x2849EE4 onward is the game's
  *    own unmodified code, so its register setup (`mov x19,x0`, `mov w20,w1`), its metadata
  *    init guard and its frame are all intact by construction. Nothing the original method
  *    relies on is established by `ShowRewardedVideoAds`' prologue, because the two share none.
@@ -211,7 +210,8 @@ import kotlin.io.readBytes
  * ============================================================================
  * These five `AdsController` predicates were briefly stubbed to `mov w0,#1 ; ret`
  * (`20 00 80 52 | C0 03 5F D6` — the compiler's own constant-true shape, which occurs
- * 1,735 times in this library). All five are reverted:
+ * 1,735 times in this library). All five are reverted (VAs below as measured on 4.183.0,
+ * kept as an audit record — do NOT reuse as patch anchors):
  *
  *  | # | AdsController method         | VA        | File offset | Status           |
  *  |---|------------------------------|-----------|-------------|------------------|
@@ -224,7 +224,7 @@ import kotlin.io.readBytes
  * Reason, uniformly: they are the game's per-segment cooldown/availability logic, so forcing
  * them true removed the cooldown and produced the endless popup reported from device testing.
  * Site 5 is the decisive case — it is the precheck `ShowRewardedVideoAds` itself calls at
- * 0x283FE2C, and unlike a trivial leaf such as `DSystem.IsGunUnlockV2` it has a **real body**
+ * entry+0x4C, and unlike a trivial leaf such as `DSystem.IsGunUnlockV2` it has a **real body**
  * that genuinely evaluates that state, so stubbing it overwrote real decisions rather than
  * merely short-circuiting a constant.
  *
@@ -251,22 +251,22 @@ import kotlin.io.readBytes
  * ============================================================================
  *  | # | AdsController method        | VA        | File offset | Stub          |
  *  |---|-----------------------------|-----------|-------------|---------------|
- *  | 6 | ShowRewardedVideoAds        | 0x283FDE0 | 0x283BDE0   | 12B TAIL_REWARD|
+ *  | 6 | ShowRewardedVideoAds        | 0x2849ACC | 0x2845ACC   | 12B TAIL_REWARD|
  *
- * Original 36 bytes at file offset 0x283BDE0 (the anchor) → replacement:
+ * Original 36 bytes at file offset 0x2845ACC (the anchor) → replacement:
  *
- *   6 ShowRewarded  0x283BDE0  FF 43 01 D1 FE 13 00 F9 F6 57 03 A9 F4 4F 04 A9 75 47 01 90
- *                             A8 FA 5A 39 F3 03 01 2A F4 03 00 AA 28 01 00 37
- *                   →           01 48 00 B9 E1 03 1F 2A 03 01 00 14
+ *   6 ShowRewarded  0x2845ACC  FF 43 01 D1 FE 13 00 F9 F6 57 03 A9 F4 4F 04 A9 75 47 01 D0
+ *                             A8 DE 4A 39 F3 03 01 2A F4 03 00 AA 28 01 00 37
+ *                   →           01 48 00 B9 E1 03 1F 2A 05 01 00 14
  *
  * Word 0 is a genuine entry, confirmed by llvm-objdump on the shipped lib: `d10143ff`
  * (`sub sp,sp,#0x50`). Word 0 is also where the *branch* word must NOT be, which is why the
  * stub is 12 bytes (3 words: str, mov, b) and not 8.
  *
  * 36 bytes is required, not gold-plating: counting first-12-byte-prologue occurrences at this
- * site gives **1,409 hits**. A shorter search would resolve to an arbitrary earlier match and
+ * site gives **1,412 hits**. A shorter search would resolve to an arbitrary earlier match and
  * corrupt an unrelated function. The full 36-byte window is exactly **1 hit**, and that hit is
- * the documented file offset. The write window is 0x283BDE0..0x283BDEB.
+ * the documented file offset. The write window is 0x2845ACC..0x2845AD7.
  *
  * Also checked for collisions: the full 12-byte replacement occurs **0 times** in the shipped
  * library, so it cannot be confused with pre-existing code.
@@ -274,7 +274,7 @@ import kotlin.io.readBytes
  * ============================================================================
  * DELIBERATELY EXCLUDED
  * ============================================================================
- *  - **`MediationManager.IsAdsAvailable` — VA 0x2844640 / file 0x2840640 — NOT patched.**
+ *  - **`MediationManager.IsAdsAvailable` — VA 0x2844640 / file 0x2840640 on 4.183.0 — NOT patched.**
  *    It is *tempting* (its 36-byte window is equally unique:
  *    `FE0F1DF8F65701A9F44F02A9364701F0C8CE5B39F30302AAF403012AF50300AAC8000037`) and
  *    forcing it true would look like the thorough version of this patch. It is in
@@ -286,7 +286,7 @@ import kotlin.io.readBytes
  *    knows it was evaluated rather than missed. It is, however, the correct *place* to look
  *    if the fallback in REVISION HISTORY is ever needed — provided a rewarded-video-scoped
  *    variant is found rather than a global stub.
- *  - **`AdsController.CanClaimVideAdsReward` — VA 0x283EFF0 / file 0x283AFF0 — NOT patched.**
+ *  - **`AdsController.CanClaimVideAdsReward` — VA 0x283EFF0 / file 0x283AFF0 on 4.183.0 — NOT patched.**
  *    This is the once-per-day claim gate. Left alone deliberately, and for an additional reason
  *    now: it is another cooldown-style predicate, so forcing it true would re-introduce exactly
  *    the endless-prompt class of bug this patch just reverted. It is a ready-made add-on only
@@ -300,27 +300,27 @@ import kotlin.io.readBytes
  * ============================================================================
  * RUNTIME CAVEAT — say this plainly, and correctly
  * ============================================================================
- * `_adsCallback` (0x30) is loaded and null-checked at 0x2840230/0x2840234 immediately
- * before `bl 0x283a384` = `AdsCallbacks.OnRewardedVideoAdsCompleted(SEGMENT_ID)`
+ * `_adsCallback` (0x30) is loaded and null-checked at 0x2849F20/0x2849F24 immediately
+ * before `bl 0x2842E78` = `AdsCallbacks.OnRewardedVideoAdsCompleted(SEGMENT_ID)`
  * (dump.cs: `public void` on `AdsCallbacks`, TypeDefIndex 3163), so the function is about to
- * make a call through that field. The check at 0x2840234 is **not** a benign early return:
+ * make a call through that field. The check at 0x2849F24 is **not** a benign early return:
  *
- *   0x2840234  b4000468  cbz  x8, 0x28402c0      ; _adsCallback == null ?
- *   0x28402c0  97d9540c  bl   0x1e952f0          ; -> raise NullReferenceException
+ *   0x2849F24  cbz  x8, null-throw      ; _adsCallback == null ?
+ *   null-throw  bl   il2cpp_codegen_raise_null_reference_exception  ; -> raise NullReferenceException
  *
- * Three more null checks in the same function (0x2840264, 0x284027c, 0x2840288) merge into
- * the same 0x28402c0 block — the standard IL2CPP null-check merge — and 0x1e952f0 contains
- * **no `ret` at all**: it ends with `adrp x0,0xc37000 / add x0,x0,#0xa96` (a string address)
- * plus a tail-`b 0x1ed2604`, i.e. it is `il2cpp_codegen_raise_null_reference_exception`, a
+ * Three more null checks in the same function merge into
+ * the same throw block — the standard IL2CPP null-check merge — and the throw helper contains
+ * **no `ret` at all**: it ends with an `adrp`/`add` string-address pair
+ * plus a tail-`b`, i.e. it is `il2cpp_codegen_raise_null_reference_exception`, a
  * **noreturn** thrower. (By contrast the genuinely benign `if (x == null) return;` checks
- * here — 0x2840250 and 0x28402a0 — branch to the shared epilogue at 0x28402b4 instead.)
+ * branch to the shared epilogue instead.)
  *
  * So if `_adsCallback` is null this path **raises a managed NullReferenceException** rather
  * than silently doing nothing. That is the same exception the *unpatched* game would raise
  * for a null callback, so it is faithful to the original semantics rather than a new
  * failure mode — but it is a throw, not a no-op, and worth stating plainly.
  *
- * In practice `_adsCallback` is populated by `AdsController.InitSdk()` (VA 0x283B684) at
+ * In practice `_adsCallback` is populated by `AdsController.InitSdk()` at
  * game start-up regardless of whether any ad is *downloaded* or *available*, so it is
  * non-null in normal play. Net boundary of this patch:
  *  - "ad video not downloaded / not loaded" → **fully handled for the reward**: the stub never
@@ -331,7 +331,7 @@ import kotlin.io.readBytes
  * No timing/race window is involved: the tail-branch is unconditional and synchronous, so it
  * cannot resolve "sometimes works" — if the popup appears, tapping it always pays instantly.
  * Note also that entering `OnCompleteShow` at its own entry point is exactly equivalent to the
- * SDK calling `OnCompleteShow(false)` on the controller — every instruction after 0x28401F4 is
+ * SDK calling `OnCompleteShow(false)` on the controller — every instruction after 0x2849EE4 is
  * the game's own unmodified code, so all of its register setup and frame handling is intact by
  * construction.
  *
@@ -399,16 +399,16 @@ private class Anchor(
  * advances the game's watch/cooldown bookkeeping. No ad is requested, no mediation call is
  * made, and no availability gate is touched.
  */
-private const val TAIL_REWARD = "014800B9E1031F2A03010014"
+private const val TAIL_REWARD = "014800B9E1031F2A05010014"
 
 private val ARM64_ANCHORS = listOf(
     Anchor(
         label = "AdsController.ShowRewardedVideoAds -> set _crtSegmentID, branch to OnCompleteShow",
-        va = 0x283FDE0,
-        fileOffset = 0x283BDE0,
+        va = 0x2849ACC,
+        fileOffset = 0x2845ACC,
         anchorHex =
             "FF4301D1FE1300F9F65703A9" +
-            "F44F04A975470190A8FA5A39" +
+            "F44F04A9754701D0A8DE4A39" +
             "F303012AF40300AA28010037",
         replacementHex = TAIL_REWARD,
     ),
@@ -419,7 +419,7 @@ private val ARM64_ANCHORS = listOf(
  *
  * Two-phase so a bad build fails with **zero** bytes written:
  *  1. the library is slurped once and every 36-byte anchor is searched for, requiring
- *     **exactly one** occurrence (12 bytes alone is hopelessly ambiguous here — 1,409 hits at
+ *     **exactly one** occurrence (12 bytes alone is hopelessly ambiguous here — 1,412 hits at
  *     the patched site — and a wrong hit would corrupt an unrelated function);
  *  2. each resolved offset is re-read through a [RandomAccessFile], compared against the
  *     original bytes, and only then overwritten.
