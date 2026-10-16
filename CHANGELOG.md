@@ -1,3 +1,9 @@
+## [1.44.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.0...v1.44.1-dev.1) (2026-10-16)
+
+### 🚀 Updated App Support
+
+* **crashofcars:** update crash of cars app version ([62ae7d4](https://github.com/byehi98/okish-morphe-patches/commit/62ae7d41c021feec141715d15a1a80839b19038a))
+
 ## [1.44.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.43.0...v1.44.0) (2026-10-14)
 
 ### ✨ New Features
