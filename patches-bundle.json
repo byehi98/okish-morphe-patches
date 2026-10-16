@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-16T04:40:32",
-  "description": "## [1.44.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.1-dev.2...v1.44.1-dev.3) (2026-10-16)\n\n### 🚀 Updated App Support\n\n* **crossyroad:** update target app version to 7.14.0 ([8e6ef48](https://github.com/byehi98/okish-morphe-patches/commit/8e6ef48c0aca7f51da6ef4cbb474058d34b67449))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.44.1-dev.3/patches-1.44.1-dev.3.mpp",
+  "created_at": "2026-10-16T04:51:25",
+  "description": "## [1.44.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.1-dev.3...v1.44.1-dev.4) (2026-10-16)\n\n### 🚀 Updated App Support\n\n* **dantheman:** update target app version to 1.14.06 ([8dcee56](https://github.com/byehi98/okish-morphe-patches/commit/8dcee5649212d400d69023d73efc7d319fa1f573))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.44.1-dev.4/patches-1.44.1-dev.4.mpp",
   "signature_download_url": "",
-  "version": "1.44.1-dev.3"
+  "version": "1.44.1-dev.4"
 }
