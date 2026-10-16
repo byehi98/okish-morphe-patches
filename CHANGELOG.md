@@ -1,3 +1,9 @@
+## [1.44.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.1-dev.1...v1.44.1-dev.2) (2026-10-16)
+
+### 🚀 Updated App Support
+
+* **progressbar95:** bypass PAIRIP license check ([84048a9](https://github.com/byehi98/okish-morphe-patches/commit/84048a964704a24bec42edc9d5b6653f9d347bea))
+
 ## [1.44.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.0...v1.44.1-dev.1) (2026-10-16)
 
 ### 🚀 Updated App Support

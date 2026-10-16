@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.44.1-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.44.1-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;108 patches total
+> **[v1.44.1-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.44.1-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;109 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -285,12 +285,12 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Progressbar95&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<summary>📦 Progressbar95&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.1110 |
+| 1.1111 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -298,6 +298,7 @@ Direct URL:
 | [Free Store](#free-store) | Tap any shop item to get it free. No payment, no Google Play popup. |  |
 | [License Fix](#license-fix) | Stops license checks from blocking the game on patched installs. |  |
 | [No Ads + Free Rewards](#no-ads-free-rewards) | Blocks all ads and gives reward-ad gifts instantly, no video needed. |  |
+| [Skip Play License Check](#skip-play-license-check) | Stops Google Play's PAIRIP check from showing an overlay and force-closing the game. |  |
 
 </details>
 

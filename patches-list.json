@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.44.1-dev.1",
+  "version": "1.44.1-dev.2",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -813,7 +813,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.1110",
+              "version": "1.1111",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -1467,7 +1467,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.1110",
+              "version": "1.1111",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -1623,7 +1623,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.1110",
+              "version": "1.1111",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -2170,6 +2170,32 @@
           "targets": [
             {
               "version": "3.441.100101",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Skip Play License Check",
+      "description": "Stops Google Play's PAIRIP check from showing an overlay and force-closing the game.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.spookyhousestudios.progressbar95",
+          "name": "Progressbar95",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#00ACC1",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "1.1111",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,

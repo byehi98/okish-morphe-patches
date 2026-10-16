@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-16T01:59:46",
-  "description": "## [1.44.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.0...v1.44.1-dev.1) (2026-10-16)\n\n### 🚀 Updated App Support\n\n* **crashofcars:** update crash of cars app version ([62ae7d4](https://github.com/byehi98/okish-morphe-patches/commit/62ae7d41c021feec141715d15a1a80839b19038a))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.44.1-dev.1/patches-1.44.1-dev.1.mpp",
+  "created_at": "2026-10-16T03:44:09",
+  "description": "## [1.44.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.1-dev.1...v1.44.1-dev.2) (2026-10-16)\n\n### 🚀 Updated App Support\n\n* **progressbar95:** bypass PAIRIP license check ([84048a9](https://github.com/byehi98/okish-morphe-patches/commit/84048a964704a24bec42edc9d5b6653f9d347bea))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.44.1-dev.2/patches-1.44.1-dev.2.mpp",
   "signature_download_url": "",
-  "version": "1.44.1-dev.1"
+  "version": "1.44.1-dev.2"
 }
