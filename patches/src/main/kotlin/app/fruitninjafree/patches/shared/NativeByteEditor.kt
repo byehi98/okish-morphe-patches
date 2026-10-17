@@ -64,7 +64,8 @@ private const val SCAN_CHUNK = 1 shl 20
  * `ValidateGooglePlayPurchase` **server-side** receipt validation → grant — is
  * C# compiled to native ARM code inside `lib/<abi>/libil2cpp.so`
  * (arm64-v8a **71,750,584 B**, armeabi-v7a **61,685,188 B**, both shipped;
- * BuildID arm64 `8b779e1592f5d19309b9fb829b854492edea84ee`). The app's real
+ * BuildID arm64 `8b779e1592f5d19309b9fb829b854492edea84ee`, v7a
+ * `745ad03b812ce138222c11121c9f252118f10591`). The app's real
  * grant path runs `ValidateAndProcessIAP → ProcessGooglePlayIAP → PlayFab
  * ValidateGooglePlayPurchase` — a **server-side** check that verifies the Google
  * `purchaseToken` against the Play Developer API, so no Java-fabricated receipt
@@ -113,22 +114,34 @@ private const val SCAN_CHUNK = 1 shl 20
  *      (verified: LOAD2 vaddr 0x18BB3B4 ↔ offset 0x18B73B4; dump.cs `Offset:`
  *       column agrees for every method used here, e.g. RVA 0x1E9F084 →
  *       Offset 0x1E9B084)
- * armeabi-v7a NOT PATCHED — see "arm64-only" below; if v7 sites are ever
- *      verified, its LOAD layout must be re-read with `readelf -lW` first
- *      (conventionally delta 0, but never assumed).
+ * armeabi-v7a RX LOAD segment: file_offset = RVA (delta 0)
+ *      (verified with `readelf -lW` on the shipped v7a lib: the RX LOAD maps
+ *       vaddr 0x0 ↔ file offset 0x0, size 0x3828650 — so file offset = RVA,
+ *       with NO subtraction. The two ABIs' RX deltas DIFFER; never reuse one
+ *       ABI's delta for the other. v7a method RVAs come from a fresh v7a
+ *       Il2CppDumper run against the v7a lib + the arch-independent
+ *       global-metadata.dat — NEVER from the arm64 dump.)
  * ```
  *
  * ============================================================================
- * arm64-ONLY — WHY THE v7a SPLIT STAYS STOCK
+ * PER-ABI BYTE SITES — TWO SEPARATE BUILDS, NEVER CROSS-USED
  * ============================================================================
- * The APKM ships two ABI splits (`requiredSplitTypes="base__abi,base__density"`;
- * recon.md), but **every byte site below was measured on the arm64-v8a lib only**
- * (llvm-objdump + raw-byte re-reads against
- * `analysis/com.halfbrick.fruitninjafree/il2cpp/libil2cpp.so`). The v7a lib is a
- * separate build with its own code layout — RVAs and even instruction encodings
- * (A32 vs Thumb-2) cannot be extrapolated from arm64. So [applyNativeEdits] is
- * given **only** the `arm64-v8a` target; the v7a lib ships unpatched (an armv7
- * device simply runs the vanilla game). Device tests target arm64 (Waydroid).
+ * The APKM/XAPK ship two ABI splits (`requiredSplitTypes="base__abi,base__density"`;
+ * recon.md). arm64-v8a (71,750,584 B) and armeabi-v7a (61,685,188 B) are
+ * **separate native builds** — different method RVAs, different instruction
+ * encodings (arm64 AArch64 vs v7a A32/ARM-state, NOT Thumb) and different RX
+ * LOAD deltas (−0x4000 vs 0). Every anchor therefore carries its OWN file
+ * offset measured against its OWN lib; anchors are never shared or
+ * extrapolated across ABIs. Both shipped P2 sites were measured
+ * whole-file-unique on their respective libs (arm64:
+ * `notes/native-freeiap-round2.md` §4.3 + round-3 corrections, re-verified
+ * against the lib inside the shipped `split_config.arm64_v8a.apk`; v7a:
+ * `notes/native-v7a-targets.md`, re-verified against the lib inside the
+ * XAPK's `config.armeabi_v7a.apk` split). [applyNativeEdits] is given one
+ * `AbiEdits` per ABI; at run time an ABI whose lib is absent from the APK is
+ * skipped (see "ABI HANDLING" below), so an arm64-only install patches arm64,
+ * an XAPK with only the v7a config split patches v7a, and a build shipping
+ * both patches both.
  *
  * ============================================================================
  * WHY EVERY ANCHOR NEEDS A WHOLE-FILE-UNIQUE VERIFY WINDOW
@@ -179,8 +192,9 @@ private const val SCAN_CHUNK = 1 shl 20
  * Only small byte ranges are ever read and written; the uniqueness scan streams the
  * lib through a 1 MiB + overlap buffer instead of slurping 71 MB into the heap.
  *
- * The shipped P2 anchor writes to file offset `0x1CEA874` (RVA `0x1CEE874`) —
- * one edit, so ordering is trivial. If more anchors are added, keep every
+ * The shipped P2 anchors write to file offset `0x1CEA874` (RVA `0x1CEE874`) on
+ * arm64-v8a and `0xF96C4C` (RVA = offset, delta 0) on armeabi-v7a — one edit
+ * per ABI, so ordering is trivial. If more anchors are added, keep every
  * anchor's *write range* disjoint from every other's window so no anchor can
  * clobber another's result (resolve-then-write protects phase 1 from
  * intermediate states, but phase 2 is plain sequential writes).
@@ -196,7 +210,12 @@ private const val SCAN_CHUNK = 1 shl 20
  * An ABI whose lib is simply absent from the APK is skipped with a log line rather
  * than failing the run: `morphe-cli --striplibs arm64-v8a` legitimately removes
  * unpatched ABIs, and there is nothing to patch for an ABI that is not shipped.
- * If *no* targeted ABI is present at all, that is an error and throws.
+ * Semantics are strictly **per-ABI**: edits are applied for every targeted ABI
+ * whose lib is present, each independently; a hard error is thrown only when
+ * NONE of the targeted ABIs is present at all (zero matched — nothing was
+ * patched, unsupported app build). By contrast, a targeted-and-present ABI
+ * whose verify window does not match is ALWAYS a hard error (present but a
+ * different/changed build) — never silently skipped.
  *
  * ============================================================================
  * IN-PLACE EDIT ⇒ SAFE ROUND-TRIP
@@ -212,8 +231,12 @@ private const val SCAN_CHUNK = 1 shl 20
  * ============================================================================
  * DO NOT — rules this patch must never violate
  * ============================================================================
- * 1. **Never patch armeabi-v7a from these anchors.** No v7 byte site has been
- *    verified; a wrong guess corrupts an arbitrary function on armv7 devices.
+ * 1. **Never apply one ABI's anchor to the other ABI's lib.** The arm64 and v7a
+ *    P2 sites share semantics but NOT bytes or offsets (arm64 file
+ *    0x1CEA874 = RVA − 0x4000, AArch64 encoding; v7a file 0xF96C4C = RVA,
+ *    A32 encoding). Cross-use fails the verify window and aborts with zero
+ *    bytes written — keep it that way: never "adjust" an anchor's offset by
+ *    hand instead of re-measuring against that ABI's shipped lib.
  * 2. **Never touch `global-metadata.dat`.** It is unprotected, but every RVA here
  *    is a code address inside the .so — metadata edits are unnecessary and would
  *    only add risk.
@@ -225,10 +248,13 @@ private const val SCAN_CHUNK = 1 shl 20
  *    the file length).
  * 5. Do not add a `--striplibs` that drops the ABI being patched.
  *
- * Byte site: `analysis/com.halfbrick.fruitninjafree/notes/native-freeiap-round2.md`
- * §4.3 P2 redirect (llvm-objdump + capstone-verified; the round-3 verification
- * corrections appended to that file supersede the section's garbled replacement
- * hex — the corrected bytes live in `../il2cpp/ProcessFakeIapRedirect.kt`).
+ * Byte sites: `analysis/com.halfbrick.fruitninjafree/notes/native-freeiap-round2.md`
+ * §4.3 P2 redirect, arm64-v8a (llvm-objdump + capstone-verified; the round-3
+ * verification corrections appended to that file supersede the section's
+ * garbled replacement hex — the corrected bytes live in
+ * `../il2cpp/ProcessFakeIapRedirect.kt`); and
+ * `analysis/com.halfbrick.fruitninjafree/notes/native-v7a-targets.md` for the
+ * armeabi-v7a twin (llvm-mc/llvm-objdump A32-verified; delta-0 offsets).
  * Precedent: `app/headbasketball/patches/shared/NativeByteEditor.kt`.
  */
 internal fun ResourcePatchContext.applyNativeEdits(

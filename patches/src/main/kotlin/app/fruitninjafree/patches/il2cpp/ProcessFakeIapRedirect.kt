@@ -9,7 +9,8 @@ import app.morphe.patcher.patch.rawResourcePatch
 
 /**
  * Fruit Ninja Free 3.97.9 — **P2: `ProcessGooglePlayIAP` → `ProcessFakeIAP`
- * redirect** (IL2CPP, static `lib/arm64-v8a/libil2cpp.so` edit).
+ * redirect** (IL2CPP, static `lib/<abi>/libil2cpp.so` edit — one byte site per
+ * ABI: arm64-v8a AND armeabi-v7a, each measured against its own shipped lib).
  *
  * Native half of `../billing/FruitNinjaFreeIapPatch.kt` — NOT a standalone
  * patch: [ProcessFakeIapRedirect.patch] builds it and the billing patch attaches
@@ -38,7 +39,7 @@ import app.morphe.patcher.patch.rawResourcePatch
  * redirect-**enterable**: both candidates ignore `this`.
  *
  * ============================================================================
- * WHAT IS PATCHED — one 12-byte prologue replacement
+ * WHAT IS PATCHED (arm64-v8a) — one 12-byte prologue replacement
  * ============================================================================
  * `PurchaseManager.ProcessGooglePlayIAP(PurchaseData, Action)` (dump.cs RVA
  * 0x1CEE874 / Offset 0x1CEA874) gets its prologue replaced with a register
@@ -73,7 +74,7 @@ import app.morphe.patcher.patch.rawResourcePatch
  * → `FinalizePurchase` — the real grant path.
  *
  * ============================================================================
- * ANCHOR WINDOW — the 12 B prologue alone is NOT unique (correction)
+ * ANCHOR WINDOW (arm64-v8a) — the 12 B prologue alone is NOT unique (correction)
  * ============================================================================
  * Whole-file measurement against the shipped 71,750,584 B arm64 lib
  * (re-measured this session; see notes `native-freeiap-round2.md` round-3
@@ -110,6 +111,35 @@ import app.morphe.patcher.patch.rawResourcePatch
  * * `ProcessFakeIAP` (0x1CEEC7C): **zero** refs (dead code, redirect target).
  *
  * ============================================================================
+ * armeabi-v7a TWIN — same redirect, A32 bytes, delta-0 offsets
+ * ============================================================================
+ * The armeabi-v7a lib (61,685,188 B, ELF 32-bit ARM EABI5, **A32/ARM-state
+ * code, NOT Thumb**, stripped, BuildID 745ad03b…) is a SEPARATE native build:
+ * its method RVAs must never be extrapolated from the arm64 dump (fresh v7a
+ * Il2CppDumper run: `ProcessGooglePlayIAP` = **0xF96C4C**, `ProcessFakeIAP` =
+ * **0xF97178**), and its RX LOAD maps vaddr 0x0 ↔ file offset 0x0, so
+ * **file offset = RVA (delta 0)** — unlike arm64's −0x4000. Same 12-byte
+ * register shuffle + tail branch, A32-encoded (`readelf -lW` + llvm-mc/objdump
+ * verified):
+ * ```
+ * RVA 0xF96C4C  file 0xF96C4C  (file = RVA, delta 0)
+ *   original   e92d4ff0 e24dd014 e59f52c4    push {r4-r11,lr} ; sub sp,#0x14 ; ldr r5,[pc,#0x2c4]
+ *   replacement e1a03002 e3a02000 ea000147    mov r3,r2 ; mov r2,#0 ; b 0xF97178
+ * ```
+ * Register state at the sole call site (tail `b` from `ValidateAndProcessIAP`'s
+ * GooglePlay branch at file 0xF94378): `r1 = data`, `r2 = onComplete` (r0 is a
+ * store-check result the callee never reads — same as arm64). Same shuffle as
+ * arm64: `r3 ← r2` (onComplete → arg4), `r2 ← null` (source). Branch imm24 =
+ * (0xF97178 − 0xF96C5C)/4 = 0x147 → word `ea000147`. Ref topology identical to
+ * arm64 (exactly one tail-b into ProcessGooglePlayIAP; ProcessFakeIAP has zero
+ * refs), and v7a `ProcessFakeIAP` also never reads incoming r0. Whole-file
+ * re-verification against the shipped lib inside
+ * `apk/FruitNinja_3.97.9_APKPure.xapk!/config.armeabi_v7a.apk!/lib/armeabi-v7a/libil2cpp.so`:
+ * the 24 B window occurs **exactly once** at file 0xF96C4C; the 12 B
+ * replacement occurs **zero** times pre-patch. Full derivation:
+ * `analysis/com.halfbrick.fruitninjafree/notes/native-v7a-targets.md`.
+ *
+ * ============================================================================
  * RISKS & UNKNOWNs (ordered — device test decides)
  * ============================================================================
  * 1. **Server acceptance of the fake-IAP endpoint is untested.** The
@@ -131,14 +161,23 @@ import app.morphe.patcher.patch.rawResourcePatch
  * Top-level `rawResourcePatch` built only by [patch] (never discovered —
  * invisible in list-patches). A `rawResourcePatch` anywhere in the graph forces
  * `ResourceMode.RAW_ONLY`, which is what makes the raw-extracted
- * `root/lib/arm64-v8a/libil2cpp.so` resolvable via `get(...)`. arm64-v8a ONLY —
- * the armeabi-v7a split (61,685,188 B) ships stock: no v7 byte site is
- * verified here (see `../shared/NativeByteEditor.kt` "arm64-ONLY").
+ * `root/lib/<abi>/libil2cpp.so` resolvable via `get(...)`. BOTH shipped ABIs
+ * are patched, each from its own measured byte site (arm64 above, v7a twin
+ * section). Per-ABI semantics at run time (see
+ * `../shared/NativeByteEditor.kt` "ABI HANDLING"): an ABI whose lib is absent
+ * from the APK is skipped with a log (e.g. an arm64-only APKMirror split, or
+ * `--striplibs`), a present-but-different-build lib is a hard verify error,
+ * and the patch errors only when NONE of the targeted ABIs is present. On the
+ * APKPure XAPK the v7a lib lives in the `config.armeabi_v7a.apk` split; on
+ * APKMirror both config splits are present, so both halves apply.
  *
- * Byte site: `analysis/com.halfbrick.fruitninjafree/notes/native-freeiap-round2.md`
- * §4.3 (+ round-3 verification corrections appended to that file), verified
- * against `analysis/com.halfbrick.fruitninjafree/il2cpp/libil2cpp.so`
- * (71,750,584 B, BuildID 8b779e15…).
+ * Byte sites: `analysis/com.halfbrick.fruitninjafree/notes/native-freeiap-round2.md`
+ * §4.3 (arm64; + round-3 verification corrections appended to that file),
+ * verified against `analysis/com.halfbrick.fruitninjafree/il2cpp/libil2cpp.so`
+ * (71,750,584 B, BuildID 8b779e15…) — and
+ * `analysis/com.halfbrick.fruitninjafree/notes/native-v7a-targets.md`
+ * (armeabi-v7a twin), verified against the lib inside the shipped XAPK's
+ * `config.armeabi_v7a.apk` split (61,685,188 B, BuildID 745ad03b…).
  */
 internal object ProcessFakeIapRedirect {
 
@@ -168,14 +207,14 @@ internal object ProcessFakeIapRedirect {
                 "Free IAP",
                 listOf(
                     AbiEdits("arm64-v8a", listOf(PROCESS_GOOGLE_PLAY_IAP_REDIRECT)),
+                    AbiEdits("armeabi-v7a", listOf(PROCESS_GOOGLE_PLAY_IAP_REDIRECT_V7A)),
                 ),
             )
         }
     }
 }
 
-// arm64 — file offset = RVA − 0x4000 (RX LOAD: vaddr 0x18BB3B4 ↔ offset 0x18B73B4).
-// armeabi-v7a deliberately absent — no v7 byte site verified (see KDoc).
+// arm64-v8a — file offset = RVA − 0x4000 (RX LOAD: vaddr 0x18BB3B4 ↔ offset 0x18B73B4).
 //
 // 24 B verify window (unique; measured whole-file) / 12 B replacement:
 //   RVA 0x1CEE874 … +0x18   file 0x1CEA874
@@ -189,4 +228,24 @@ private val PROCESS_GOOGLE_PLAY_IAP_REDIRECT = NativeAnchor(
     fileOffset = 0x1CEA874,
     verifyHex = "fe0f1cf8f85f01a9f65702a9f44f03a9543c01f076220190",
     replacementHex = "e30302aae2031faa00010014",
+)
+
+// armeabi-v7a — file offset = RVA (RX LOAD: vaddr 0x0 ↔ offset 0x0, delta 0 —
+// DIFFERENT from arm64's −0x4000; the two ABIs are separate builds, see KDoc).
+// A32 (ARM-state), NOT Thumb. Whole-file re-verified this session against the
+// lib inside the shipped XAPK's config.armeabi_v7a.apk split: window exactly
+// 1 hit at 0xF96C4C, replacement 0 hits pre-patch.
+//
+// 24 B verify window (unique; measured whole-file) / 12 B replacement:
+//   RVA 0xF96C4C … +0x18   file 0xF96C4C
+//     push {r4-r11,lr} ; sub sp,#0x14 ; ldr r5,[pc,#0x2c4]
+//     mov r6,r2 ; mov r4,r1 ; add r5,pc,r5
+//   write the first 3 instructions only:
+//     e1a03002 e3a02000 ea000147   =  mov r3,r2 ; mov r2,#0 ; b 0xF97178
+private val PROCESS_GOOGLE_PLAY_IAP_REDIRECT_V7A = NativeAnchor(
+    label = "PurchaseManager.ProcessGooglePlayIAP entry — mov r3,r2; mov r2,#0; b ProcessFakeIAP (A32)",
+    rva = 0xF96C4C,
+    fileOffset = 0xF96C4C,
+    verifyHex = "f04f2de914d04de2c4529fe50260a0e10140a0e105508fe0",
+    replacementHex = "0230a0e10020a0e3470100ea",
 )

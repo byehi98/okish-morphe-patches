@@ -82,7 +82,8 @@ private const val ZZCB = "Lcom/google/android/gms/internal/play_billing/zzcb;"
  *
  * ══ PART 2 — NATIVE: route the forged purchase into the game's grant path ══
  * [ProcessFakeIapRedirect] (a `rawResourcePatch` dependency, never separately
- * selectable) edits `lib/arm64-v8a/libil2cpp.so` so the game's own
+ * selectable) edits `lib/<abi>/libil2cpp.so` (arm64-v8a AND armeabi-v7a, each
+ * from its own measured byte site) so the game's own
  * `PurchaseManager.ProcessGooglePlayIAP` (the method Unity IAP calls for every
  * GooglePlay purchase, forged or real) tail-calls
  * `PurchaseManager.ProcessFakeIAP` — the game's BUILT-IN, still-live fake-IAP
@@ -106,8 +107,8 @@ private const val ZZCB = "Lcom/google/android/gms/internal/play_billing/zzcb;"
  * `dependsOn(...)` runs the halves in dependency order (native first, then DEX)
  * inside a single `RawResourcePatch`-containing graph, which also forces
  * `ResourceMode.RAW_ONLY` — that is what makes the raw-extracted
- * `lib/arm64-v8a/libil2cpp.so` resolvable from the native half's
- * `ResourcePatchContext.get(...)`.
+ * `lib/<abi>/libil2cpp.so` (per targeted ABI) resolvable from the native
+ * half's `ResourcePatchContext.get(...)`.
  *
  * ══ WHAT ONE TAP DOES, end to end (the device test this patch must pass) ═══
  * 1. Game/store → `GenericBiller.PurchaseProduct` →
