@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.44.1-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.44.1-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;109 patches total
+> **[v1.45.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.45.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;110 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -281,6 +281,21 @@ Direct URL:
 |----------|----------------|-----------|
 | [Free Ad Rewards](#free-ad-rewards) | Every "watch ad" reward is granted instantly — no ad appears, no "failed to load advertisement" popup, and nothing to wait for. |  |
 | [Free Store](#free-store) | Everything in the shop is free. Tap an item and you get it right away — points, characters and presents — with no Google Play payment screen and nothing charged. |  |
+
+</details>
+
+<details>
+<summary>📦 Fruit Ninja (Free)&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 3.97.9 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free IAP](#free-iap) | Everything in the shop is free. Tap "Buy" on any item — remove ads, coin packs, or anything else — and you get it right away. No Google Play payment window opens and you are never charged. If something goes wrong you will just see a "purchase failed" message; the game keeps working as normal. |  |
 
 </details>
 

@@ -1,3 +1,9 @@
+## [1.45.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.1-dev.4...v1.45.0-dev.1) (2026-10-17)
+
+### ✨ New Features
+
+* **fruitninjafree:** add free IAP patch ([c12911a](https://github.com/byehi98/okish-morphe-patches/commit/c12911a83879761f49bf162f6dadbf9553d34815))
+
 ## [1.44.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.1-dev.3...v1.44.1-dev.4) (2026-10-16)
 
 ### 🚀 Updated App Support
