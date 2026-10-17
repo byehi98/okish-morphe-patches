@@ -1,3 +1,39 @@
+## [1.45.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.45.0-dev.1...v1.45.0-dev.2) (2026-10-17)
+
+### 🐛 Bug Fixes
+
+* **fruitninja:** patch IAP redirect for armeabi-v7a ([ded5ae9](https://github.com/byehi98/okish-morphe-patches/commit/ded5ae9150ab3b9cd9297d0492e1d390abd6bf52))
+
+## [1.45.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.1-dev.4...v1.45.0-dev.1) (2026-10-17)
+
+### ✨ New Features
+
+* **fruitninjafree:** add free IAP patch ([c12911a](https://github.com/byehi98/okish-morphe-patches/commit/c12911a83879761f49bf162f6dadbf9553d34815))
+
+## [1.44.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.1-dev.3...v1.44.1-dev.4) (2026-10-16)
+
+### 🚀 Updated App Support
+
+* **dantheman:** update target app version to 1.14.06 ([8dcee56](https://github.com/byehi98/okish-morphe-patches/commit/8dcee5649212d400d69023d73efc7d319fa1f573))
+
+## [1.44.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.1-dev.2...v1.44.1-dev.3) (2026-10-16)
+
+### 🚀 Updated App Support
+
+* **crossyroad:** update target app version to 7.14.0 ([8e6ef48](https://github.com/byehi98/okish-morphe-patches/commit/8e6ef48c0aca7f51da6ef4cbb474058d34b67449))
+
+## [1.44.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.1-dev.1...v1.44.1-dev.2) (2026-10-16)
+
+### 🚀 Updated App Support
+
+* **progressbar95:** bypass PAIRIP license check ([84048a9](https://github.com/byehi98/okish-morphe-patches/commit/84048a964704a24bec42edc9d5b6653f9d347bea))
+
+## [1.44.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.0...v1.44.1-dev.1) (2026-10-16)
+
+### 🚀 Updated App Support
+
+* **crashofcars:** update crash of cars app version ([62ae7d4](https://github.com/byehi98/okish-morphe-patches/commit/62ae7d41c021feec141715d15a1a80839b19038a))
+
 ## [1.44.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.43.0...v1.44.0) (2026-10-14)
 
 ### ✨ New Features

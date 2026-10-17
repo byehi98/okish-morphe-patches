@@ -49,7 +49,7 @@ object Constants {
         apkFileType = ApkFileType.APK,
         appIconColor = 0x0080E0, // dominant quantised colour of the 512x512 launcher icon
         targets = listOf(
-            AppTarget(version = "1.9.34")
+            AppTarget(version = "1.9.36")
         )
     )
 }

@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.44.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.44.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;108 patches total
+> **[v1.45.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.45.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;110 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -127,7 +127,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.9.34 |
+| 1.9.36 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -285,12 +285,27 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Progressbar95&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<summary>📦 Fruit Ninja (Free)&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.1110 |
+| 3.97.9 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free IAP](#free-iap) | Everything in the shop is free. Tap "Buy" on any item — remove ads, coin packs, or anything else — and you get it right away. No Google Play payment window opens and you are never charged. If something goes wrong you will just see a "purchase failed" message; the game keeps working as normal. |  |
+
+</details>
+
+<details>
+<summary>📦 Progressbar95&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.1111 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -298,6 +313,7 @@ Direct URL:
 | [Free Store](#free-store) | Tap any shop item to get it free. No payment, no Google Play popup. |  |
 | [License Fix](#license-fix) | Stops license checks from blocking the game on patched installs. |  |
 | [No Ads + Free Rewards](#no-ads-free-rewards) | Blocks all ads and gives reward-ad gifts instantly, no video needed. |  |
+| [Skip Play License Check](#skip-play-license-check) | Stops Google Play's PAIRIP check from showing an overlay and force-closing the game. |  |
 
 </details>
 
@@ -324,7 +340,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 7.13.2 |
+| 7.14.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -585,7 +601,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.14.05 |
+| 1.14.06 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
