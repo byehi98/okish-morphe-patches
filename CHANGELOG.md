@@ -1,3 +1,9 @@
+## [1.45.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.45.0-dev.1...v1.45.0-dev.2) (2026-10-17)
+
+### 🐛 Bug Fixes
+
+* **fruitninja:** patch IAP redirect for armeabi-v7a ([ded5ae9](https://github.com/byehi98/okish-morphe-patches/commit/ded5ae9150ab3b9cd9297d0492e1d390abd6bf52))
+
 ## [1.45.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.44.1-dev.4...v1.45.0-dev.1) (2026-10-17)
 
 ### ✨ New Features
