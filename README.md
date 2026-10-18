@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.45.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.45.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;110 patches total
+> **[v1.45.1-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.45.1-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;108 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -579,7 +579,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Prince of Persia: The Lost Crown&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<summary>📦 Prince of Persia: The Lost Crown&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -589,9 +589,7 @@ Direct URL:
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Prince of Persia: Anti-tamper bypass](#prince-of-persia-anti-tamper-bypass) | The game has a built-in self-check that shuts it down if it detects the app was modified. This patch quietly turns that check off so the game can start. |  |
-| [Prince of Persia: Full Game Unlock Engine](#prince-of-persia-full-game-unlock-engine) | Adds a tiny hidden helper into the game. About 30 seconds after the game starts, it presses the game's own secret 'unlock full game' button — no purchases needed. |  |
-| [Prince of Persia: Full Game Unlock Trigger](#prince-of-persia-full-game-unlock-trigger) | Tells the game to start that hidden helper the moment the app opens, so the unlock happens automatically. |  |
+| [Prince of Persia: Full Game Unlock (native)](#prince-of-persia-full-game-unlock-native) | Replaces the game's built-in security helper with a friendly one that unlocks the full game right at startup — no waiting. |  |
 
 </details>
 
