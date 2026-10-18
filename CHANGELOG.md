@@ -1,3 +1,9 @@
+## [1.45.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.45.0...v1.45.1) (2026-10-18)
+
+### 🐛 Bug Fixes
+
+* **pop:** consolidate unlock into native hardener patch ([8f9fd05](https://github.com/byehi98/okish-morphe-patches/commit/8f9fd0592490965295b301cdad7cf4587b0df72a))
+
 ## [1.45.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.45.0...v1.45.1-dev.1) (2026-10-18)
 
 ### 🐛 Bug Fixes
