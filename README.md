@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.45.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.45.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;108 patches total
+> **[v1.46.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.46.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;110 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -785,6 +785,22 @@ Direct URL:
 |----------|----------------|-----------|
 | [Vector Ad Spoof](#vector-ad-spoof) | Spoofs rewarded ad callbacks to grant coins/rewards without showing ads. |  |
 | [Vector Money Mod](#vector-money-mod) | Spending money increases your balance instead of decreasing it (native libil2cpp.so patch). |  |
+
+</details>
+
+<details>
+<summary>📦 Vita Mahjong&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 3.42.1 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Vita Mahjong Remove Ads](#vita-mahjong-remove-ads) | Removes banners and interstitials and makes rewarded ads pay out instantly without a video. Ad-gated buttons stay usable even when no ad is filled or the placement config is missing. |  |
+| [Vita Mahjong Restore Purchases](#vita-mahjong-restore-purchases) | On a fresh install, "Restore Purchases" reports the no-ads pack and the yearly VIP subscription as already owned, so those entitlements activate without a real Google Play purchase. |  |
 
 </details>
 

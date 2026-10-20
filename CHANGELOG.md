@@ -1,3 +1,9 @@
+## [1.46.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.45.1...v1.46.0-dev.1) (2026-10-20)
+
+### ✨ New Features
+
+* **vitamahjong:** add ad removal and purchase restore patches ([ae57168](https://github.com/byehi98/okish-morphe-patches/commit/ae57168bc44a19864003490fa0be9565c76e360d))
+
 ## [1.45.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.45.0...v1.45.1) (2026-10-18)
 
 ### 🐛 Bug Fixes
