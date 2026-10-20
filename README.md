@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.46.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.46.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;110 patches total
+> **[v1.46.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.46.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;112 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -590,6 +590,22 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Prince of Persia: Full Game Unlock (native)](#prince-of-persia-full-game-unlock-native) | Replaces the game's built-in security helper with a friendly one that unlocks the full game right at startup — no waiting. |  |
+
+</details>
+
+<details>
+<summary>📦 Plants vs. Zombies FREE&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 3.18.0 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [PvZ FREE Ad Removal & Free Rewards](#pvz-free-ad-removal-free-rewards) | Removes interstitials and grants rewarded-video rewards instantly without showing an ad. |  |
+| [PvZ FREE Free IAP](#pvz-free-free-iap) | Forge in-app purchases so coins, Ads Free and bundles are granted without Google Play payment. |  |
 
 </details>
 

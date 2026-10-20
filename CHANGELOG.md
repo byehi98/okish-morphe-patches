@@ -1,3 +1,9 @@
+## [1.46.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.1...v1.46.0-dev.2) (2026-10-20)
+
+### ✨ New Features
+
+* **pvzfree:** add ad removal and free IAP patches ([23b2cdd](https://github.com/byehi98/okish-morphe-patches/commit/23b2cdd3c158f5782c2b7dfe7e00f1ba72358468))
+
 ## [1.46.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.45.1...v1.46.0-dev.1) (2026-10-20)
 
 ### ✨ New Features
