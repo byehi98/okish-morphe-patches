@@ -6,7 +6,7 @@ import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
 // ============================================================================
-// Vita Mahjong 3.42.1 — Learnings purchase bridge (`classes8`).
+// Vita Mahjong 3.43.0 — Learnings purchase bridge (`classes8`).
 //
 // `com.learnings.unity.unikit.module.PurchaseModuleBridge` is called from Unity
 // C# by exact class/method name, so these descriptors are NOT obfuscated:

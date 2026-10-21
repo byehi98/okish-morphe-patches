@@ -6,7 +6,7 @@ import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
 // ============================================================================
-// Vita Mahjong 3.42.1 — MEeVii ad SDK + Learnings Unity bridge.
+// Vita Mahjong 3.43.0 — MEeVii ad SDK + Learnings Unity bridge.
 //
 // `Lvd/a` / `Lsd/a` / `Lqd/a` / `Lkd/n` are R8-obfuscated MEeVii descriptors
 // (JADX renames them RewardLoadApi / InterLoadApi / BaseLoadStrategy /

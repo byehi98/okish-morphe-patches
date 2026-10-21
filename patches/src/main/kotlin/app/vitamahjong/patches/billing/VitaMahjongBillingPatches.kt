@@ -6,7 +6,7 @@ import app.morphe.util.cloneMutable
 import app.vitamahjong.patches.shared.Constants.COMPATIBILITY_VITA_MAHJONG
 
 /**
- * Vita Mahjong — Restore Purchases (3.42.1 / versionCode 1913).
+ * Vita Mahjong — Restore Purchases (3.43.0 / versionCode 1917).
  *
  * `PurchaseModuleBridge.queryAllPurchases()V` normally posts a Runnable that asks
  * Play Billing for owned purchases and forwards them to Unity. On a fresh

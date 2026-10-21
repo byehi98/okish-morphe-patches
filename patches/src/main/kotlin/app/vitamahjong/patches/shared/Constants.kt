@@ -6,7 +6,7 @@ import app.morphe.patcher.patch.Compatibility
 
 object Constants {
     /**
-     * Vita Mahjong 3.42.1 (versionCode 1913).
+     * Vita Mahjong 3.43.0 (versionCode 1917).
      *
      * Shipped as an XAPK: base APK (all DEX files) + `config.arm64_v8a` split
      * (all native libraries). The base APK alone cannot install/run, so the
@@ -22,7 +22,7 @@ object Constants {
         packageName = "com.vitastudio.mahjong",
         apkFileType = ApkFileType.XAPK,
         targets = listOf(
-            AppTarget(version = "3.42.1")
+            AppTarget(version = "3.43.0")
         )
     )
 }
