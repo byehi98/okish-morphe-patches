@@ -1,3 +1,9 @@
+## [1.46.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.6...v1.46.0-dev.7) (2026-10-21)
+
+### ✨ New Features
+
+* **intothedead2:** replace runtime JNI engine with static hex patch ([3fce0d3](https://github.com/byehi98/okish-morphe-patches/commit/3fce0d37ff92096aa64c5ef7f4f1d4c3e4ab57b3))
+
 ## [1.46.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.5...v1.46.0-dev.6) (2026-10-21)
 
 ### 🚀 Updated App Support

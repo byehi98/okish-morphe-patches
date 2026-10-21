@@ -35,9 +35,9 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.46.0-dev.6](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.46.0-dev.6)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;112 patches total
+> **[v1.46.0-dev.7](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.46.0-dev.7)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;111 patches total
 <details>
-<summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
+<summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -49,8 +49,7 @@ Direct URL:
 |----------|----------------|-----------|
 | [AD Instant Rewards](#ad-instant-rewards) | Grants rewarded-video rewards instantly |  |
 | [Full IAP Unlock](#full-iap-unlock) | Unlocks every purchase in the game for free. Tap buy and it is yours — no Google Play payment screen appears and you are never charged. Subscriptions like VIP membership show as pre-owned, so just open them, no purchase needed. |  |
-| [IAP Grant Engine](#iap-grant-engine) | Helper that makes the game approve every purchase on your own device, including subscriptions like VIP membership, so bought items land in your account without paying anything. |  |
-| [IAP Grant Trigger](#iap-grant-trigger) | Wakes up that helper every time you open the game, so free purchases and subscriptions keep working. |  |
+| [Native IAP Patch](#native-iap-patch) | Patches the game's native code directly so purchases and subscriptions (including VIP) are approved on your own device, with no helper library loaded at runtime. |  |
 
 </details>
 
