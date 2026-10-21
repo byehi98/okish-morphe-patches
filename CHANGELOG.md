@@ -1,3 +1,9 @@
+## [1.46.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.2...v1.46.0-dev.3) (2026-10-21)
+
+### 🚀 Updated App Support
+
+* **shootyskies:** bump target version to 3.441.100103 ([4585946](https://github.com/byehi98/okish-morphe-patches/commit/45859462868aa2c2d800bb6e94c6816461c0b62f))
+
 ## [1.46.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.1...v1.46.0-dev.2) (2026-10-20)
 
 ### ✨ New Features
