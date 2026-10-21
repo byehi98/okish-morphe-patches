@@ -1,3 +1,9 @@
+## [1.46.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.5...v1.46.0-dev.6) (2026-10-21)
+
+### 🚀 Updated App Support
+
+* **intothedead2:** update target support to 1.88.0 ([d099b17](https://github.com/byehi98/okish-morphe-patches/commit/d099b171aac17d42a91e00213c55c4fae875782e))
+
 ## [1.46.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.4...v1.46.0-dev.5) (2026-10-21)
 
 ### 🚀 Updated App Support
