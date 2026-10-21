@@ -1,0 +1,103 @@
+name: 📱 App request
+description: Request patches for an app that is not supported yet.
+title: "app: "
+labels: ["App request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # App patch request
+
+        Please provide as much of the information below as possible. A request with store links
+        and a clear description of the desired patches can be picked up much faster.
+
+        Before opening a request:
+
+        - **Do not submit a duplicate**: search the [open and closed issues](https://github.com/byehi98/okish-morphe-patches/issues?q=is%3Aissue).
+        - **Check the supported apps**: see the [README](https://github.com/byehi98/okish-morphe-patches/blob/main/README.md) for the current patch list.
+  - type: input
+    id: app-name
+    attributes:
+      label: App name
+      description: The name as it appears on the store.
+      placeholder: "e.g. Into the Dead 2"
+    validations:
+      required: true
+  - type: input
+    id: package-name
+    attributes:
+      label: Package name (optional)
+      description: Visible in the store URL after `id=`, or in the APK file name.
+      placeholder: "e.g. com.pikpok.dr2.play"
+  - type: input
+    id: version
+    attributes:
+      label: App version (optional)
+      description: The version you want patched. Leave empty for the latest.
+      placeholder: "e.g. 1.88.0"
+  - type: input
+    id: play-store
+    attributes:
+      label: Google Play Store link
+      placeholder: "https://play.google.com/store/apps/details?id=com.example.app"
+    validations:
+      required: true
+  - type: input
+    id: apkmirror
+    attributes:
+      label: APKMirror link (optional)
+      description: Optional. Usually the easiest source for a specific version and split APK/XAPK.
+      placeholder: "https://www.apkmirror.com/apk/..."
+  - type: input
+    id: uptodown
+    attributes:
+      label: Uptodown link (optional)
+      placeholder: "https://app.uptodown.com/android"
+  - type: input
+    id: apkpure
+    attributes:
+      label: APKPure link (optional)
+      placeholder: "https://apkpure.com/..."
+  - type: textarea
+    id: wanted-patches
+    attributes:
+      label: What kind of patches do you want?
+      description: Type the patches you are looking for, one per line if there are several.
+      placeholder: |
+        Describe the changes you would like to see, one per line.
+    validations:
+      required: true
+  - type: textarea
+    id: patch-details
+    attributes:
+      label: Patch details
+      description: |
+        Describe exactly what should be unlocked or changed, and how you expect it to behave.
+
+        - Where in the app is the feature? (e.g. Store → VIP tab, a paywall after level 3)
+        - What happens today without patches? (price shown, "purchase failed", etc.)
+        - Any known protection or anti-tamper/obfuscation?
+      placeholder: |
+        Example: "The Store has a VIP subscription and a 'Remove Ads' purchase. Buying either
+        should unlock it locally without opening the Google Play payment screen."
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Anything more you want to add.
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      description: The request will be closed if the checklist is not followed.
+      options:
+        - label: I have searched the open and closed issues and this app has not been requested before.
+          required: true
+        - label: I have provided the Google Play Store link. APKMirror/Uptodown/APKPure links are optional but make patching faster.
+          required: true
+        - label: I understand that a request is not a guarantee that a patch will be created.
+          required: true
+        - label: All requested information has been provided accurately.
+          required: true
