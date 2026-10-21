@@ -10,7 +10,7 @@ import com.android.tools.smali.dexlib2.AccessFlags
 // R8-stable: Yodo1 keeps the bridge class/method names unobfuscated because
 // Unity C# loads them reflectively by exact name (all signatures appear
 // verbatim in global-metadata.dat). Every method body was read in smali before
-// writing — line numbers below are from this build (3.441.100101).
+// writing — line numbers below are from the 3.441.100103 build.
 //
 // Common shape of every load*/show*V2 target (all .registers 3, static):
 //   new-instance v0, UnityYodo1Mas$<n>;
