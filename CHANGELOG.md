@@ -1,3 +1,9 @@
+## [1.46.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.4...v1.46.0-dev.5) (2026-10-21)
+
+### 🚀 Updated App Support
+
+* **rodeosafari:** update target version to 4.26.0 ([a4a4bcf](https://github.com/byehi98/okish-morphe-patches/commit/a4a4bcf6d97b9deb14aacdb8eddc19ac3efef8bf))
+
 ## [1.46.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.3...v1.46.0-dev.4) (2026-10-21)
 
 ### 🚀 Updated App Support

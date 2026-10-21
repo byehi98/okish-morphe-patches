@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-21T10:54:59",
-  "description": "## [1.46.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.3...v1.46.0-dev.4) (2026-10-21)\n\n### 🚀 Updated App Support\n\n* **vita-mahjong:** update target version to 3.43.0 ([d53edff](https://github.com/byehi98/okish-morphe-patches/commit/d53edfff6e384fe9c85cf6bbd9b52b6d929676a1))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.46.0-dev.4/patches-1.46.0-dev.4.mpp",
+  "created_at": "2026-10-21T11:04:29",
+  "description": "## [1.46.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.4...v1.46.0-dev.5) (2026-10-21)\n\n### 🚀 Updated App Support\n\n* **rodeosafari:** update target version to 4.26.0 ([a4a4bcf](https://github.com/byehi98/okish-morphe-patches/commit/a4a4bcf6d97b9deb14aacdb8eddc19ac3efef8bf))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.46.0-dev.5/patches-1.46.0-dev.5.mpp",
   "signature_download_url": "",
-  "version": "1.46.0-dev.4"
+  "version": "1.46.0-dev.5"
 }
