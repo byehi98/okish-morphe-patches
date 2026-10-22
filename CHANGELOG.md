@@ -1,3 +1,9 @@
+## [1.46.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.7...v1.46.0-dev.8) (2026-10-22)
+
+### ✨ New Features
+
+* **20mintutestilldawn:** add patches for 20 Minutes Till Dawn ([fa083e8](https://github.com/byehi98/okish-morphe-patches/commit/fa083e8b0a2df57a43cf732cbe9d923f737cff9e))
+
 ## [1.46.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.6...v1.46.0-dev.7) (2026-10-21)
 
 ### ✨ New Features

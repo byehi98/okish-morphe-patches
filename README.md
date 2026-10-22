@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.46.0-dev.7](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.46.0-dev.7)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;111 patches total
+> **[v1.46.0-dev.8](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.46.0-dev.8)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;114 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -117,6 +117,23 @@ Direct URL:
 | [Big Hunter PairIP License Bypass](#big-hunter-pairip-license-bypass) | Disables the PairIP license check (installer verification + Google Play licensing service validation + paywall/exit dialog). Required for patched APKs — the original check fails on any non-Play signature and force-closes the app. |  |
 | [Big Hunter Remove Ads](#big-hunter-remove-ads) | Interstitial ads are never shown (show() short-circuits via the ad-not-ready path on all three network bridges: AdMob, AppLovin, Unity Ads). |  |
 | [Big Hunter Rewards Without Ads](#big-hunter-rewards-without-ads) | Rewarded video requests grant the reward immediately via the game's own native rewardCallback() without loading or showing any ad (AdMob, AppLovin, Unity Ads). |  |
+
+</details>
+
+<details>
+<summary>📦 20 Minutes Till Dawn&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 8.6 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Bypass PairIP signature, license & VM gate](#bypass-pairip-signature-license-vm-gate) | Neutralises the PairIP signature and license gates, restores the virtualised lifecycle methods with real Unity delegating bodies, and skips the startup VM program. Required for every other 20 Minutes Till Dawn patch. Credits: fynnaly. |  |
+| [Free in-app purchases](#free-in-app-purchases) | Every shop purchase is granted instantly — no Google Play payment sheet, no real charge. Covers coins, packs, the one-year battle pass and the First Purchase / Ad-Free Forever bundles, which are claimed by tapping Buy once like any other product. |  |
+| [Remove ads & grant ad rewards](#remove-ads-grant-ad-rewards) | Removes every ad (rewarded, interstitial, app-open, banner, MREC) and grants rewarded-ad rewards instantly — no video ever plays, and no ad can appear anywhere in the game. |  |
 
 </details>
 
