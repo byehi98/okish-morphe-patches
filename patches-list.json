@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.46.0-dev.8",
+  "version": "1.46.0-dev.9",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -761,7 +761,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "7.1.7",
+              "version": "7.1.8",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -844,7 +844,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "7.1.7",
+              "version": "7.1.8",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
