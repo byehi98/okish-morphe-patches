@@ -4,7 +4,7 @@ import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.methodCall
 import com.android.tools.smali.dexlib2.AccessFlags
 
-// ── Swamp Attack 4.8.7.0 (versionCode 724) — billing fingerprints ──────────
+// ── Swamp Attack 4.8.8.0 (versionCode 738) — billing fingerprints ──────────
 //
 // The game package `com.libo7.swampattack.*` ships UNOBFUSCATED (R8 only shrunk
 // third-party SDKs), so the names below are the literal smali names. Each

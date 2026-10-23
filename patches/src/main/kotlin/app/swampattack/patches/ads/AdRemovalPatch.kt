@@ -5,7 +5,7 @@ import app.morphe.util.returnEarly
 import app.swampattack.patches.shared.Constants.COMPATIBILITY_SWAMP_ATTACK
 
 /**
- * Swamp Attack 4.8.7.0 · **Remove Ads** — forced (interstitial) ads never load or show.
+ * Swamp Attack 4.8.8.0 · **Remove Ads** — forced (interstitial) ads never load or show.
  *
  * Forces the app's own permanent-removal gate: `AdManager.areAdsPermanentlyRemoved(Context)`
  * always returns `true`. Every interstitial call site in `AdManager` branches on it first:

@@ -5,7 +5,7 @@ import app.morphe.patcher.methodCall
 import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
-// ── Swamp Attack 4.8.7.0 (versionCode 724) — ad-layer fingerprints ─────────
+// ── Swamp Attack 4.8.8.0 (versionCode 738) — ad-layer fingerprints ─────────
 //
 // Game package `com.libo7.swampattack.*` ships UNOBFUSCATED, so names below are
 // the literal smali names; every fingerprint is still anchored on more than the

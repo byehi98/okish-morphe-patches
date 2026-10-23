@@ -9,7 +9,7 @@ import app.swampattack.patches.shared.Constants.COMPATIBILITY_SWAMP_ATTACK
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 
 /**
- * Swamp Attack 4.8.7.0 · **Instant Rewards** — every rewarded video pays out
+ * Swamp Attack 4.8.8.0 · **Instant Rewards** — every rewarded video pays out
  * instantly; no ad is ever shown.
  *
  * ### Reward flow (smali-verified, fixedcheck tree)
