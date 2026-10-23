@@ -1,3 +1,9 @@
+## [1.46.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.9...v1.46.0-dev.10) (2026-10-23)
+
+### 🚀 Updated App Support
+
+* **plagueinc:** update ad patches for Plague Inc v1.27.3 ([87b5486](https://github.com/byehi98/okish-morphe-patches/commit/87b54862417a09565ceae9a937b2ebbc9bcf17c3))
+
 ## [1.46.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.8...v1.46.0-dev.9) (2026-10-23)
 
 ### 🚀 Updated App Support
