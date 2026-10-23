@@ -1,3 +1,9 @@
+## [1.46.0-dev.12](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.11...v1.46.0-dev.12) (2026-10-23)
+
+### 🚀 Updated App Support
+
+* **deadtarget:** update patches for version 4.185.0 ([c0036d2](https://github.com/byehi98/okish-morphe-patches/commit/c0036d20db50d328ba4e9558e8f730775a3129e2))
+
 ## [1.46.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.10...v1.46.0-dev.11) (2026-10-23)
 
 ### 🚀 Updated App Support
