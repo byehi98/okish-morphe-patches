@@ -31,11 +31,6 @@ jobs:
       - name: Cache Gradle
         uses: burrunan/gradle-cache-action@v3
 
-      - name: Build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew :patches:buildAndroid generatePatchesList
-
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
