@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-23T02:04:08",
-  "description": "## [1.46.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.9...v1.46.0-dev.10) (2026-10-23)\n\n### 🚀 Updated App Support\n\n* **plagueinc:** update ad patches for Plague Inc v1.27.3 ([87b5486](https://github.com/byehi98/okish-morphe-patches/commit/87b54862417a09565ceae9a937b2ebbc9bcf17c3))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.46.0-dev.10/patches-1.46.0-dev.10.mpp",
+  "created_at": "2026-10-23T02:13:33",
+  "description": "## [1.46.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.10...v1.46.0-dev.11) (2026-10-23)\n\n### 🚀 Updated App Support\n\n* **swampattack:** update target version to 4.8.8.0 ([4083e1b](https://github.com/byehi98/okish-morphe-patches/commit/4083e1b827fc45721340005463776195380cc0ce))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.46.0-dev.11/patches-1.46.0-dev.11.mpp",
   "signature_download_url": "",
-  "version": "1.46.0-dev.10"
+  "version": "1.46.0-dev.11"
 }
