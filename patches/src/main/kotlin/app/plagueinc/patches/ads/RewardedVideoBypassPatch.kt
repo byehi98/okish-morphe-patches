@@ -10,10 +10,14 @@ import app.plagueinc.patches.shared.Constants.COMPATIBILITY_PLAGUEINC
  * Real flow (confirmed in VideoAdController listener methods):
  *   ad watched -> onReward.run() (line ~415) -> ad hidden -> onClose.run() (line ~268)
  *
- * This patch rewrites createRewardedAd() to fire the reward callback (p1)
- * followed by the close callback (p3) immediately, then return — exactly
+ * This patch rewrites createRewardedAd() to fire the reward callback (p2)
+ * followed by the close callback (p4) immediately, then return — exactly
  * mimicking a successful watch without any ad request or network call.
  * Gene insertion and other rewarded actions complete instantly.
+ *
+ * 1.27.3 signature: createRewardedAd(String placement, Runnable onReward,
+ * Runnable onFail, Runnable onClose) — so p1 is the placement string and the
+ * callbacks are p2/p3/p4. The old 1.26.1 signature had no placement argument.
  */
 @Suppress("unused")
 val plagueIncRewardedVideoBypassPatch = bytecodePatch(
@@ -24,14 +28,14 @@ val plagueIncRewardedVideoBypassPatch = bytecodePatch(
     compatibleWith(COMPATIBILITY_PLAGUEINC)
 
     execute {
-        // createRewardedAd has .registers 6: v0..v2 locals + p0..p3 params.
-        // Inserted code only uses p1/p3, so it is safe at index 0.
+        // createRewardedAd has .registers 7: v0..v2 locals + p0..p4 params
+        // (this + String + 3 Runnables). Inserted code only uses p2/p4.
         CreateRewardedAdFingerprint.method.addInstructionsWithLabels(0, """
-            if-eqz p1, :plague_skip_reward
-            invoke-interface {p1}, Ljava/lang/Runnable;->run()V
+            if-eqz p2, :plague_skip_reward
+            invoke-interface {p2}, Ljava/lang/Runnable;->run()V
             :plague_skip_reward
-            if-eqz p3, :plague_skip_close
-            invoke-interface {p3}, Ljava/lang/Runnable;->run()V
+            if-eqz p4, :plague_skip_close
+            invoke-interface {p4}, Ljava/lang/Runnable;->run()V
             :plague_skip_close
             return-void
         """)
