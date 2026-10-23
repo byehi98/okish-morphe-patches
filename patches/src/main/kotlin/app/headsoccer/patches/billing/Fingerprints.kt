@@ -4,11 +4,11 @@ import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.methodCall
 import com.android.tools.smali.dexlib2.AccessFlags
 
-// ── Head Soccer 7.1.6 (versionCode 345) — DEX-only fingerprints ────────────
+// ── Head Soccer 7.1.8 (versionCode 352) — DEX-only fingerprints ────────────
 //
 // Verified against the shipped smali:
-//   analysis/head-soccer/smali/classes/com/dnddream/headsoccer/android/headsoccer.smali
-//   analysis/head-soccer/smali/classes/com/dnddream/headsoccer/android/MyBillingImpl.smali
+//   analysis/head-soccer/smali/classes1/com/dnddream/headsoccer/android/headsoccer.smali
+//   analysis/head-soccer/smali/classes1/com/dnddream/headsoccer/android/MyBillingImpl.smali
 //
 // The app ships with DEBUG-STYLE NAMES throughout (`TAG = "Headsoccer-Billing4"`,
 // `getSkuByIndex`, `launchBillingFlow`, `billingCompleteIAP`, `PurchasedFunc`) —
@@ -21,7 +21,7 @@ import com.android.tools.smali.dexlib2.AccessFlags
 // FreeStorePatch.kt for the deliberate choice of primary vs fallback anchors.
 
 /**
- * `headsoccer.onBuyPoint(int)V` — smali line 4771, `.registers 8`, **NO try/catch table**.
+ * `headsoccer.onBuyPoint(int)V` — smali line 4004, `.registers 4`, **NO try/catch table**.
  *
  * The single funnel every store row tap reaches. Its *only* action in all 8 branches is
  * `MyBillingImpl.launchBillingFlow(Activity, String, String[])`; native gets here via
@@ -60,7 +60,7 @@ object OnBuyPointFingerprint : Fingerprint(
 
 /**
  * `MySecurity.verifyPurchase(String, String)Z` — smali in MySecurity.smali,
- * `.registers 8`, public static.
+ * `.registers 6`, public static.
  *
  * The legacy LVL `IABUtil/Security` RSA-2048 / SHA1withRSA receipt check over
  * `purchase.getOriginalJson()`. Returns `false` on any failure — SILENTLY (just a

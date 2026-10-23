@@ -5,7 +5,7 @@ import app.morphe.patcher.patch.bytecodePatch
 import app.swampattack.patches.shared.Constants.COMPATIBILITY_SWAMP_ATTACK
 
 /**
- * Swamp Attack 4.8.7.0 · **Free Store** — every purchase grants instantly, free.
+ * Swamp Attack 4.8.8.0 · **Free Store** — every purchase grants instantly, free.
  *
  * SDL2 + Marmalade s3e + Outfit7 native engine (`liblibO7.so`); **DEX-only, no native
  * edit.** The game package `com.libo7.swampattack.*` is unobfuscated.

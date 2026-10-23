@@ -8,7 +8,7 @@ import java.io.RandomAccessFile
 import kotlin.io.readBytes
 
 /**
- * Dead Target: Offline Games 3D 4.184.0 — All items owned.
+ * Dead Target: Offline Games 3D 4.185.0 — All items owned.
  *
  * Dead Target is Unity IL2CPP: the smali layer is SDK plumbing only, every ownership decision
  * lives in `libil2cpp.so` (85,096,080 bytes, arm64-v8a, plaintext `.text`). This patch forces
@@ -1578,14 +1578,14 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // gates are sites 6–10. Unchanged from the originally shipped patch.
     ItemAnchor(
         label = "DSystem.IsGunUnlock -> true (gun tile icon: inventory.ContainsKey tail-call)",
-        va = 0x021DF41C,
-        fileOffset = 0x021DB41C,
+        va = 0x021DFE50,
+        fileOffset = 0x021DBE50,
         // Word 0 = 0xA9BE57FE `stp x21,x20,[sp,#-32]!` (genuine entry); +0x10 holds
         // `mov x19,x1` = idGun. Only the first 8 bytes are ever written.
         anchorHex =
-            "FE57BEA9F44F01A9B57A0190" +
-            "A82E7F39F303012AF40300AA" +
-            "C8000037205F01D0005440F9",
+            "FE57BEA9F44F01A9B57A01F0" +
+            "A8EE6639F303012AF40300AA" +
+            "C8000037405F0190004444F9",
         replacementHex = BOOL_TRUE,
     ),
     // ---- Site 2: GLOVES (primary). Function entry: 0xF81D0FFE `str x30,[sp,#-0x30]!`, and
@@ -1593,14 +1593,14 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // (2 hits, the other being DSystem.GetSkinIndex), so 36 bytes is required, not padding.
     ItemAnchor(
         label = "DSystem.IsOwnGlove(string) -> true (gloves: hand-skin picName check)",
-        va = 0x021CD2C0,
-        fileOffset = 0x021C92C0,
+        va = 0x021CDCF4,
+        fileOffset = 0x021C9CF4,
         // Word 0 = 0xF81D0FFE `str x30,[sp,#-0x30]!` (genuine entry); +0x1C holds
         // `mov x20,x1` = glovename. Only the first 8 bytes are ever written.
         anchorHex =
             "FE0F1DF8F65701A9F44F02A9" +
-            "367B01D0B55F01F0C81A7F39" +
-            "B52245F9F40301AAF30300AA",
+            "567B01B0D55F01D0C8DA6639" +
+            "B51241F9F40301AAF30300AA",
         replacementHex = BOOL_TRUE,
     ),
     // ---- Site 3: SKINS. Function entry: 0xA9BE57FE `stp x30,x21,[sp,#-0x20]!`, and entry+0x10
@@ -1609,14 +1609,14 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // in this game gun-skin ownership IS gun ownership, at a second entry point.
     ItemAnchor(
         label = "DSystem.CheckHaveGun -> true (gun skins: ownership is gunList.ContainsKey)",
-        va = 0x021D9B60,
-        fileOffset = 0x021D5B60,
+        va = 0x021DA594,
+        fileOffset = 0x021D6594,
         // Word 0 = 0xA9BE57FE `stp x30,x21,[sp,#-0x20]!` (genuine entry); +0x10 holds
         // `mov w19,w1` = idGunRecommend. Only the first 8 bytes are ever written.
         anchorHex =
-            "FE57BEA9F44F01A9D57A01D0" +
-            "A84E7F39F303012AF40300AA" +
-            "C8000037605F0190005440F9",
+            "FE57BEA9F44F01A9F57A0190" +
+            "A80E6739F303012AF40300AA" +
+            "C8000037605F01B0004444F9",
         replacementHex = BOOL_TRUE,
     ),
     // ---- Site 4: DRONES. *** MID-FUNCTION INLINE EDIT — NOT AN ENTRY *** The anchor starts at
@@ -1628,12 +1628,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // still verified even though only the first 4 are written.
     ItemAnchor(
         label = "DroneItemCtrl.Refresh inline droneInventory.ContainsKey -> true (drone tile)",
-        va = 0x0263A17C,
-        fileOffset = 0x0263617C,
+        va = 0x0263AE54,
+        fileOffset = 0x02636E54,
         anchorHex =
-            "98584294682240F9080800B4" +
+            "125F4294682240F9080800B4" +
             "01000012E00308AAE2031FAA" +
-            "26078B94601E40F9400700B4",
+            "A00D8B94601E40F9400700B4",
         replacementHex = BOOL_TRUE_W,
     ),
     // ---- Site 5: GLOVES tile icon. *** MID-FUNCTION INLINE EDIT — NOT AN ENTRY *** Starts at a
@@ -1645,12 +1645,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // 0x02651D7C, not something this patch writes. 4-byte write, NO `ret`.
     ItemAnchor(
         label = "GloveItemCtrl.Refresh inline listHandSkin.Contains -> true (glove tile icon)",
-        va = 0x02651D74,
-        fileOffset = 0x0264DD74,
+        va = 0x02652A4C,
+        fileOffset = 0x0264EA4C,
         anchorHex =
-            "138756940200001420008052" +
+            "8D8D56940200001420008052" +
             "682640F9680300B401000012" +
-            "E00308AAE2031FAA26A88A94",
+            "E00308AAE2031FAAA0AE8A94",
         replacementHex = BOOL_TRUE_W,
     ),
     // ---- Site 6: GUNS SHOP ACTION BUTTON. Function entry: 0xA9BE57FE `stp x30,x21,[sp,#-0x20]!`
@@ -1662,12 +1662,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // over the Unlock/Buy wiring. 8-byte entry write.
     ItemAnchor(
         label = "WeaponShopView.IsOwnedItem -> true (gun shop button: Equip/Upgrade not Buy)",
-        va = 0x020AC61C,
-        fileOffset = 0x020A861C,
+        va = 0x020AD050,
+        fileOffset = 0x020A9050,
         anchorHex =
-            "FE57BEA9F44F01A9358401F0" +
-            "A8825D39F303012AF40300AA" +
-            "C8000037C06801B0005440F9",
+            "FE57BEA9F44F01A9558401B0" +
+            "A8424539F303012AF40300AA" +
+            "C8000037C06801D0004444F9",
         replacementHex = BOOL_TRUE,
     ),
     // ---- Site 7: GUNS LOADOUT REPAIR. *** MID-FUNCTION BRANCH EDIT — NOT AN ENTRY *** Word 0 =
@@ -1678,8 +1678,8 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // 4-byte write, NO `ret`: the loop must continue and the routine must finish its other work.
     ItemAnchor(
         label = "DSystem.FixedWrongEquipWeapon -> always keep the equipped gun slot",
-        va = 0x021D68B8,
-        fileOffset = 0x021D28B8,
+        va = 0x021D72EC,
+        fileOffset = 0x021D32EC,
         anchorHex =
             "4001003768D240F9880900B4" +
             "008940F9200900B4630340F9" +
@@ -1694,12 +1694,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // throwing or returning null. 4-byte write, NO `ret`.
     ItemAnchor(
         label = "DSystem.GetOwnedGunConfigById -> do not return null for an un-owned gun",
-        va = 0x021D6D5C,
-        fileOffset = 0x021D2D5C,
+        va = 0x021D7790,
+        fileOffset = 0x021D3790,
         anchorHex =
-            "C0060036685F01B0089146F9" +
+            "C0060036685F01F0088142F9" +
             "000140F908E040B948000035" +
-            "BC08F397E003132AE1031FAA",
+            "C008F397E003132AE1031FAA",
         replacementHex = NOP_FALLTHROUGH,
     ),
     // ---- Site 9: GUN BATTLE-PREP RECORD RESOLVER. *** MID-FUNCTION BRANCH EDIT *** Same shape on
@@ -1709,12 +1709,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // Anchor is 36 B even though the note reported a 32 B minimum — see ANCHOR UNIQUENESS.
     ItemAnchor(
         label = "DSystem.GetCurEquipedGunBattle -> do not return null for an un-owned gun",
-        va = 0x021D7090,
-        fileOffset = 0x021D3090,
+        va = 0x021D7AC4,
+        fileOffset = 0x021D3AC4,
         anchorHex =
-            "A0060036685F0190089146F9" +
+            "A0060036685F01F0088142F9" +
             "931240B9000140F908E040B9" +
-            "48000035EE07F397E003132A",
+            "48000035F207F397E003132A",
         replacementHex = NOP_FALLTHROUGH,
     ),
     // ---- Site 10: RAID-BOSS MODE ITEM LOCK. Function entry: 0xA9BE57FE `stp x30,x21,[sp,#-0x20]!`
@@ -1724,12 +1724,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // mode-scoped gate in this file. 8-byte entry write.
     ItemAnchor(
         label = "RaidbossSelectionView.CheckItemLocked -> false (raid-boss items never locked)",
-        va = 0x0206F8BC,
-        fileOffset = 0x0206B8BC,
+        va = 0x020702F0,
+        fileOffset = 0x0206C2F0,
         anchorHex =
-            "FE57BEA9F44F01A934860190" +
-            "B56A019088465439B5FE45F9" +
-            "F303012A28010037A06A01D0",
+            "FE57BEA9F44F01A9348601B0" +
+            "B56A01D088067C39B5EE41F9" +
+            "F303012A28010037A06A01F0",
         replacementHex = BOOL_FALSE,
     ),
     // ---- Site 11: GLOVES SHOP EQUIP BUTTON. *** MID-FUNCTION INLINE EDIT — NOT AN ENTRY ***
@@ -1742,8 +1742,8 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // NO `ret`: the method must run on into the Btn_Use block. All 36 bytes still verified.
     ItemAnchor(
         label = "GlovesView.RefreshButtons inline listHandSkin.Contains -> true (gloves shop equip)",
-        va = 0x02BC8FB8,
-        fileOffset = 0x02BC4FB8,
+        va = 0x02BCB678,
+        fileOffset = 0x02BC7678,
         anchorHex =
             "82AA4094C0070036951240B9" +
             "02000014F5031F2AC00240F9" +
@@ -1757,12 +1757,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // runs GlovesView.RefreshButtons, so site 11 alone leaves the player stuck there.
     ItemAnchor(
         label = "ControlGloveSkin.RefreshButtons inline listHandSkin.Contains -> true (battle gloves equip)",
-        va = 0x02412BB0,
-        fileOffset = 0x0240EBB0,
+        va = 0x02413898,
+        fileOffset = 0x0240F898,
         anchorHex =
-            "84835F94A0070036951240B9" +
+            "FA895F94A0070036951240B9" +
             "02000014F5031F2AC00240F9" +
-            "48B33B94E01400B408D040F9",
+            "BEB93B94E01400B408D040F9",
         replacementHex = BOOL_TRUE_W,
     ),
     // ---- Site 13: DRONES SHOP EQUIP BUTTON — ESSENTIAL. *** MID-FUNCTION INLINE EDIT *** Word 0 =
@@ -1774,8 +1774,8 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // (site 6) and the highest-confidence of these four. 4-byte write, NO `ret`.
     ItemAnchor(
         label = "DroneShopView.SetupButtonEquip inline droneInventory.ContainsKey -> true (drone equip button)",
-        va = 0x02BC5E5C,
-        fileOffset = 0x02BC1E5C,
+        va = 0x02BC851C,
+        fileOffset = 0x02BC451C,
         anchorHex =
             "60292C94A80240F9F503002A" +
             "E00308AA9FE61C94E00300B4" +
@@ -1789,12 +1789,12 @@ private val ARM64_ITEM_ANCHORS = listOf(
     // single entry to revert it; sites 11, 12, 13 and every other patch are unaffected.
     ItemAnchor(
         label = "DroneShopView.SetupButtonUnlock inline droneInventory.ContainsKey -> true (drone caption, label only)",
-        va = 0x02BC5F9C,
-        fileOffset = 0x02BC1F9C,
+        va = 0x02BC865C,
+        fileOffset = 0x02BC465C,
         anchorHex =
             "10292C94685240F9281700B4" +
-            "A0000036141001B0090140F9" +
-            "94CE41F90400001434100190",
+            "A000003614100190090140F9" +
+            "94BE45F90400001434100190",
         replacementHex = BOOL_TRUE_W,
     ),
 )

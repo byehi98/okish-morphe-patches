@@ -8,7 +8,7 @@ import java.io.RandomAccessFile
 import kotlin.io.readBytes
 
 /**
- * Dead Target: Offline Games 3D 4.184.0 — Instant rewarded video.
+ * Dead Target: Offline Games 3D 4.185.0 — Instant rewarded video.
  *
  * One site, one goal: **the reward is granted instantly, with no ad watched.** The "watch an
  * ad for a reward" popup is left completely alone — the game's own logic decides when it
@@ -399,16 +399,16 @@ private class Anchor(
  * advances the game's watch/cooldown bookkeeping. No ad is requested, no mediation call is
  * made, and no availability gate is touched.
  */
-private const val TAIL_REWARD = "014800B9E1031F2A05010014"
+private const val TAIL_REWARD = "014800B9E1031F2A04010014"
 
 private val ARM64_ANCHORS = listOf(
     Anchor(
         label = "AdsController.ShowRewardedVideoAds -> set _crtSegmentID, branch to OnCompleteShow",
-        va = 0x2849ACC,
-        fileOffset = 0x2845ACC,
+        va = 0x0284BB4C,
+        fileOffset = 0x02847B4C,
         anchorHex =
             "FF4301D1FE1300F9F65703A9" +
-            "F44F04A9754701D0A8DE4A39" +
+            "F44F04A9754701D0A8AA7239" +
             "F303012AF40300AA28010037",
         replacementHex = TAIL_REWARD,
     ),

@@ -17,7 +17,7 @@ object Constants {
         // adjust if the patch UI wants the exact icon hue.
         appIconColor = 0x2E6B32,
         targets = listOf(
-            AppTarget(version = "4.184.0"),
+            AppTarget(version = "4.185.0"),
         ),
     )
 }

@@ -1,3 +1,75 @@
+## [1.46.0-dev.12](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.11...v1.46.0-dev.12) (2026-10-23)
+
+### 🚀 Updated App Support
+
+* **deadtarget:** update patches for version 4.185.0 ([c0036d2](https://github.com/byehi98/okish-morphe-patches/commit/c0036d20db50d328ba4e9558e8f730775a3129e2))
+
+## [1.46.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.10...v1.46.0-dev.11) (2026-10-23)
+
+### 🚀 Updated App Support
+
+* **swampattack:** update target version to 4.8.8.0 ([4083e1b](https://github.com/byehi98/okish-morphe-patches/commit/4083e1b827fc45721340005463776195380cc0ce))
+
+## [1.46.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.9...v1.46.0-dev.10) (2026-10-23)
+
+### 🚀 Updated App Support
+
+* **plagueinc:** update ad patches for Plague Inc v1.27.3 ([87b5486](https://github.com/byehi98/okish-morphe-patches/commit/87b54862417a09565ceae9a937b2ebbc9bcf17c3))
+
+## [1.46.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.8...v1.46.0-dev.9) (2026-10-23)
+
+### 🚀 Updated App Support
+
+* **headsoccer:** update patches for version 7.1.8 ([8438866](https://github.com/byehi98/okish-morphe-patches/commit/8438866616642557930f24d465c14618e256c52f))
+
+## [1.46.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.7...v1.46.0-dev.8) (2026-10-22)
+
+### ✨ New Features
+
+* **20mintutestilldawn:** add patches for 20 Minutes Till Dawn ([fa083e8](https://github.com/byehi98/okish-morphe-patches/commit/fa083e8b0a2df57a43cf732cbe9d923f737cff9e))
+
+## [1.46.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.6...v1.46.0-dev.7) (2026-10-21)
+
+### ✨ New Features
+
+* **intothedead2:** replace runtime JNI engine with static hex patch ([3fce0d3](https://github.com/byehi98/okish-morphe-patches/commit/3fce0d37ff92096aa64c5ef7f4f1d4c3e4ab57b3))
+
+## [1.46.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.5...v1.46.0-dev.6) (2026-10-21)
+
+### 🚀 Updated App Support
+
+* **intothedead2:** update target support to 1.88.0 ([d099b17](https://github.com/byehi98/okish-morphe-patches/commit/d099b171aac17d42a91e00213c55c4fae875782e))
+
+## [1.46.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.4...v1.46.0-dev.5) (2026-10-21)
+
+### 🚀 Updated App Support
+
+* **rodeosafari:** update target version to 4.26.0 ([a4a4bcf](https://github.com/byehi98/okish-morphe-patches/commit/a4a4bcf6d97b9deb14aacdb8eddc19ac3efef8bf))
+
+## [1.46.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.3...v1.46.0-dev.4) (2026-10-21)
+
+### 🚀 Updated App Support
+
+* **vita-mahjong:** update target version to 3.43.0 ([d53edff](https://github.com/byehi98/okish-morphe-patches/commit/d53edfff6e384fe9c85cf6bbd9b52b6d929676a1))
+
+## [1.46.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.2...v1.46.0-dev.3) (2026-10-21)
+
+### 🚀 Updated App Support
+
+* **shootyskies:** bump target version to 3.441.100103 ([4585946](https://github.com/byehi98/okish-morphe-patches/commit/45859462868aa2c2d800bb6e94c6816461c0b62f))
+
+## [1.46.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0-dev.1...v1.46.0-dev.2) (2026-10-20)
+
+### ✨ New Features
+
+* **pvzfree:** add ad removal and free IAP patches ([23b2cdd](https://github.com/byehi98/okish-morphe-patches/commit/23b2cdd3c158f5782c2b7dfe7e00f1ba72358468))
+
+## [1.46.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.45.1...v1.46.0-dev.1) (2026-10-20)
+
+### ✨ New Features
+
+* **vitamahjong:** add ad removal and purchase restore patches ([ae57168](https://github.com/byehi98/okish-morphe-patches/commit/ae57168bc44a19864003490fa0be9565c76e360d))
+
 ## [1.45.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.45.0...v1.45.1) (2026-10-18)
 
 ### 🐛 Bug Fixes

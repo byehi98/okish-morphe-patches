@@ -13,7 +13,7 @@ object Constants {
         // Dominant gold of the sampled app icon (mipmap-xhdpi/app_icon.png).
         appIconColor = 0xF0E000,
         targets = listOf(
-            AppTarget(version = "3.441.100101")
+            AppTarget(version = "3.441.100103")
         )
     )
 }

@@ -8,7 +8,7 @@ import java.io.RandomAccessFile
 import kotlin.io.readBytes
 
 /**
- * Dead Target: Offline Games 3D 4.184.0 — Unlimited ALL in-game currency.
+ * Dead Target: Offline Games 3D 4.185.0 — Unlimited ALL in-game currency.
  *
  * Dead Target is Unity IL2CPP: the smali layer is SDK plumbing only, every economy read
  * lives in `libil2cpp.so` (85,096,080 bytes, arm64-v8a, plaintext `.text`). All five
@@ -217,51 +217,51 @@ private const val STUB_INT32 = "E03F99524073A772C0035FD6"
 private val ARM64_ANCHORS = listOf(
     Anchor(
         label = "DSystem.get_gameMoney -> 999,999,999 (cash, int64)",
-        va = 0x02193D24,
-        fileOffset = 0x0218FD24,
+        va = 0x02194758,
+        fileOffset = 0x02190758,
         anchorHex =
             "FF8301D1FE1300F9F85F03A9" +
-            "F65704A9F44F05A9147D0190" +
-            "880A7839F30300AAC8000037",
+            "F65704A9F44F05A9147D01D0" +
+            "88CA5F39F30300AAC8000037",
         replacementHex = STUB_INT64,
     ),
     Anchor(
         label = "DSystem.get_payMoney -> 999,999,999 (gold, int64)",
-        va = 0x0219A588,
-        fileOffset = 0x02196588,
+        va = 0x0219AFBC,
+        fileOffset = 0x02196FBC,
         anchorHex =
             "FF4301D1FE0B00F9F85F02A9" +
-            "F65703A9F44F04A9D47C01B0" +
-            "882A7839F30300AAC8000037",
+            "F65703A9F44F04A9F47C0190" +
+            "88EA5F39F30300AAC8000037",
         replacementHex = STUB_INT64,
     ),
     Anchor(
         label = "DSystem.get_Diamond -> 999,999,999 (diamonds, int64)",
-        va = 0x0219B1E0,
-        fileOffset = 0x021971E0,
+        va = 0x0219BC14,
+        fileOffset = 0x02197C14,
         anchorHex =
             "FF4301D1FE0B00F9F85F02A9" +
-            "F65703A9F44F04A9D47C0190" +
-            "88427839F30300AAC8000037",
+            "F65703A9F44F04A9D47C01F0" +
+            "88026039F30300AAC8000037",
         replacementHex = STUB_INT64,
     ),
     Anchor(
         label = "DSystem.get_tapjoyMoney -> 999,999,999 (tapjoy points, int32)",
-        va = 0x0219A410,
-        fileOffset = 0x02196410,
+        va = 0x0219AE44,
+        fileOffset = 0x02196E44,
         // This getter is 32 bytes; bytes 32..36 are the adjacent setter's first two
         // instructions — kept in the anchor because that is what makes it unique, but
         // NEVER written (the replacement is 12 bytes).
         anchorHex =
             "FE0F1FF808D040F9880000B4" +
             "008140B9FE0741F8C0035FD6" +
-            "57FBF397FE0F1FF808D040F9",
+            "5BFBF397FE0F1FF808D040F9",
         replacementHex = STUB_INT32,
     ),
     Anchor(
         label = "DSystem.get_mascotCoin -> 999,999,999 (mascot coin, int32)",
-        va = 0x0219C9D8,
-        fileOffset = 0x021989D8,
+        va = 0x0219D40C,
+        fileOffset = 0x0219940C,
         anchorHex =
             "FE0F1EF8F44F01A908D040F9" +
             "A80000B4005141B9F44F41A9" +
