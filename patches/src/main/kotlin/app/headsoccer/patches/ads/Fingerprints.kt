@@ -4,52 +4,55 @@ import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.methodCall
 import com.android.tools.smali.dexlib2.AccessFlags
 
-// ── Head Soccer 7.1.6 (versionCode 345) — ad-surface fingerprints ──────────
+// ── Head Soccer 7.1.8 (versionCode 352) — ad-surface fingerprints ──────────
 //
 // Verified against the shipped smali:
-//   analysis/head-soccer/smali/classes/com/dnddream/headsoccer/android/headsoccer.smali
+//   analysis/head-soccer/smali/classes1/com/dnddream/headsoccer/android/headsoccer.smali:3448
 //
-// Unlike the billing patch, these two are anchored almost entirely on THIRD-PARTY names
-// (`com.applovin.*`, `org.cocos2dx.lib.*`) that can never be obfuscated, so they are safe
-// across updates on their own — the app-private `headsoccer` class/method name is the only
-// non-stable token, and it is a debug-style name in an app that has never been ProGuarded.
+// 7.1.8 REPLACED the AppLovin rewarded interstitial with **Google AdMob**
+// (`com.google.android.gms.ads.rewarded.RewardedAd`). The old
+// `AppLovinIncentivizedInterstitial.isAdReadyToDisplay/show` anchors no longer exist in the
+// app DEX (the only remaining "applovin" tokens are Unity mediation reflection stubs), which
+// is why the 7.1.6/7.1.7 fingerprint failed. All third-party anchors below are Google/cocos
+// names and cannot be obfuscated; the app-private `headsoccer` class/method name is a
+// debug-style name in an app that has never been ProGuarded.
 
 /**
- * `headsoccer.ShowAds()V` — smali line 3943, `.registers 9`, **NO try/catch table**.
+ * `headsoccer.ShowAds()V` — smali line 3448, `.registers 4`, **NO try/catch table**.
  *
  * The store/menu "watch ad" entry point. Reached from native through:
  *
  * ```
- * native  → headsoccer.ShowAdver(int)                    static, smali:867
- *   → te.handler.post(headsoccer$25)  ───────────────────► GL thread
- *     → headsoccer$25.run() → te.ShowAds()               headsoccer$25.smali:40
+ * native  → headsoccer.ShowAdver(int)                    static, headsoccer.smali:3222
+ *   → te.handler.post(headsoccer$21)  ───────────────────► UI thread
+ *     → headsoccer$21.run() → te.ShowAds()               headsoccer$21.smali
  * ```
  *
  * Shipped body, in order:
- * 1. `if (SDK_INT < 14)` → queue `headsoccer$32` → `SuccessAds(0)` (the "too old / failed" path)
- * 2. `if (!myIncent.isAdReadyToDisplay())` → queue `headsoccer$31` → `SuccessAds(0)` (no-ad path)
- * 3. otherwise → queue `headsoccer$26` → `SuccessAds(1)`, set the three `m_b*` flags, then
- *    `myIncent.show(ctx, $30, $28, $27, $29)` — five AppLovin listeners.
+ * 1. `if (mRewardedAd != null)` → queue `headsoccer$26` → `SuccessAds(1)`, set
+ *    `m_bRewardOK = false`, `m_bVideoCompleted = false`, `m_bShowAdver = true`, then
+ *    `rewardedAd.setFullScreenContentCallback($27)` and
+ *    `rewardedAd.show(this, $28)` — AdMob full-screen callback + earned-reward listener.
+ * 2. otherwise (no loaded ad) → `m_bShowAdver = false`, queue `headsoccer$29` →
+ *    `SuccessAds(0)`, then `LoadRewardedAd()`.
  *
- * The reward only lands via the **AppLovin callbacks**:
- * * `headsoccer$28.videoPlaybackEnded(...)` → `m_bVideoCompleted = p4`
- * * `headsoccer$29.userRewardVerified(...)` → logs only; `validationRequestFailed` clears the flag
- * * `headsoccer$27.adHidden(...)` → **the only grant site**:
+ * The reward only lands via the **AdMob callbacks**:
+ * * `headsoccer$28.onUserEarnedReward(...)` → `m_bRewardOK = true`, `m_bVideoCompleted = true`
+ * * `headsoccer$27.onAdDismissedFullScreenContent()` → **the only grant site**:
  *   ```
- *   if (m_bRewardOK && m_bVideoCompleted) {
- *       Log.d("applovin", "applovin reward ok!!");
- *       mGLView.queueEvent(headsoccer$27$1);      // → access$19 → RewardOK()   [native]
- *   }
- *   m_bVideoCompleted = false;  m_bRewardOK = false;
+ *   m_bShowAdver = false;
+ *   if (m_bRewardOK) mGLView.queueEvent(headsoccer$27$1);   // → RewardOK()   [native]
+ *   m_bRewardOK = false;  m_bVideoCompleted = false;
+ *   hideSystemUI();  LoadRewardedAd();
  *   ```
  *
- * and `headsoccer$27$1.run()` is literally just
- * `invoke-static { this$0 }, headsoccer.access$19(...)` → `RewardOK()`.
+ * and `headsoccer$27$1.run()` is just `headsoccer.RewardOK()`. `onAdFailedToShowFullScreenContent`
+ * only clears the flags and reloads.
  *
- * The fingerprint is built from the AppLovin/GL-thread calls, which occur in this exact trio
- * **only** in `ShowAds()`. `playRewarded(View)` (smali 6579) also touches `myIncent`, but it
- * passes **two null listeners** to a 4-arg `show(...)` overload and never calls `queueEvent`,
- * so the 3-filter combination cannot match it.
+ * The fingerprint is built from the AdMob/GL-thread calls, which occur in this exact trio
+ * **only** in `ShowAds()`. Other classes call `setFullScreenContentCallback` on
+ * InterstitialAd/AppOpenAd, and Unity has its own `RewardedAd`; pinning
+ * `com.google.android.gms.ads.rewarded.RewardedAd` + the app class keeps the match unique.
  */
 object ShowAdsFingerprint : Fingerprint(
     returnType = "V",
@@ -59,11 +62,11 @@ object ShowAdsFingerprint : Fingerprint(
     name = "ShowAds",
     filters = listOf(
         methodCall(
-            definingClass = "Lcom/applovin/adview/AppLovinIncentivizedInterstitial;",
-            name = "isAdReadyToDisplay"
+            definingClass = "Lcom/google/android/gms/ads/rewarded/RewardedAd;",
+            name = "setFullScreenContentCallback"
         ),
         methodCall(
-            definingClass = "Lcom/applovin/adview/AppLovinIncentivizedInterstitial;",
+            definingClass = "Lcom/google/android/gms/ads/rewarded/RewardedAd;",
             name = "show"
         ),
         methodCall(

@@ -6,16 +6,16 @@ import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.util.returnEarly
 
 /**
- * Head Soccer 7.1.6 · **Free Store** — every shop purchase grants instantly.
+ * Head Soccer 7.1.8 · **Free Store** — every shop purchase grants instantly.
  *
- * cocos2d-x (`com.dnddream.headsoccer.android`, versionCode 345). **DEX-only — no native edit
- * at all.** Everything below lives in the single 7.5 MB `classes.dex`; `libgame.so` is left
- * byte-identical.
+ * cocos2d-x (`com.dnddream.headsoccer.android`, versionCode 352). **DEX-only — no native edit
+ * at all.** Everything below lives in the base APK's DEX (`headsoccer` is in `classes.dex`);
+ * `libgame.so` is left byte-identical.
  *
  * ============================================================================
  * WHAT IS FORCED
  * ============================================================================
- * `headsoccer.onBuyPoint(int)V` — smali `headsoccer.smali:4771`, `.registers 8` — has its body
+ * `headsoccer.onBuyPoint(int)V` — smali `headsoccer.smali:4004`, `.registers 4` — has its body
  * replaced. It is the **only** funnel every store row reaches:
  *
  * ```
@@ -28,9 +28,9 @@ import app.morphe.util.returnEarly
  * The replacement reproduces the game's own grant chain instead of launching Play Billing:
  *
  * ```
- * headsoccer.billingCompleteIAP(int)              // points + presents   → headsoccer$45 → headsoccer$45$1
- * headsoccer.billingCompleteIAPNonConsumable(ii)  // the 4 characters    → headsoccer$44 → headsoccer$44$1
- *   └─ both end at  access$29 → headsoccer.PurchasedFunc(int)   (private native, headsoccer.smali:835)
+ * headsoccer.billingCompleteIAP(int)              // points + presents   → headsoccer$44
+ * headsoccer.billingCompleteIAPNonConsumable(ii)  // the 4 characters    → headsoccer$43
+ *   └─ both end at  access$2800 → headsoccer.PurchasedFunc(int)  (private native)
  *      → native Store::Purchased() → MenuLayer::SaveMyPoint() / SelectLayer::UnlockCharacter()
  *        → SavePlayerUnlock()   ← writes the game's OWN save file
  * ```
@@ -62,14 +62,14 @@ import app.morphe.util.returnEarly
  *
  * **Do NOT collapse this to a single unconditional call.** `targets.md` T-01 suggests a uniform
  * `billingCompleteIAPNonConsumable(i, 0)` because its second parameter `p1`/`iType` is declared
- * and never read (verified: `headsoccer$44.<init>(I)V` stores only `val$iIndex`). That observation
+ * and never read (verified: `headsoccer$43.<init>(I)V` stores only `val$iIndex`). That observation
  * is **correct but misleading** — the two entry points are NOT interchangeable in the other
  * direction:
  *
- * * `headsoccer$44$1.run()` (behind `…NonConsumable`) compares the resolved SKU against
+ * * `headsoccer$43.run()` (behind `…NonConsumable`) compares the resolved SKU against
  *   **CHAR_DEVIL / CHAR_MONK / CHAR_HENOS / CHAR_NORTHKOREA only**, and falls through to
  *   `return-void` when none matches — so handing it a point pack grants **nothing**.
- * * `headsoccer$45$1.run()` (behind `billingCompleteIAP`) matches POINT1-6 + PRESENT1-3 and
+ * * `headsoccer$44.run()` (behind `billingCompleteIAP`) matches POINT1-6 + PRESENT1-3 and
  *   likewise falls through for the characters — handing it a character grants **nothing**.
  *
  * Hence the patch **dispatches on `MySku.isNonConsumableType(int)`** (smali `MySku.smali:125`,
@@ -102,8 +102,8 @@ import app.morphe.util.returnEarly
  * ============================================================================
  * REGISTER BUDGET & INJECTION SAFETY
  * ============================================================================
- * `onBuyPoint` has `.registers 8` and **no exception table** (verified: zero `.catch` entries in
- * smali 4771-4935). Locals `v0…v5` are free; `p0` (this `headsoccer`) and `p1` (the native tag)
+ * `onBuyPoint` has `.registers 4` and **no exception table** (verified: zero `.catch` entries in
+ * smali 4004-4090). Locals `v0…v1` are free; `p0` (this `headsoccer`) and `p1` (the native tag)
  * are read-only inputs. The injected block uses `v0` (ordinal) and `v1` (boolean/scratch) only —
  * comfortably inside the 4-bit `35c` range.
  *
@@ -127,9 +127,9 @@ import app.morphe.util.returnEarly
  * names and therefore not guaranteed the way third-party names are.
  *
  * If a future build renames them the fingerprint fails **loudly and writes nothing**, which is the
- * intended failure mode. When re-deriving, the version-independent anchor is the constant prologue
- * `const/16 v5, 0xc` + `const/16 v4, 0xb` + `const/4 v3, 0x7` + `const/4 v1, 0x6` + `const/4 v2,
- * 0x0` (smali 4776-4784) — that five-constant sequence exists in exactly one method in the APK.
+ * intended failure mode. When re-deriving, the version-independent anchors are the two callees
+ * themselves (`MySku.getSkuByIndex(int)` + `MyBillingImpl.launchBillingFlow(...)`) plus the
+ * `MySku.isNonConsumableType(int)` predicate — all three exist only in this flow.
  *
  * `VerifyPurchaseFingerprint` is built on `android.text.TextUtils.isEmpty` (never obfuscated)
  * plus two same-class calls that co-occur in `verifyPurchase` and nowhere else. The
@@ -167,17 +167,17 @@ import app.morphe.util.returnEarly
  * ============================================================================
  * DO NOT
  * ============================================================================
- * * **Never bump `versionCode` (345).** The OBB is named
- *   `main.342.com.dnddream.headsoccer.android.obb` — cocos2d-x resolves the expansion as
- *   `%s/main.%d.%s.obb`, so a bump makes the OBB unfindable and the game unplayable on any device
- *   holding the official OBB.
+ * * **Never bump `versionCode` (352).** cocos2d-x still resolves an expansion OBB by the
+ *   `main.<versionCode>.com.dnddream.headsoccer.android.obb` name, so a bump can make the OBB
+ *   unfindable on devices holding the official expansion. 7.1.8 bundles its assets in the base
+ *   APK and ships no OBB, but the version code is not ours to change.
  * * Do **not** replace the whole mapping with one unconditional `billingCompleteIAP*` call — see
  *   "THE INDEX MAPPING IS NOT OPTIONAL". The two grant entry points silently no-op for the wrong
  *   SKU class, so this produces a patch that appears applied and grants only some items.
- * * Do **not** stub `headsoccer$44.run()` / `headsoccer$45.run()` themselves. They are the grant
- *   funnels: `run()` → `handler.post($44$1/$45$1)` → `access$29` → `PurchasedFunc`. Stubbing them
- *   deletes the entire purchase pipeline. (Head Basketball's `FreeStorePatch.kt` KDoc records the
- *   same trap for its `CompleteIAP`.)
+ * * Do **not** stub `headsoccer$44.run()` / `headsoccer$43.run()` themselves. They are the grant
+ *   funnels: `run()` → `access$2800` → `PurchasedFunc`. Stubbing them deletes the entire purchase
+ *   pipeline. (Head Basketball's `FreeStorePatch.kt` KDoc records the same trap for its
+ *   `CompleteIAP`.)
  * * Do **not** stub `PurchasedFunc` or `Store::Purchased` — that IS the grant, and it is what makes
  *   the unlock persist.
  * * Do not touch `assets/billing.properties` (50 B: `version=8.0.0 / client=billing /
@@ -192,8 +192,9 @@ import app.morphe.util.returnEarly
  *   a `BillingClient`, and faking a catalog would additionally need `acknowledge`/`consume` to keep
  *   the real service from rejecting the fake token.
  *
- * Measured anchors: `analysis/head-soccer/notes/targets.md` §T-01, §T-02, §T-07 and
- * `analysis/head-soccer/notes/purchase-flow.md` §1.
+ * Measured anchors (7.1.8): `analysis/head-soccer/java/sources/com/dnddream/headsoccer/android/`
+ * (`headsoccer.java`, `MySku.java`, `MyBillingImpl.java`, `MySecurity.java`) and
+ * `analysis/head-soccer/smali/classes1/.../headsoccer.smali:4004`.
  */
 @Suppress("unused")
 val headSoccerFreeStorePatch = bytecodePatch(
@@ -250,7 +251,7 @@ val headSoccerFreeStorePatch = bytecodePatch(
             move-result v1
             if-eqz v1, :hs_consumable
 
-            # iType (2nd arg) is declared and never read by headsoccer$44.<init>(I)V,
+            # iType (2nd arg) is declared and never read by headsoccer$43.<init>(I)V,
             # so 0 is the correct "unknown type" value here.
             const/4 v1, 0x0
             invoke-static {v0, v1}, Lcom/dnddream/headsoccer/android/headsoccer;->billingCompleteIAPNonConsumable(II)V
