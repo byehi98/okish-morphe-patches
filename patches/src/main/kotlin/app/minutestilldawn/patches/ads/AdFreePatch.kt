@@ -111,7 +111,7 @@ val adFreePatch = bytecodePatch(
         fun method(name: String, vararg params: String): MutableMethod =
             pluginClass.methods.firstOrNull {
                 it.name == name && it.parameterTypes.map(CharSequence::toString) == params.toList()
-            } ?: error("MaxUnityPlugin.$name(${params.joinToString()}) not found — ad patch out of sync with 8.6")
+            } ?: error("MaxUnityPlugin.$name(${params.joinToString()}) not found — ad patch out of sync with 8.7")
 
         // ── One-shot latch field ───────────────────────────────────────────────
         // Timestamp (SystemClock.elapsedRealtime) of the last payout we emitted.
@@ -263,7 +263,7 @@ val adFreePatch = bytecodePatch(
         """.trimIndent()
 
         // Rewarded formats ALSO emit the full display + reward + hidden sequence here, not just
-        // "loaded". 8.6 is a Unity IL2CPP title whose MAX C# wrapper never calls `showRewardedAd`
+        // "loaded". 8.7 is a Unity IL2CPP title whose MAX C# wrapper never calls `showRewardedAd`
         // because the game's own config ships an empty `MaxAndroidRADId`
         // (`E Unity: No MAX Ads Ad Unit ID specified for: show rewarded ad`), and the guard lives
         // in C# where DEX cannot reach it. What *does* reach Java on every RSB click is the

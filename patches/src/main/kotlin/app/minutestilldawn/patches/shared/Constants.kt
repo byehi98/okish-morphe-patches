@@ -12,8 +12,8 @@ object Constants {
         apkFileType = ApkFileType.XAPK,
         appIconColor = 0x1A1A2E,
         targets = listOf(
-            // APKPure XAPK: base APK + config.arm64_v8a, versionCode 1093, Unity IL2CPP.
-            AppTarget(version = "8.6"),
+            // APKPure XAPK: base APK + config.arm64_v8a, versionCode 1102, Unity IL2CPP.
+            AppTarget(version = "8.7"),
         )
     )
 }

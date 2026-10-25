@@ -6,7 +6,7 @@ import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 
 /**
- * 20 Minutes Till Dawn 8.6 (versionCode 1093) — PairIP fingerprints.
+ * 20 Minutes Till Dawn 8.7 (versionCode 1102) — PairIP fingerprints.
  *
  * All targets verified present in the APKPure base APK:
  *   com/pairip/StartupLauncher; startupProgramName = "8jsM3WGcz3HmEwH0"
