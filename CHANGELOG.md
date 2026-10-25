@@ -1,3 +1,9 @@
+## [1.46.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.1-dev.2...v1.46.1-dev.3) (2026-10-25)
+
+### 🚀 Updated App Support
+
+* **headsoccer:** update target version to 7.1.9 ([fe25029](https://github.com/byehi98/okish-morphe-patches/commit/fe250293908c64b41a36b8e0111bd7b1f37c3896))
+
 ## [1.46.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.1-dev.1...v1.46.1-dev.2) (2026-10-25)
 
 ### 🚀 Updated App Support
