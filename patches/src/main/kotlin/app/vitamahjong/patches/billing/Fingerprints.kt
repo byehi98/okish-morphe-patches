@@ -38,3 +38,31 @@ object RestorePurchasesFingerprint : Fingerprint(
         ),
     )
 )
+
+/**
+ * `c0.run()V` — the Runnable posted by `queryAllPurchases`.
+ *
+ * `c0` is the R8 synthetic Runnable created for `queryAllPurchases`; its
+ * `run()` calls the synthetic `PurchaseModuleBridge.d()`, which builds the
+ * real `PurchaseModuleBridge$2` listener and asks Play Billing for owned
+ * purchases. Patching `run()` (not `queryAllPurchases`) preserves the stock
+ * `UnityUtil.runOnUiThread` hand-off, so the synthetic purchase list is still
+ * delivered on the UI thread exactly like a real restore callback.
+ *
+ * The class name is R8-generated and therefore version-pinned. If a future
+ * build renames it, this fingerprint fails loudly instead of silently
+ * mispatching.
+ */
+object RestoreRunnableFingerprint : Fingerprint(
+    definingClass = "Lcom/learnings/unity/unikit/module/c0;",
+    name = "run",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+    parameters = listOf(),
+    filters = listOf(
+        methodCall(
+            definingClass = "Lcom/learnings/unity/unikit/module/PurchaseModuleBridge;",
+            name = "d",
+        ),
+    )
+)
