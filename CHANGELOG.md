@@ -1,3 +1,9 @@
+## [1.46.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0...v1.46.1-dev.1) (2026-10-25)
+
+### 🐛 Bug Fixes
+
+* **vitamahjong:** defer restore purchase callback to UI thread ([01b4349](https://github.com/byehi98/okish-morphe-patches/commit/01b4349ba122e120c821c2ce54dec1a4a7544757))
+
 ## [1.46.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.45.1...v1.46.0) (2026-10-23)
 
 ### ✨ New Features
