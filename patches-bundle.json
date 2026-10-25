@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-25T04:09:55",
-  "description": "## [1.46.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0...v1.46.1-dev.1) (2026-10-25)\n\n### 🐛 Bug Fixes\n\n* **vitamahjong:** defer restore purchase callback to UI thread ([01b4349](https://github.com/byehi98/okish-morphe-patches/commit/01b4349ba122e120c821c2ce54dec1a4a7544757))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.46.1-dev.1/patches-1.46.1-dev.1.mpp",
+  "created_at": "2026-10-25T05:28:04",
+  "description": "## [1.46.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.1-dev.1...v1.46.1-dev.2) (2026-10-25)\n\n### 🚀 Updated App Support\n\n* **minutestilldawn:** update patches for version 8.7 ([88682f9](https://github.com/byehi98/okish-morphe-patches/commit/88682f9f9513f8be2544a22cb66bd594372396dd))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.46.1-dev.2/patches-1.46.1-dev.2.mpp",
   "signature_download_url": "",
-  "version": "1.46.1-dev.1"
+  "version": "1.46.1-dev.2"
 }
