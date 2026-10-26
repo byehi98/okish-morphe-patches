@@ -6,14 +6,14 @@ import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
 // ============================================================================
-// Vita Mahjong 3.43.0 — Learnings purchase bridge (`classes8`).
+// Vita Mahjong — Learnings purchase bridge (`classes8`).
 //
 // `com.learnings.unity.unikit.module.PurchaseModuleBridge` is called from Unity
 // C# by exact class/method name, so these descriptors are NOT obfuscated:
-//   smali/classes8/.../PurchaseModuleBridge.smali:170  b(String,String)V
-//   smali/classes8/.../PurchaseModuleBridge.smali:696  queryAllPurchases()V
-//   smali/classes8/.../PurchaseModuleBridge$1.smali     onSuccess(PurchaseData)V
-//   smali/classes8/.../PurchaseModuleBridge$2.smali     onSuccess(List)V
+//   smali/classes8/.../PurchaseModuleBridge.smali     b(String,String)V
+//   smali/classes8/.../PurchaseModuleBridge.smali     queryAllPurchases()V
+//   smali/classes8/.../PurchaseModuleBridge$1.smali   onSuccess(PurchaseData)V
+//   smali/classes8/.../PurchaseModuleBridge$2.smali   onSuccess(List)V
 // ============================================================================
 
 /**

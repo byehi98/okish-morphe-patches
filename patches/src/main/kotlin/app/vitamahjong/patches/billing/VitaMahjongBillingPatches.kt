@@ -9,7 +9,7 @@ import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
 
 /**
- * Vita Mahjong — Restore Purchases (3.43.0 / versionCode 1917).
+ * Vita Mahjong — Restore Purchases.
  *
  * `PurchaseModuleBridge.queryAllPurchases()V` normally logs, then posts the R8
  * synthetic Runnable `c0` through `UnityUtil.runOnUiThread`. `c0.run()` builds

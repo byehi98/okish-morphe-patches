@@ -6,7 +6,7 @@ import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
 // ============================================================================
-// Vita Mahjong 3.43.0 — MEeVii ad SDK + Learnings Unity bridge.
+// Vita Mahjong — MEeVii ad SDK + Learnings Unity bridge.
 //
 // `Lvd/a` / `Lsd/a` / `Lqd/a` / `Lkd/n` are R8-obfuscated MEeVii descriptors
 // (JADX renames them RewardLoadApi / InterLoadApi / BaseLoadStrategy /
@@ -15,13 +15,13 @@ import com.android.tools.smali.dexlib2.AccessFlags
 // strings) rather than on the short method names alone.
 //
 // All bodies were read from smali before writing:
-//   smali/classes6/vd/a.smali:192   rewarded show()
-//   smali/classes6/sd/a.smali:166   interstitial show()
-//   smali/classes6/qd/a.smali:335   g()Lyd/r placement id
-//   smali/classes6/qd/a.smali:377   h()Lyd/i
-//   smali/classes6/kd/n.smali:1901  o(String,String,String)Z  isReady
-//   smali/classes6/kd/n.smali:2027  p(String)Z                isValid
-//   smali/classes8/.../AdModuleBridge.smali:1835 showBanner(...)V
+//   smali/classes6/vd/a.smali        rewarded show()
+//   smali/classes6/sd/a.smali        interstitial show()
+//   smali/classes6/qd/a.smali        g()Lyd/r placement id
+//   smali/classes6/qd/a.smali        h()Lyd/i
+//   smali/classes6/kd/n.smali        o(String,String,String)Z  isReady
+//   smali/classes6/kd/n.smali        p(String)Z                isValid
+//   smali/classes8/.../AdModuleBridge.smali  showBanner(...)V
 // ============================================================================
 
 /**

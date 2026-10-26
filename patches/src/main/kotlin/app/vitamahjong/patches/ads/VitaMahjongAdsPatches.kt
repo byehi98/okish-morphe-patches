@@ -11,7 +11,7 @@ import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
 
 /**
- * Vita Mahjong — Remove Ads (3.43.0 / versionCode 1917).
+ * Vita Mahjong — Remove Ads.
  *
  * One toggle covering all ad surfaces:
  *
