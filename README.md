@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.46.1-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.46.1-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;114 patches total
+> **[v1.47.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;117 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -535,6 +535,23 @@ Direct URL:
 |----------|----------------|-----------|
 | [Lumina PairIP License Bypass](#lumina-pairip-license-bypass) | Disables the PairIP license check (Play licensing service validation + signed-response verification + paywall/error dialog + forced System.exit). Required for patched APKs — the original check fails on any non-Play signature and force-closes the app. |  |
 | [Lumina Premium](#lumina-premium) | Unlocks all premium wallpapers and categories. |  |
+
+</details>
+
+<details>
+<summary>📦 Magic Survival&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 0.9941 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Magic Survival Free Store](#magic-survival-free-store) | Grants every in-app purchase for free: tapping Buy fabricates a successful Google Play purchase (remove-ad, gem packs) and feeds it through the billing listener without opening the payment dialog, and granted entitlements are restored on every launch. |  |
+| [Magic Survival Instant Rewarded Rewards](#magic-survival-instant-rewarded-rewards) | Grants rewarded-ad rewards instantly on tap without watching an ad: the rewarded ad reports ready immediately and show() fires the reward and close callbacks synchronously. |  |
+| [Magic Survival Remove Ads](#magic-survival-remove-ads) | Removes interstitial, app-open and banner ads: nothing is ever loaded or displayed, and any show call resolves the game's ad callbacks instantly so the flow never stalls. |  |
 
 </details>
 

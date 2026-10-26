@@ -1,3 +1,9 @@
+## [1.47.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.1-dev.4...v1.47.0-dev.1) (2026-10-26)
+
+### ✨ New Features
+
+* **magicsurvival:** add ad removal and free store patches ([a24264c](https://github.com/byehi98/okish-morphe-patches/commit/a24264c7113fdb0f6d74e388b516c3607b02b068))
+
 ## [1.46.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.1-dev.3...v1.46.1-dev.4) (2026-10-26)
 
 ### 🚀 Updated App Support
