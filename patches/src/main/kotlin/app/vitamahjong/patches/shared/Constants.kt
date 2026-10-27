@@ -8,9 +8,9 @@ object Constants {
     /**
      * Vita Mahjong.
      *
-     * Shipped as an APKM: base APK (all DEX files) + `split_config.arm64_v8a`
-     * and `split_config.armeabi_v7a` splits (native libraries). The base APK
-     * alone cannot install/run, so the bundle must be fed to morphe-cli as-is.
+     * Shipped as an XAPK/APKM bundle: base APK (all DEX files) plus a native
+     * split (`config.armeabi_v7a` for 3.44.1). The base APK alone cannot
+     * install/run, so the bundle must be fed to morphe-cli as-is.
      *
      * The ad and billing targets patched here are Java-only and independent of
      * the IL2CPP/C# layer. No native/IL2CPP patch is attempted: the
@@ -20,9 +20,9 @@ object Constants {
     val COMPATIBILITY_VITA_MAHJONG = Compatibility(
         name = "Vita Mahjong",
         packageName = "com.vitastudio.mahjong",
-        apkFileType = ApkFileType.APKM,
+        apkFileType = ApkFileType.XAPK,
         targets = listOf(
-            AppTarget(version = "3.44.0")
+            AppTarget(version = "3.44.1")
         )
     )
 }
