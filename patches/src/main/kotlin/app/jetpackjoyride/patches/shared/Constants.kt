@@ -8,10 +8,10 @@ object Constants {
     val COMPATIBILITY_JETPACKJOYRIDE = Compatibility(
         name = "Jetpack Joyride",
         packageName = "com.halfbrick.jetpackjoyride",
-        apkFileType = ApkFileType.XAPK,
+        apkFileType = ApkFileType.APKM,
         appIconColor = 0xF57F17,
         targets = listOf(
-            AppTarget(version = "1.104.1")
+            AppTarget(version = "1.104.2")
         )
     )
 }
