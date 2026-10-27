@@ -1,3 +1,9 @@
+## [1.47.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.3...v1.47.0-dev.4) (2026-10-27)
+
+### 🚀 Updated App Support
+
+* **vitamahjong:** update patches for version 3.44.1 ([29aedd5](https://github.com/byehi98/okish-morphe-patches/commit/29aedd52582db49a09771b0dc964ef9a425c36e8))
+
 ## [1.47.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.2...v1.47.0-dev.3) (2026-10-27)
 
 ### 🚀 Updated App Support
