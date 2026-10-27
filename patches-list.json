@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.47.0-dev.2",
+  "version": "1.47.0-dev.3",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -773,6 +773,32 @@
       "options": []
     },
     {
+      "name": "Free Ad Rewards",
+      "description": "Every \"watch an ad\" offer in Jetpack Joyride pays out instantly — the reward is claimed without playing any video, with no countdown and no network round trip, and the offer stays repeatable. Works offline.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.halfbrick.jetpackjoyride",
+          "name": "Jetpack Joyride",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#F57F17",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "1.104.2",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Free IAP",
       "description": "Everything in the shop is free. Tap \"Buy\" on any item — remove ads, coin packs, or anything else — and you get it right away. No Google Play payment window opens and you are never charged. If something goes wrong you will just see a \"purchase failed\" message; the game keeps working as normal.",
       "default": true,
@@ -1415,12 +1441,12 @@
           "packageName": "com.halfbrick.jetpackjoyride",
           "name": "Jetpack Joyride",
           "description": null,
-          "apkFileType": "XAPK",
+          "apkFileType": "APKM",
           "appIconColor": "#F57F17",
           "signatures": null,
           "targets": [
             {
-              "version": "1.104.1",
+              "version": "1.104.2",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -2127,6 +2153,32 @@
           "targets": [
             {
               "version": "3.18.0",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Remove Ads",
+      "description": "Stops the full-screen interstitial adverts Jetpack Joyride shows between runs. The game's own \"no ad available\" path is replayed, so the run continues immediately instead of freezing or waiting on a skipped advert.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.halfbrick.jetpackjoyride",
+          "name": "Jetpack Joyride",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#F57F17",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "1.104.2",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,

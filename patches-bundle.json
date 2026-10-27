@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-27T02:02:20",
-  "description": "## [1.47.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.1...v1.47.0-dev.2) (2026-10-27)\n\n### 🚀 Updated App Support\n\n* **headsoccer:** update target version to 7.1.10 ([cb52899](https://github.com/byehi98/okish-morphe-patches/commit/cb52899d5930bc66645ca2e2527b02f0c5c60732))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.47.0-dev.2/patches-1.47.0-dev.2.mpp",
+  "created_at": "2026-10-27T04:23:46",
+  "description": "## [1.47.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.2...v1.47.0-dev.3) (2026-10-27)\n\n### 🚀 Updated App Support\n\n* **jetpackjoyride:** add free ad rewards and remove ads patches ([00d4697](https://github.com/byehi98/okish-morphe-patches/commit/00d46977725afa313fc3d118d501bdb1235092f9))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.47.0-dev.3/patches-1.47.0-dev.3.mpp",
   "signature_download_url": "",
-  "version": "1.47.0-dev.2"
+  "version": "1.47.0-dev.3"
 }

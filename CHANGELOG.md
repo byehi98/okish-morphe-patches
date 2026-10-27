@@ -1,3 +1,9 @@
+## [1.47.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.2...v1.47.0-dev.3) (2026-10-27)
+
+### 🚀 Updated App Support
+
+* **jetpackjoyride:** add free ad rewards and remove ads patches ([00d4697](https://github.com/byehi98/okish-morphe-patches/commit/00d46977725afa313fc3d118d501bdb1235092f9))
+
 ## [1.47.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.1...v1.47.0-dev.2) (2026-10-27)
 
 ### 🚀 Updated App Support

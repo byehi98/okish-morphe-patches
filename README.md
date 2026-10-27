@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.47.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;117 patches total
+> **[v1.47.0-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;119 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -301,6 +301,23 @@ Direct URL:
 </details>
 
 <details>
+<summary>📦 Jetpack Joyride&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.104.2 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | Every "watch an ad" offer in Jetpack Joyride pays out instantly — the reward is claimed without playing any video, with no countdown and no network round trip, and the offer stays repeatable. Works offline. |  |
+| [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
+| [Remove Ads](#remove-ads) | Stops the full-screen interstitial adverts Jetpack Joyride shows between runs. The game's own "no ad available" path is replayed, so the run continues immediately instead of freezing or waiting on a skipped advert. |  |
+
+</details>
+
+<details>
 <summary>📦 Fruit Ninja (Free)&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
 
@@ -488,21 +505,6 @@ Direct URL:
 | [Instant rewards](#instant-rewards) | Reward buttons (free revive, double coins) pay out instantly without playing any ad video (native libil2cpp.so patch). |  |
 | [Remove ads](#remove-ads) | Stops all interstitial/commercial-break ads between games (native libil2cpp.so patch, rewarded videos handled by the instant-rewards patch). |  |
 | [Unlimited coins](#unlimited-coins) | Coin save reads always return ~1.34 billion coins (native libil2cpp.so patch on Org.TotalCoins). |  |
-
-</details>
-
-<details>
-<summary>📦 Jetpack Joyride&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
-<br>
-
-**🎯 Supported versions:**
-
-| 1.104.1 |
-| :---: |
-
-| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
-|----------|----------------|-----------|
-| [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
 
 </details>
 
