@@ -1,3 +1,9 @@
+## [1.47.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.1...v1.47.0-dev.2) (2026-10-27)
+
+### 🚀 Updated App Support
+
+* **headsoccer:** update target version to 7.1.10 ([cb52899](https://github.com/byehi98/okish-morphe-patches/commit/cb52899d5930bc66645ca2e2527b02f0c5c60732))
+
 ## [1.47.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.1-dev.4...v1.47.0-dev.1) (2026-10-26)
 
 ### ✨ New Features
