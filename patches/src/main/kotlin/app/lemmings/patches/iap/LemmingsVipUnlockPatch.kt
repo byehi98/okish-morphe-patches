@@ -7,10 +7,10 @@ import java.io.File
 import java.io.RandomAccessFile
 
 /**
- * Lemmings: Puzzle Survival 9.4.4 · **VIP Unlock** — VIP reads as owned/active
- * client-side without purchase. Companion to `lemmingsFreeStorePatch`
- * (`LemmingsFreeStorePatch.kt` — store grant, sheet suppression and fail-popup
- * kill in one entry): that covers the store grant funnel; THIS patch covers
+ * Lemmings: Puzzle Survival 9.5.0 · **VIP Unlock** — VIP reads as owned/active
+ * client-side without purchase. Companion to `lemmingsNativeGrantHookPatch`
+ * (`LemmingsNativeGrantHookPatch.kt` — store grant via the game's own reward
+ * chain): that covers the store grant funnel; THIS patch covers
  * the subscription/VIP flag.
  *
  * Unity IL2CPP title: every VIP UI read in the game funnels through ONE
@@ -26,10 +26,12 @@ import java.io.RandomAccessFile
  *   return 1 (early-true path); else `Data.IsSubscriptionActive` on the local
  *   save field (`this+0x38`) → true ⇒ return 1; else tail-calls the same check
  *   on the Nebula/server-override field (`this+0x40`).
- * * arm64 RVA **0x01BFA594** · file offset **0x1BF6594**
- *   (`file_off = RVA − 0x4000`, PH2 RX bias — notes §"ELF RVA→file-offset").
- * * Entry bytes (shipped lib, md5 `de8740995c925d69e925f30b5c9f1699`,
- *   re-verified with `xxd` before writing):
+ * * file offset **0x1C646B0** (Cpp2IL 9.5.0 `AddressAttribute` value == file
+ *   offset directly — this build has NO `RVA − 0x4000` bias; 9.4.4 was
+ *   `0x1BF6594`).
+ * * Entry bytes (shipped lib, md5 `502bd49e80824697bf376a2f0e4c8bb1`,
+ *   anchor re-verified by exact-byte search + Cpp2IL declaration — IDENTICAL
+ *   to 9.4.4):
  *   `FE 57 BE A9  F4 4F 01 A9  F3 03 02 2A  F4 03 01 2A`
  *   (`stp x30,x21,[sp,#-32]! ; stp x20,x19,[sp,#16] ; mov w19,w2 ; mov w20,w1`).
  * * Patch: word0 `FE57BEA9` → `20008052` (`mov w0,#1`), word1 `F44F01A9` →
@@ -48,7 +50,8 @@ import java.io.RandomAccessFile
  *   PRIMARY (disjoint offsets, 100 bytes apart — no overlap, no interaction):
  *   either one alone is sufficient per the notes; both applied is belt and
  *   suspenders against a partially-drifted rebuild.
- * * arm64 RVA **0x01BFA5F8** · file offset **0x1BF65F8**.
+ * * file offset **0x1C64714** (Cpp2IL 9.5.0; 9.4.4 was `0x1BF65F8` — the two
+ *   sites keep their `0x64`/100-byte adjacency, disjoint, no interaction).
  * * Entry bytes (xxd-verified):
  *   `FE 7F BF A9  E1 23 00 91  ...`
  *   (`stp x30,xzr,[sp,#-16]! ; add x1,sp,#8` — the 3rd word is the
@@ -103,11 +106,11 @@ val lemmingsVipUnlockPatch = rawResourcePatch(
 }
 
 /** PRIMARY native unlock site (TARGET 1 — gate → TRUE at entry). */
-private const val VIP_PRIMARY_OFFSET = 0x1BF6594L
+private const val VIP_PRIMARY_OFFSET = 0x1C646B0L
 private const val VIP_PRIMARY_ORIG = "FE57BEA9F44F01A9F303022AF403012A"
 
 /** BACKUP native unlock site (TARGET 2 — trial shortcut → TRUE at entry). */
-private const val VIP_BACKUP_OFFSET = 0x1BF65F8L
+private const val VIP_BACKUP_OFFSET = 0x1C64714L
 private const val VIP_BACKUP_ORIG = "FE7FBFA9E1230091"
 
 /** `mov w0,#1 ; ret` — the compiler's own true-return idiom for these methods. */
