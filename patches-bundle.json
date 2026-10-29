@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-29T06:04:17",
-  "description": "## [1.47.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.6...v1.47.0-dev.7) (2026-10-29)\n\n### ✨ New Features\n\n* **lemmings:** update to 9.5.0 and add native grant hook ([e6cf9f8](https://github.com/byehi98/okish-morphe-patches/commit/e6cf9f827c1002f69171eb1b0c287434ed55b267))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.47.0-dev.7/patches-1.47.0-dev.7.mpp",
+  "created_at": "2026-10-29T06:18:06",
+  "description": "## [1.47.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.7...v1.47.0-dev.8) (2026-10-29)\n\n### 🚀 Updated App Support\n\n* **swampattack:** update target to 4.8.9.0 ([199dd49](https://github.com/byehi98/okish-morphe-patches/commit/199dd49d3eb83a30507cfad792f080fbc54a796f))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.47.0-dev.8/patches-1.47.0-dev.8.mpp",
   "signature_download_url": "",
-  "version": "1.47.0-dev.7"
+  "version": "1.47.0-dev.8"
 }

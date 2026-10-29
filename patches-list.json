@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.47.0-dev.7",
+  "version": "1.47.0-dev.8",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -943,12 +943,12 @@
           "packageName": "com.outfit7.movingeye.swampattack",
           "name": "Swamp Attack",
           "description": null,
-          "apkFileType": "XAPK",
+          "apkFileType": "APKM",
           "appIconColor": "#6D9B39",
           "signatures": null,
           "targets": [
             {
-              "version": "4.8.8.0",
+              "version": "4.8.9.0",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -1363,12 +1363,12 @@
           "packageName": "com.outfit7.movingeye.swampattack",
           "name": "Swamp Attack",
           "description": null,
-          "apkFileType": "XAPK",
+          "apkFileType": "APKM",
           "appIconColor": "#6D9B39",
           "signatures": null,
           "targets": [
             {
-              "version": "4.8.8.0",
+              "version": "4.8.9.0",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -2253,12 +2253,12 @@
           "packageName": "com.outfit7.movingeye.swampattack",
           "name": "Swamp Attack",
           "description": null,
-          "apkFileType": "XAPK",
+          "apkFileType": "APKM",
           "appIconColor": "#6D9B39",
           "signatures": null,
           "targets": [
             {
-              "version": "4.8.8.0",
+              "version": "4.8.9.0",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,

@@ -1,3 +1,9 @@
+## [1.47.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.7...v1.47.0-dev.8) (2026-10-29)
+
+### 🚀 Updated App Support
+
+* **swampattack:** update target to 4.8.9.0 ([199dd49](https://github.com/byehi98/okish-morphe-patches/commit/199dd49d3eb83a30507cfad792f080fbc54a796f))
+
 ## [1.47.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.6...v1.47.0-dev.7) (2026-10-29)
 
 ### ✨ New Features
