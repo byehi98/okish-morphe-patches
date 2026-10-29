@@ -1,3 +1,87 @@
+## [1.47.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.9...v1.47.0-dev.10) (2026-10-29)
+
+### 🐛 Bug Fixes
+
+* **fruitninja:** support candidate anchor sets for multiple app builds ([b1e8e53](https://github.com/byehi98/okish-morphe-patches/commit/b1e8e534e238e71aed024a7d60f7b93b50214c83))
+
+## [1.47.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.8...v1.47.0-dev.9) (2026-10-29)
+
+### 🐛 Bug Fixes
+
+* **crossyroad:** update free store patch for v7.14.2 ([cfc3372](https://github.com/byehi98/okish-morphe-patches/commit/cfc337231eee56a4ca80762978b35cb4f35754b2))
+
+## [1.47.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.7...v1.47.0-dev.8) (2026-10-29)
+
+### 🚀 Updated App Support
+
+* **swampattack:** update target to 4.8.9.0 ([199dd49](https://github.com/byehi98/okish-morphe-patches/commit/199dd49d3eb83a30507cfad792f080fbc54a796f))
+
+## [1.47.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.6...v1.47.0-dev.7) (2026-10-29)
+
+### ✨ New Features
+
+* **lemmings:** update to 9.5.0 and add native grant hook ([e6cf9f8](https://github.com/byehi98/okish-morphe-patches/commit/e6cf9f827c1002f69171eb1b0c287434ed55b267))
+
+## [1.47.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.5...v1.47.0-dev.6) (2026-10-29)
+
+### ✨ New Features
+
+* **dtm:** add free IAP patches for 1.14.10 ([0b5f9e7](https://github.com/byehi98/okish-morphe-patches/commit/0b5f9e77d68528d76289554786d0d7af020db1c7))
+
+## [1.47.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.4...v1.47.0-dev.5) (2026-10-27)
+
+### 🚀 Updated App Support
+
+* **hillclimb:** update target version to 1.73.1 ([1625c0e](https://github.com/byehi98/okish-morphe-patches/commit/1625c0e7ae64d55b3ee902836dc3e17d3cff96cd))
+
+## [1.47.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.3...v1.47.0-dev.4) (2026-10-27)
+
+### 🚀 Updated App Support
+
+* **vitamahjong:** update patches for version 3.44.1 ([29aedd5](https://github.com/byehi98/okish-morphe-patches/commit/29aedd52582db49a09771b0dc964ef9a425c36e8))
+
+## [1.47.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.2...v1.47.0-dev.3) (2026-10-27)
+
+### 🚀 Updated App Support
+
+* **jetpackjoyride:** add free ad rewards and remove ads patches ([00d4697](https://github.com/byehi98/okish-morphe-patches/commit/00d46977725afa313fc3d118d501bdb1235092f9))
+
+## [1.47.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.1...v1.47.0-dev.2) (2026-10-27)
+
+### 🚀 Updated App Support
+
+* **headsoccer:** update target version to 7.1.10 ([cb52899](https://github.com/byehi98/okish-morphe-patches/commit/cb52899d5930bc66645ca2e2527b02f0c5c60732))
+
+## [1.47.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.1-dev.4...v1.47.0-dev.1) (2026-10-26)
+
+### ✨ New Features
+
+* **magicsurvival:** add ad removal and free store patches ([a24264c](https://github.com/byehi98/okish-morphe-patches/commit/a24264c7113fdb0f6d74e388b516c3607b02b068))
+
+## [1.46.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.1-dev.3...v1.46.1-dev.4) (2026-10-26)
+
+### 🚀 Updated App Support
+
+* **vita-mahjong:** update target version to 3.44.0 and APKM ([d603680](https://github.com/byehi98/okish-morphe-patches/commit/d603680a57435fa1388f9faf33dc9657cf52daa0))
+
+## [1.46.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.1-dev.2...v1.46.1-dev.3) (2026-10-25)
+
+### 🚀 Updated App Support
+
+* **headsoccer:** update target version to 7.1.9 ([fe25029](https://github.com/byehi98/okish-morphe-patches/commit/fe250293908c64b41a36b8e0111bd7b1f37c3896))
+
+## [1.46.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.1-dev.1...v1.46.1-dev.2) (2026-10-25)
+
+### 🚀 Updated App Support
+
+* **minutestilldawn:** update patches for version 8.7 ([88682f9](https://github.com/byehi98/okish-morphe-patches/commit/88682f9f9513f8be2544a22cb66bd594372396dd))
+
+## [1.46.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.46.0...v1.46.1-dev.1) (2026-10-25)
+
+### 🐛 Bug Fixes
+
+* **vitamahjong:** defer restore purchase callback to UI thread ([01b4349](https://github.com/byehi98/okish-morphe-patches/commit/01b4349ba122e120c821c2ce54dec1a4a7544757))
+
 ## [1.46.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.45.1...v1.46.0) (2026-10-23)
 
 ### ✨ New Features

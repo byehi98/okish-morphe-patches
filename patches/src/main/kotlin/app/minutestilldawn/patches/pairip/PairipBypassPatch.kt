@@ -17,7 +17,7 @@ import com.android.tools.smali.dexlib2.util.FieldUtil
 /**
  * PairIP bypass — prerequisite for every other 20 Minutes Till Dawn patch.
  *
- * 20 Minutes Till Dawn 8.6 / 1093 ships Google's PairIP ("app protection"):
+ * 20 Minutes Till Dawn 8.7 / 1102 ships Google's PairIP ("app protection"):
  *
  *   AndroidManifest android:name="com.pairip.application.Application"
  *       extends com.safedk.android.SafeDKApplication
@@ -211,21 +211,52 @@ val pairipBypassPatch = bytecodePatch(
                 )
             }
 
-            // Targeted restore. A few of these fields shipped with a *literal* default and are
-            // consumed by ordinary AndroidX code, not by the PairIP VM — blanking them breaks
-            // real logic. `WorkSpecDao_Impl.getAllEligibleWorkSpecsForScheduling` reads
-            // `FGQmGo->KvtjQHrR` as a Room column name, so with "" every WorkManager launch dies:
-            //   IllegalArgumentException: column '' does not exist. Available columns: …,
-            //   input_merger_class_name, …
-            // Verified on-device 2026-10-22; the value below is the genuine original.
-            if (cls.type == "Lcom/unity3d/services/analytics/core/configuration/yzU/FGQmGo;") {
-                mutableCls.staticFields
-                    .firstOrNull { it.name == "KvtjQHrR" }
-                    ?.setInitialValue(
-                        MutableStringEncodedValue(
-                            ImmutableStringEncodedValue("input_merger_class_name")
+            // Targeted restores. R8 re-shuffles the pool class/field names on every build,
+            // so the values consumed by ordinary AndroidX code (not by the PairIP VM) must
+            // be re-mapped per version. Blanking these breaks real logic:
+            //
+            //   WorkSpecDao_Impl.getRecentlyCompletedWork() reads the `run_attempt_count`
+            //   column through XaivvuwuA->wzhRjA, and QueueEventDao_Impl.getEventsFromParams()
+            //   reads `params` through xpmjMmJpaeAPK->LTIUhCXiALq. With "" every cursor
+            //   lookup throws:
+            //     IllegalArgumentException: column '' does not exist. Available columns: …
+            //
+            //   AnalyticsHWSdk's SQLiteOpenHelper (`com/dobest/analyticshwsdk/c/d`) builds
+            //   every CREATE TABLE with luFkMTMuZpvz->bgkioDosd as the first column name.
+            //   It was a literal `_id` in 8.6; 8.7 moved it into the pool, so with "" the
+            //   SDK throws on init:
+            //     SQLiteException: AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY
+            //     … CREATE TABLE IF NOT EXISTS sessions ( INTEGER PRIMARY KEY autoincrement,…
+            //   and the Unity `Loading` coroutine dies, leaving the game on the loading screen.
+            //
+            // All names are confirmed by the literal reads in the 8.6 build at the same
+            // instruction positions (see analysis/minutestilldawn/notes/build.md).
+            listOf(
+                Triple(
+                    "Lcom/bykv/vk/openvk/preload/falconx/loader/nWuw/XaivvuwuA;",
+                    "wzhRjA",
+                    "run_attempt_count",
+                ),
+                Triple(
+                    "Lcom/bykv/vk/openvk/bg/bg/bg/bX/mGMm/xpmjMmJpaeAPK;",
+                    "LTIUhCXiALq",
+                    "params",
+                ),
+                Triple(
+                    "Lcom/ironsource/mediationsdk/adunit/data/rRSI/luFkMTMuZpvz;",
+                    "bgkioDosd",
+                    "_id",
+                ),
+            ).forEach { (owner, fieldName, value) ->
+                if (cls.type == owner) {
+                    mutableCls.staticFields
+                        .firstOrNull { it.name == fieldName }
+                        ?.setInitialValue(
+                            MutableStringEncodedValue(
+                                ImmutableStringEncodedValue(value)
+                            )
                         )
-                    )
+                }
             }
         }
     }

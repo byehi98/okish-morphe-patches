@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.46.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.46.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;114 patches total
+> **[v1.47.0-dev.10](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.0-dev.10)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;121 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -126,7 +126,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 8.6 |
+| 8.7 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -290,13 +290,49 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 7.1.8 |
+| 7.1.10 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Free Ad Rewards](#free-ad-rewards) | Every "watch ad" reward is granted instantly — no ad appears, no "failed to load advertisement" popup, and nothing to wait for. |  |
 | [Free Store](#free-store) | Everything in the shop is free. Tap an item and you get it right away — points, characters and presents — with no Google Play payment screen and nothing charged. |  |
+
+</details>
+
+<details>
+<summary>📦 Jetpack Joyride&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.104.2 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | Every "watch an ad" offer in Jetpack Joyride pays out instantly — the reward is claimed without playing any video, with no countdown and no network round trip, and the offer stays repeatable. Works offline. |  |
+| [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
+| [Remove Ads](#remove-ads) | Stops the full-screen interstitial adverts Jetpack Joyride shows between runs. The game's own "no ad available" path is replayed, so the run continues immediately instead of freezing or waiting on a skipped advert. |  |
+
+</details>
+
+<details>
+<summary>📦 Dan the Man&nbsp;&nbsp;•&nbsp;&nbsp;5 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.14.10 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free IAP](#free-iap) | Every store item — gold packs, skins and remove ads — is granted the moment you tap Buy. No Google Play payment sheet ever opens and nothing is charged. |  |
+| [Native IAP Patch](#native-iap-patch) | Fixes the native purchase result so every store purchase (gold packs, skins, remove ads) is granted on device — without depending on the Java bridge handshake. |  |
+| [Remove ads](#remove-ads) | Removes all ads. Reward videos now give you the prize instantly — no watching needed. |  |
+| [Unlimited money (restore save)](#unlimited-money-restore-save) | Loads the unlimited money save into the game the first time you open it. |  |
+| [Unlimited money (save bundle)](#unlimited-money-save-bundle) | Packs the special save file (unlimited coins & gems, everything unlocked) inside the app. |  |
 
 </details>
 
@@ -339,7 +375,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 4.8.8.0 |
+| 4.8.9.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -356,7 +392,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 7.14.0 |
+| 7.14.2 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -417,7 +453,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.72.2 |
+| 1.73.1 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -492,32 +528,17 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Jetpack Joyride&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
-<br>
-
-**🎯 Supported versions:**
-
-| 1.104.1 |
-| :---: |
-
-| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
-|----------|----------------|-----------|
-| [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
-
-</details>
-
-<details>
 <summary>📦 Lemmings: Puzzle Survival&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 9.4.4 |
+| 9.5.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Lemmings: Free Store](#lemmings-free-store) | Everything in the shop is free. Tap an item and you get it right away — no Google Play payment sheet, no purchase-failed popup, nothing charged. |  |
+| [Lemmings: Native Grant Hook](#lemmings-native-grant-hook) | Store items grant instantly when tapped, through the game's own reward system — no purchase flow is ever started, nothing is charged, and purchase-failure popups are removed. |  |
 | [Lemmings: VIP Unlock](#lemmings-vip-unlock) | Unlocks VIP status without paying. VIP banners, rewards and bonuses show as active — no subscription needed. |  |
 
 </details>
@@ -535,6 +556,23 @@ Direct URL:
 |----------|----------------|-----------|
 | [Lumina PairIP License Bypass](#lumina-pairip-license-bypass) | Disables the PairIP license check (Play licensing service validation + signed-response verification + paywall/error dialog + forced System.exit). Required for patched APKs — the original check fails on any non-Play signature and force-closes the app. |  |
 | [Lumina Premium](#lumina-premium) | Unlocks all premium wallpapers and categories. |  |
+
+</details>
+
+<details>
+<summary>📦 Magic Survival&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 0.9941 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Magic Survival Free Store](#magic-survival-free-store) | Grants every in-app purchase for free: tapping Buy fabricates a successful Google Play purchase (remove-ad, gem packs) and feeds it through the billing listener without opening the payment dialog, and granted entitlements are restored on every launch. |  |
+| [Magic Survival Instant Rewarded Rewards](#magic-survival-instant-rewarded-rewards) | Grants rewarded-ad rewards instantly on tap without watching an ad: the rewarded ad reports ready immediately and show() fires the reward and close callbacks synchronously. |  |
+| [Magic Survival Remove Ads](#magic-survival-remove-ads) | Removes interstitial, app-open and banner ads: nothing is ever loaded or displayed, and any show call resolves the game's ad callbacks instantly so the flow never stalls. |  |
 
 </details>
 
@@ -622,23 +660,6 @@ Direct URL:
 |----------|----------------|-----------|
 | [PvZ FREE Ad Removal & Free Rewards](#pvz-free-ad-removal-free-rewards) | Removes interstitials and grants rewarded-video rewards instantly without showing an ad. |  |
 | [PvZ FREE Free IAP](#pvz-free-free-iap) | Forge in-app purchases so coins, Ads Free and bundles are granted without Google Play payment. |  |
-
-</details>
-
-<details>
-<summary>📦 Dan the Man&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
-<br>
-
-**🎯 Supported versions:**
-
-| 1.14.06 |
-| :---: |
-
-| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
-|----------|----------------|-----------|
-| [Remove ads](#remove-ads) | Removes all ads. Reward videos now give you the prize instantly — no watching needed. |  |
-| [Unlimited money (restore save)](#unlimited-money-restore-save) | Loads the unlimited money save into the game the first time you open it. |  |
-| [Unlimited money (save bundle)](#unlimited-money-save-bundle) | Packs the special save file (unlimited coins & gems, everything unlocked) inside the app. |  |
 
 </details>
 
@@ -826,7 +847,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 3.43.0 |
+| 3.44.1 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

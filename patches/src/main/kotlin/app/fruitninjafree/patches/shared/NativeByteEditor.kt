@@ -42,10 +42,19 @@ internal class NativeAnchor(
     }
 }
 
-/** One ABI's worth of edits — every anchor is validated before any is written. */
+/**
+ * One ABI's worth of edits.
+ *
+ * `candidateSets` is a list of alternative anchor-sets for this ABI, one per
+ * supported app build. At run time each set is tried in order: the first set
+ * whose every anchor resolves (bytes match at the offset AND occur exactly
+ * once in the lib) is applied; the rest are ignored. This lets a single patch
+ * cover several native builds whose method RVAs differ, without weakening the
+ * uniqueness proof.
+ */
 internal class AbiEdits(
     val abi: String,
-    val anchors: List<NativeAnchor>,
+    val candidateSets: List<List<NativeAnchor>>,
 )
 
 /** The `libil2cpp.so` per-ABI entry inside the APK. */
@@ -272,8 +281,26 @@ internal fun ResourcePatchContext.applyNativeEdits(
             )
             continue
         }
-        applyEditsTo(patchName, lib, target.abi, target.anchors)
-        patchedAbis++
+        var abiPatched = false
+        var lastFailure: PatchException? = null
+        for (anchors in target.candidateSets) {
+            try {
+                applyEditsTo(patchName, lib, target.abi, anchors)
+                abiPatched = true
+                break
+            } catch (e: PatchException) {
+                lastFailure = e
+                // candidate did not match this build; try the next one
+            }
+        }
+        if (abiPatched) {
+            patchedAbis++
+        } else {
+            throw lastFailure ?: PatchException(
+                "$patchName (${target.abi}): no candidate anchor set matched " +
+                    "${lib.name} — unsupported app build?",
+            )
+        }
     }
     if (patchedAbis == 0) {
         throw PatchException(

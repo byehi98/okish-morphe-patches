@@ -26,15 +26,10 @@ object Constants {
         targets = listOf(
             AppTarget(
                 version = "3.97.9",
-                // Only versionCode 88485200 is supported — the older 3.97.9
-                // build 88439200 (APKMirror, Sept 22) has the ProcessGooglePlayIAP
-                // entry 80 bytes off (file 0x1CEA8D4 vs 0x1CEA874) and fails the
-                // native verify window. Declaring the code explicitly lets the
-                // manager pick only builds with this versionCode per ABI.
-                versionCodes = mapOf(
-                    SupportedAbi.ARM64_V8A to 88485200,
-                    SupportedAbi.ARMEABI_V7A to 88485200
-                )
+                // versionCodes intentionally omitted: all three shipped builds of
+                // 3.97.9 (88439200 / 88485200 / 89192600) are now supported by
+                // the build-aware native anchors, so any 3.97.9 build matches.
+                versionCodes = emptyMap()
             )
         )
     )

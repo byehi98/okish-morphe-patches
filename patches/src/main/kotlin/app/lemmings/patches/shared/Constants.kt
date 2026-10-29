@@ -16,7 +16,7 @@ object Constants {
         // (dominant icon tone, with a dark-navy secondary).
         appIconColor = 0xFFAD71,
         targets = listOf(
-            AppTarget(version = "9.4.4"),
+            AppTarget(version = "9.5.0"),
         ),
     )
 }

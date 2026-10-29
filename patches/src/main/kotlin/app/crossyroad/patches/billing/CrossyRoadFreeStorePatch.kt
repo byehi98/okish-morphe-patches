@@ -13,6 +13,8 @@ import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethodParameter
 import kotlin.io.readBytes
 import kotlin.io.writeBytes
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 // Smali class descriptors. The \$ escapes keep Kotlin string interpolation from
 // treating "$Builder" / "$ProductDetailsParams" / "$Product" as template
@@ -23,21 +25,43 @@ private const val BILLING_RESULT_BUILDER = "Lcom/android/billingclient/api/Billi
 private const val BFP_PRODUCT_DETAILS_PARAMS = "Lcom/android/billingclient/api/BillingFlowParams\$ProductDetailsParams;"
 private const val QUERY_PRODUCT = "Lcom/android/billingclient/api/QueryProductDetailsParams\$Product;"
 
-// ── NATIVE anchors (Crossy Road 7.13.0) ──────────────────────────────────
+// ── NATIVE anchors (Crossy Road 7.13.0 → 7.14.2) ──────────────────────────
 // Every ABI the package ships carries its own libil2cpp.so and therefore its
 // own copy of UniversalStoreManager.PurchaseRequest, so all of them are
-// probed and patched. Both anchors were byte-verified to occur EXACTLY ONCE in
-// their respective library, which makes each match self-verifying.
+// probed and patched. Each match is self-verifying (uniqueness + structure).
 
-// ARM32 — lib/armeabi-v7a/libil2cpp.so (73,234,644 bytes), file offset 0x1346AB4.
+// ARM32 — lib/armeabi-v7a/libil2cpp.so, file offset 0x1390C00 (7.14.2;
+//   was 0x1346AB4 in 7.13.0). The 3-word anchor is position-independent, so
+//   it survives rebuilds and is byte-verified to occur EXACTLY ONCE:
 //   cmp r0,#1 (0xE3500001) ; bne→billing (0x1A00001C) ; mov r0,r6 (0xE1A00006)
 private val ARM32_ANCHOR = hex("010050E3 1C00001A 0600A0E1")
 // mov r0,r0  (0xE1A00000) — replaces only the `bne`, forcing the fall-through.
 private val ARM32_NOP = hex("0000A0E1")
 
-// ARM64 — lib/arm64-v8a/libil2cpp.so (87,619,344 bytes), file offset 0x24C4D04.
-//   bl 0x241FF6C (GetConfiguredPurchaseType) ; cmp w0,#1 (0x7100041F)
-private val ARM64_ANCHOR = hex("9A5CFD97 1F040071")
+// ARM64 — lib/arm64-v8a/libil2cpp.so, file offset 0x2543440 (7.14.2;
+//   was 0x24C8D00 in 7.13.0). The 7.13.0 anchor embedded the PC-relative
+//   `bl GetConfiguredPurchaseType` word, whose encoding MOVES on every
+//   rebuild; arm64-only packages (the Morphe app's "optimize for device
+//   architecture" mode ships ONLY arm64-v8a) then fail with "anchor not
+//   found". The anchor is now STRUCTURAL — IL2CPP codegen for this branch
+//   is stable across 7.13.0 → 7.14.2 and keeps register x24, so we match
+//   five words, position-independent:
+//
+//   0x2543440   mov     x24, x0                              (0xAA0003F8)
+//   0x2543444   bl      Character.GetConfiguredPurchaseType  (→ 0x2494214)
+//   0x2543448   cmp     w0, #1                               (0x7100041F)
+//   0x254344C   b.ne    0x25434BC     ← NOP this ( PaidIAP → billing path )
+//   0x2543450   mov     x0, x24        (0xAA1803E0) — local-grant path
+//               0x2543458  bl  0x2490588 (SetBonusCoins)
+//               0x2543464  bl  0x2543640 (HandleProductPurchase → grant)
+//
+// The `bl` word is matched by OPCODE ONLY (bits 31..26 == 0b100101) — its
+// imm26 payload changes per build and is ignored. b.ne is decoded from its
+// encoding (opcode 0x54, cond == NE == 0b0001, forward imm19). Uniqueness
+// of the whole window makes the match self-verifying (see patchArm64).
+private const val ARM64_MOV_X24_X0 = 0xAA0003F8.toInt() // orr x24, xzr, x0 == mov x24, x0
+private const val ARM64_MOV_X0_X24 = 0xAA1803E0.toInt() // orr x0, xzr, x24 == mov x0, x24
+private const val ARM64_CMP_W0_1 = 0x7100041F   // subs w0, w0, #1
 // AArch64 `nop` (0xD503201F) — replaces only the `b.ne`, forcing the
 // fall-through into `mov x0, x24` (the local-grant path).
 private val ARM64_NOP = hex("1F2003D5")
@@ -112,7 +136,7 @@ private const val ELF_HEADER_SIZE = 20
  * purchaseToken + purchaseTime), so Unity IAP's transaction dedup never
  * swallows the 2nd+ purchase.
  *
- * ══ PART 2 — NATIVE: libil2cpp.so character branch (7.13.0, ARM32+ARM64) ══
+ * ══ PART 2 — NATIVE: libil2cpp.so character branch (7.13.0→7.14.2, both ABIs) ══
  *
  * Complements the DEX forge: makes PAID CHARACTERS take the game's own
  * local-grant path without ever entering Google Play billing.
@@ -124,43 +148,38 @@ private const val ELF_HEADER_SIZE = 20
  * that ships only arm64-v8a (base APK + config.arm64_v8a.apk, no armeabi-v7a)
  * has no file at the ARM32 path at all.
  *
- * ── ARM32 · lib/armeabi-v7a/libil2cpp.so (73,234,644 bytes) ───────────────
+ * ── ARM32 · lib/armeabi-v7a/libil2cpp.so (7.14.2 = 74,245,292 bytes) ─────
  * File offset == RVA for the executable LOAD segment (readelf: Offset 0x0 =
  * VirtAddr 0x0; verified delta 0):
  *
- *   0x1346AB0   bl      Character.GetConfiguredPurchaseType   ; FreeInternal==1
- *   0x1346AB4   cmp     r0, #1
- *   0x1346AB8   bne     0x1346B30      ← NOP this ( PaidIAP → billing path )
- *   0x1346ABC   mov     r0, r6         ← fall-through: direct local-grant path
- *                                       ( SetBonusCoins → HandleProductPurchase
- *                                         0x1346E0C → PurchaseProductBundle → grant )
+ *   0x1390BFC   bl      Character.GetConfiguredPurchaseType   ; FreeInternal==1
+ *   0x1390C00   cmp     r0, #1
+ *   0x1390C04   bne     0x1390C7C      ← NOP this ( PaidIAP → billing path )
+ *   0x1390C08   mov     r0, r6         ← fall-through: direct local-grant path
+ *                                       ( bl 0x12AF454 SetBonusCoins; bl 0x1390ED4
+ *                                         HandleProductPurchase →
+ *                                         PurchaseProductBundle → grant )
  *
- * Anchor (1 hit, byte-verified): 010050E3 1C00001A 0600A0E1 @ 0x1346AB4
+ * Anchor (1 hit, byte-verified): 010050E3 1C00001A 0600A0E1 @ 0x1390C00 (7.14.2)
  * Replacement @ idx+4: 0000A0E1 (= 0xE1A00000, `mov r0, r0` NOP).
  *
- * ── ARM64 · lib/arm64-v8a/libil2cpp.so (87,619,344 bytes) ─────────────────
- * .text LOAD: Offset 0x1F5A1F0 → VirtAddr 0x1F5E1F0 (delta +0x4000). The
- * search runs on raw FILE bytes, so no offset math is needed:
+ * ── ARM64 · lib/arm64-v8a/libil2cpp.so (7.14.2 = 88,794,176 bytes) ────────
+ * Structure (7.14.2 file offsets; the `bl` payload is PC-relative and
+ * therefore rebuild-specific — the window is matched structurally, see
+ * patchArm64):
  *
- *   0x24C8D00   mov     x24, x0                             ; character
- *   0x24C8D04   bl      Character.GetConfiguredPurchaseType  ; 0x241FF6C
- *   0x24C8D08   cmp     w0, #1
- *   0x24C8D0C   b.ne    0x24C8D7C      ← NOP this ( PaidIAP → billing path )
- *   0x24C8D10   mov     x0, x24        ← fall-through: local-grant path
- *                                       ( bl 0x241CA28 SetBonusCoins →
- *                                         0x24C8F00 HandleProductPurchase )
+ *   0x2543440   mov     x24, x0                              ; character
+ *   0x2543444   bl      Character.GetConfiguredPurchaseType   ; 0x2494214
+ *   0x2543448   cmp     w0, #1
+ *   0x254344C   b.ne    0x25434BC     ← NOP this ( PaidIAP → billing path )
+ *   0x2543450   mov     x0, x24       ← fall-through: local-grant path
+ *                                       ( bl 0x2490588 SetBonusCoins →
+ *                                         0x2543640 HandleProductPurchase )
  *
- * Anchor (1 hit, byte-verified) @ file offset 0x24C4D04:
- *   9A5CFD97 1F040071 = `bl 0x241FF6C` ; `cmp w0, #1` (AArch64, little-endian)
- * Replacement @ idx+8: 1F2003D5 (AArch64 `nop`) — unconditional fall-through.
- * The two words after the anchor are structurally validated (see
- * validateArm64Tail) so the match cannot be a coincidence: +8 must be a
- * conditional branch, +12 must be `mov x0, xN`.
- *
- * The `bl` encodes a PC-relative offset, so the ARM64 anchor bytes are
- * position-dependent — they are unique for this build but move on a rebuild.
- * Same self-verifying property as ARM32: a new build fails loudly instead of
- * corrupting an unrelated branch.
+ * Anchor (1 hit, structurally verified): five-word window
+ *   AA0003F8 [bl] 7100041F 54xxxx01 AA1803E0
+ * Replacement @ window+12: 1F2003D5 (AArch64 `nop`) — unconditional
+ * fall-through.
  *
  * Both arches keep the earlier `character == null` check untouched, so coin
  * packs / bundles still flow through the DEX forge — this half only reroutes
@@ -596,13 +615,6 @@ private fun countPattern(haystack: ByteArray, needle: ByteArray): Int {
     return n
 }
 
-/** Reads the little-endian 32-bit word at [off] (AArch64 encoding). */
-private fun word32(bytes: ByteArray, off: Int): Int =
-    (bytes[off].toInt() and 0xFF) or
-            ((bytes[off + 1].toInt() and 0xFF) shl 8) or
-            ((bytes[off + 2].toInt() and 0xFF) shl 16) or
-            ((bytes[off + 3].toInt() and 0xFF) shl 24)
-
 /**
  * ARM32 half: `bl GetConfiguredPurchaseType` ; `cmp r0,#1` ; `bne billing` ;
  * `mov r0,r6`. NOPs the `bne` so control always falls through to the local
@@ -611,7 +623,7 @@ private fun word32(bytes: ByteArray, off: Int): Int =
  */
 private fun patchArm32(soFile: java.io.File, bytes: ByteArray, path: String): Int? {
     println("Crossy Road Free store (native): $path size=" + bytes.size + " bytes (ARM32)")
-    // cmp r0,#1 ; bne→billing ; mov r0,r6  (PurchaseRequest @ 0x1346AB4)
+    // cmp r0,#1 ; bne→billing ; mov r0,r6  (PurchaseRequest @ 0x1390C00)
     val idx = indexOfPattern(bytes, ARM32_ANCHOR)
     if (idx < 0) return null
     // Self-verifying: the anchor must be the only occurrence in the library.
@@ -629,55 +641,62 @@ private fun patchArm32(soFile: java.io.File, bytes: ByteArray, path: String): In
 }
 
 /**
- * ARM64 half: `bl GetConfiguredPurchaseType` ; `cmp w0,#1` ; `b.ne billing` ;
- * `mov x0,x24`. NOPs the `b.ne` so control always falls through to the local
- * grant path. Returns the patched file offset, or null when the anchor is
- * absent (wrong game version for this ABI).
+ * ARM64 half: `mov x24,x0` ; `bl GetConfiguredPurchaseType` ; `cmp w0,#1` ;
+ * `b.ne billing` ; `mov x0,x24`. NOPs the `b.ne` so control always falls
+ * through to the local grant path. Returns the patched file offset, or null
+ * when the structural window is absent (wrong game version for this ABI).
+ *
+ * The window is matched STRUCTURALLY (not by literal bytes) because the
+ * `bl` is PC-relative and retargeted by every rebuild: the five-word shape
+ * [mov x24,x0][BL][cmp w0,#1][b.ne fwd][mov x0,x24] is IL2CPP codegen for
+ * this exact branch (7.13.0 → 7.14.2 keep register x24), and the uniqueness
+ * requirement makes the match self-verifying. Other look-alike windows in
+ * the binary use different registers (x19..x22) and/or a different compare
+ * result check, so requiring x24 on BOTH movs collapses the hits to one.
  */
 private fun patchArm64(soFile: java.io.File, bytes: ByteArray, path: String): Int? {
     println("Crossy Road Free store (native): $path size=" + bytes.size + " bytes (ARM64)")
-    // bl 0x241FF6C (GetConfiguredPurchaseType) ; cmp w0,#1  (@ file 0x24C4D04)
-    val idx = indexOfPattern(bytes, ARM64_ANCHOR)
+    require(bytes.size >= 20 && bytes.size % 4 == 0)
+    val lib = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
+    val wordCount = bytes.size / 4
+
+    var idx = -1
+    var hits = 0
+    var i = 0
+    while (i <= wordCount - 5) {
+        val w0 = lib.getInt(i * 4)
+        if (w0 == ARM64_MOV_X24_X0) {
+            val bl = lib.getInt((i + 1) * 4)   // 100101 | imm26 — payload ignored
+            val cmp = lib.getInt((i + 2) * 4)
+            val bne = lib.getInt((i + 3) * 4)
+            val mov = lib.getInt((i + 4) * 4)
+            val isBl = (bl and 0xFC000000.toInt()) == 0x94000000.toInt()
+            val isCmp = cmp == ARM64_CMP_W0_1
+            // B.cond: opcode 0x54, cond field != 0b1111, here cond == NE (0b0001);
+            // bit 24 == 0 ⇒ positive (forward) imm19 offset, as the billing path
+            // always sits after the local-grant fall-through in this method.
+            val isBneForward = (bne and 0xFF000000.toInt()) == 0x54000000.toInt() &&
+                    (bne and 0xF) == 0x1 && (bne and 0x01000000.toInt()) == 0
+            val isMov = mov == ARM64_MOV_X0_X24
+            if (isBl && isCmp && isBneForward && isMov) {
+                hits++
+                if (idx < 0) idx = i * 4
+            }
+        }
+        i++
+    }
+
     if (idx < 0) return null
-    val hits = countPattern(bytes, ARM64_ANCHOR)
     if (hits != 1) {
         throw PatchException(
-            "Crossy Road Free store (native): ARM64 PurchaseRequest anchor matched $hits times " +
+            "Crossy Road Free store (native): ARM64 PurchaseRequest window matched $hits times " +
                     "in $path — refusing to patch an ambiguous branch"
         )
     }
-    // Verify the two words following the anchor really are the billing branch
-    // and the local-grant `mov x0, xN`, so the match cannot be a coincidence.
-    if (!validateArm64Tail(bytes, idx)) {
-        throw PatchException(
-            "Crossy Road Free store (native): ARM64 PurchaseRequest anchor at 0x" +
-                    idx.toString(16) + " in $path is not followed by b.cond + mov x0,xN — " +
-                    "unsupported game version?"
-        )
-    }
-    // AArch64 `nop` — replaces ONLY the b.ne word at anchor offset +8.
-    ARM64_NOP.copyInto(bytes, idx + 8)
+    // AArch64 `nop` — replaces ONLY the b.ne word at window offset +12.
+    ARM64_NOP.copyInto(bytes, idx + 12)
     soFile.writeBytes(bytes)
-    return idx + 8
+    return idx + 12
 }
 
-/**
- * The ARM64 anchor is only two instructions (the `bl` target is encoded
- * PC-relative, so the bytes are build-position specific). These two checks on
- * the words that follow turn it into a self-verifying match: the conditional
- * branch that is being NOP'd, and the `mov x0, xN` that starts the local-grant
- * fall-through.
- */
-private fun validateArm64Tail(bytes: ByteArray, idx: Int): Boolean {
-    if (idx + 16 > bytes.size) return false
-    val branch = word32(bytes, idx + 8)
-    val mov = word32(bytes, idx + 12)
-    // Conditional branch (B.cond): bits 31..24 == 0x54, bit 4 clear,
-    // condition field != 0b1111 (that encoding is the unconditional form).
-    // Masks are Long literals — 0xFF000010 does not fit a signed Int.
-    val isCondBranch = (branch.toLong() and 0xFF000010L) == 0x54000000L &&
-            (branch and 0xF) != 0xF
-    // ORR x0, xzr, xN  ==  `mov x0, xN`.
-    val isMovX0 = (mov.toLong() and 0xFFE0FFE0L) == 0xAA0003E0L
-    return isCondBranch && isMovX0
-}
+

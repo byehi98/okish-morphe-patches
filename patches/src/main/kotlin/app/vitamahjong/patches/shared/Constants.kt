@@ -6,11 +6,11 @@ import app.morphe.patcher.patch.Compatibility
 
 object Constants {
     /**
-     * Vita Mahjong 3.43.0 (versionCode 1917).
+     * Vita Mahjong.
      *
-     * Shipped as an XAPK: base APK (all DEX files) + `config.arm64_v8a` split
-     * (all native libraries). The base APK alone cannot install/run, so the
-     * bundle must be fed to morphe-cli as-is.
+     * Shipped as an XAPK/APKM bundle: base APK (all DEX files) plus a native
+     * split (`config.armeabi_v7a` for 3.44.1). The base APK alone cannot
+     * install/run, so the bundle must be fed to morphe-cli as-is.
      *
      * The ad and billing targets patched here are Java-only and independent of
      * the IL2CPP/C# layer. No native/IL2CPP patch is attempted: the
@@ -22,7 +22,7 @@ object Constants {
         packageName = "com.vitastudio.mahjong",
         apkFileType = ApkFileType.XAPK,
         targets = listOf(
-            AppTarget(version = "3.43.0")
+            AppTarget(version = "3.44.1")
         )
     )
 }
