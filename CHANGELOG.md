@@ -1,3 +1,9 @@
+## [1.47.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.8...v1.47.0-dev.9) (2026-10-29)
+
+### 🐛 Bug Fixes
+
+* **crossyroad:** update free store patch for v7.14.2 ([cfc3372](https://github.com/byehi98/okish-morphe-patches/commit/cfc337231eee56a4ca80762978b35cb4f35754b2))
+
 ## [1.47.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.7...v1.47.0-dev.8) (2026-10-29)
 
 ### 🚀 Updated App Support
