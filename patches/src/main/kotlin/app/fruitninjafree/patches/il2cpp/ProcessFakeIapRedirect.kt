@@ -206,46 +206,96 @@ internal object ProcessFakeIapRedirect {
             applyNativeEdits(
                 "Free IAP",
                 listOf(
-                    AbiEdits("arm64-v8a", listOf(PROCESS_GOOGLE_PLAY_IAP_REDIRECT)),
-                    AbiEdits("armeabi-v7a", listOf(PROCESS_GOOGLE_PLAY_IAP_REDIRECT_V7A)),
+                    AbiEdits(
+                        "arm64-v8a",
+                        listOf(
+                            // build 88485200 (the originally supported build)
+                            listOf(ARM64_ANCHOR_88485200),
+                            // build 88439200 (older APKMirror build; entry 96 B later,
+                            // same 24 B verify window + same redirect bytes)
+                            listOf(ARM64_ANCHOR_88439200),
+                            // build 89192600 (newer build; entry shifted, adrp
+                            // immediates differ in the tail of the verify window)
+                            listOf(ARM64_ANCHOR_89192600),
+                        ),
+                    ),
+                    AbiEdits(
+                        "armeabi-v7a",
+                        listOf(
+                            listOf(V7A_ANCHOR_88485200),
+                            listOf(V7A_ANCHOR_88439200),
+                            listOf(V7A_ANCHOR_89192600),
+                        ),
+                    ),
                 ),
             )
         }
     }
 }
 
-// arm64-v8a — file offset = RVA − 0x4000 (RX LOAD: vaddr 0x18BB3B4 ↔ offset 0x18B73B4).
+
+// ---------------------------------------------------------------------------
+// Build-aware native anchors.
 //
-// 24 B verify window (unique; measured whole-file) / 12 B replacement:
-//   RVA 0x1CEE874 … +0x18   file 0x1CEA874
-//     str x30,[sp,#-0x40]! ; stp x24,x23,[sp,#0x10] ; stp x22,x21,[sp,#0x20]
-//     stp x20,x19,[sp,#0x30] ; adrp x20,… ; adrp x22,…
-//   write the first 3 instructions only:
-//     e30302aa e2031faa 00010014   =  mov x3,x2 ; mov x2,xzr ; b 0x1CEEC7C
-private val PROCESS_GOOGLE_PLAY_IAP_REDIRECT = NativeAnchor(
-    label = "PurchaseManager.ProcessGooglePlayIAP entry — mov x3,x2; mov x2,xzr; b ProcessFakeIAP",
+// The redirect bytes are IDENTICAL across all three shipped builds of 3.97.9
+// (mov x3,x2 ; mov x2,xzr ; b ProcessFakeIAP on arm64; the A32 twin on v7a) —
+// only the method RVA and the trailing adrp immediates in the verify window
+// differ. Each candidate below is measured against its own shipped lib and
+// occurs exactly once in that lib (verified via whole-file scan). At run time
+// [applyNativeEdits] tries them in order and applies the first that resolves.
+// ---------------------------------------------------------------------------
+
+private const val ARM64_REPLACEMENT = "e30302aae2031faa00010014"
+private const val V7A_REPLACEMENT = "0230a0e10020a0e3470100ea"
+
+private const val ARM64_VERIFY_WA = "fe0f1cf8f85f01a9f65702a9f44f03a9543c01f076220190"
+private const val ARM64_VERIFY_WB = "fe0f1cf8f85f01a9f65702a9f44f03a9743c01d0762201f0"
+private const val V7A_VERIFY_W = "f04f2de914d04de2c4529fe50260a0e10140a0e105508fe0"
+
+private val ARM64_ANCHOR_88485200 = NativeAnchor(
+    label = "PurchaseManager.ProcessGooglePlayIAP entry — mov x3,x2; mov x2,xzr; b ProcessFakeIAP (build 88485200)",
     rva = 0x1CEE874,
     fileOffset = 0x1CEA874,
-    verifyHex = "fe0f1cf8f85f01a9f65702a9f44f03a9543c01f076220190",
-    replacementHex = "e30302aae2031faa00010014",
+    verifyHex = ARM64_VERIFY_WA,
+    replacementHex = ARM64_REPLACEMENT,
 )
 
-// armeabi-v7a — file offset = RVA (RX LOAD: vaddr 0x0 ↔ offset 0x0, delta 0 —
-// DIFFERENT from arm64's −0x4000; the two ABIs are separate builds, see KDoc).
-// A32 (ARM-state), NOT Thumb. Whole-file re-verified this session against the
-// lib inside the shipped XAPK's config.armeabi_v7a.apk split: window exactly
-// 1 hit at 0xF96C4C, replacement 0 hits pre-patch.
-//
-// 24 B verify window (unique; measured whole-file) / 12 B replacement:
-//   RVA 0xF96C4C … +0x18   file 0xF96C4C
-//     push {r4-r11,lr} ; sub sp,#0x14 ; ldr r5,[pc,#0x2c4]
-//     mov r6,r2 ; mov r4,r1 ; add r5,pc,r5
-//   write the first 3 instructions only:
-//     e1a03002 e3a02000 ea000147   =  mov r3,r2 ; mov r2,#0 ; b 0xF97178
-private val PROCESS_GOOGLE_PLAY_IAP_REDIRECT_V7A = NativeAnchor(
-    label = "PurchaseManager.ProcessGooglePlayIAP entry — mov r3,r2; mov r2,#0; b ProcessFakeIAP (A32)",
+private val ARM64_ANCHOR_88439200 = NativeAnchor(
+    label = "PurchaseManager.ProcessGooglePlayIAP entry — mov x3,x2; mov x2,xzr; b ProcessFakeIAP (build 88439200)",
+    rva = 0x1CEE8D4,
+    fileOffset = 0x1CEA8D4,
+    verifyHex = ARM64_VERIFY_WA,
+    replacementHex = ARM64_REPLACEMENT,
+)
+
+private val ARM64_ANCHOR_89192600 = NativeAnchor(
+    label = "PurchaseManager.ProcessGooglePlayIAP entry — mov x3,x2; mov x2,xzr; b ProcessFakeIAP (build 89192600)",
+    rva = 0x1CEFD78,
+    fileOffset = 0x1CEBD78,
+    verifyHex = ARM64_VERIFY_WB,
+    replacementHex = ARM64_REPLACEMENT,
+)
+
+private val V7A_ANCHOR_88485200 = NativeAnchor(
+    label = "PurchaseManager.ProcessGooglePlayIAP entry — mov r3,r2; mov r2,#0; b ProcessFakeIAP (A32, build 88485200)",
     rva = 0xF96C4C,
     fileOffset = 0xF96C4C,
-    verifyHex = "f04f2de914d04de2c4529fe50260a0e10140a0e105508fe0",
-    replacementHex = "0230a0e10020a0e3470100ea",
+    verifyHex = V7A_VERIFY_W,
+    replacementHex = V7A_REPLACEMENT,
+)
+
+private val V7A_ANCHOR_88439200 = NativeAnchor(
+    label = "PurchaseManager.ProcessGooglePlayIAP entry — mov r3,r2; mov r2,#0; b ProcessFakeIAP (A32, build 88439200)",
+    rva = 0xF96C9C,
+    fileOffset = 0xF96C9C,
+    verifyHex = V7A_VERIFY_W,
+    replacementHex = V7A_REPLACEMENT,
+)
+
+private val V7A_ANCHOR_89192600 = NativeAnchor(
+    label = "PurchaseManager.ProcessGooglePlayIAP entry — mov r3,r2; mov r2,#0; b ProcessFakeIAP (A32, build 89192600)",
+    rva = 0xF9764C,
+    fileOffset = 0xF9764C,
+    verifyHex = V7A_VERIFY_W,
+    replacementHex = V7A_REPLACEMENT,
 )
