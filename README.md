@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.47.0-dev.5](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.0-dev.5)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;119 patches total
+> **[v1.47.0-dev.6](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.0-dev.6)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;121 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -314,6 +314,25 @@ Direct URL:
 | [Free Ad Rewards](#free-ad-rewards) | Every "watch an ad" offer in Jetpack Joyride pays out instantly — the reward is claimed without playing any video, with no countdown and no network round trip, and the offer stays repeatable. Works offline. |  |
 | [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
 | [Remove Ads](#remove-ads) | Stops the full-screen interstitial adverts Jetpack Joyride shows between runs. The game's own "no ad available" path is replayed, so the run continues immediately instead of freezing or waiting on a skipped advert. |  |
+
+</details>
+
+<details>
+<summary>📦 Dan the Man&nbsp;&nbsp;•&nbsp;&nbsp;5 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.14.10 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free IAP](#free-iap) | Every store item — gold packs, skins and remove ads — is granted the moment you tap Buy. No Google Play payment sheet ever opens and nothing is charged. |  |
+| [Native IAP Patch](#native-iap-patch) | Fixes the native purchase result so every store purchase (gold packs, skins, remove ads) is granted on device — without depending on the Java bridge handshake. |  |
+| [Remove ads](#remove-ads) | Removes all ads. Reward videos now give you the prize instantly — no watching needed. |  |
+| [Unlimited money (restore save)](#unlimited-money-restore-save) | Loads the unlimited money save into the game the first time you open it. |  |
+| [Unlimited money (save bundle)](#unlimited-money-save-bundle) | Packs the special save file (unlimited coins & gems, everything unlocked) inside the app. |  |
 
 </details>
 
@@ -641,23 +660,6 @@ Direct URL:
 |----------|----------------|-----------|
 | [PvZ FREE Ad Removal & Free Rewards](#pvz-free-ad-removal-free-rewards) | Removes interstitials and grants rewarded-video rewards instantly without showing an ad. |  |
 | [PvZ FREE Free IAP](#pvz-free-free-iap) | Forge in-app purchases so coins, Ads Free and bundles are granted without Google Play payment. |  |
-
-</details>
-
-<details>
-<summary>📦 Dan the Man&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
-<br>
-
-**🎯 Supported versions:**
-
-| 1.14.06 |
-| :---: |
-
-| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
-|----------|----------------|-----------|
-| [Remove ads](#remove-ads) | Removes all ads. Reward videos now give you the prize instantly — no watching needed. |  |
-| [Unlimited money (restore save)](#unlimited-money-restore-save) | Loads the unlimited money save into the game the first time you open it. |  |
-| [Unlimited money (save bundle)](#unlimited-money-save-bundle) | Packs the special save file (unlimited coins & gems, everything unlocked) inside the app. |  |
 
 </details>
 

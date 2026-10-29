@@ -1,3 +1,9 @@
+## [1.47.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.5...v1.47.0-dev.6) (2026-10-29)
+
+### ✨ New Features
+
+* **dtm:** add free IAP patches for 1.14.10 ([0b5f9e7](https://github.com/byehi98/okish-morphe-patches/commit/0b5f9e77d68528d76289554786d0d7af020db1c7))
+
 ## [1.47.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.4...v1.47.0-dev.5) (2026-10-27)
 
 ### 🚀 Updated App Support
