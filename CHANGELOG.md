@@ -1,3 +1,9 @@
+## [1.47.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.9...v1.47.0-dev.10) (2026-10-29)
+
+### 🐛 Bug Fixes
+
+* **fruitninja:** support candidate anchor sets for multiple app builds ([b1e8e53](https://github.com/byehi98/okish-morphe-patches/commit/b1e8e534e238e71aed024a7d60f7b93b50214c83))
+
 ## [1.47.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.8...v1.47.0-dev.9) (2026-10-29)
 
 ### 🐛 Bug Fixes
