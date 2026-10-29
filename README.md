@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.47.0-dev.6](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.0-dev.6)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;121 patches total
+> **[v1.47.0-dev.7](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.0-dev.7)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;121 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -533,12 +533,12 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 9.4.4 |
+| 9.5.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Lemmings: Free Store](#lemmings-free-store) | Everything in the shop is free. Tap an item and you get it right away — no Google Play payment sheet, no purchase-failed popup, nothing charged. |  |
+| [Lemmings: Native Grant Hook](#lemmings-native-grant-hook) | Store items grant instantly when tapped, through the game's own reward system — no purchase flow is ever started, nothing is charged, and purchase-failure popups are removed. |  |
 | [Lemmings: VIP Unlock](#lemmings-vip-unlock) | Unlocks VIP status without paying. VIP banners, rewards and bonuses show as active — no subscription needed. |  |
 
 </details>

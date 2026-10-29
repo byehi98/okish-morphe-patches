@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.47.0-dev.6",
+  "version": "1.47.0-dev.7",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -1484,8 +1484,8 @@
       "options": []
     },
     {
-      "name": "Lemmings: Free Store",
-      "description": "Everything in the shop is free. Tap an item and you get it right away — no Google Play payment sheet, no purchase-failed popup, nothing charged.",
+      "name": "Lemmings: Native Grant Hook",
+      "description": "Store items grant instantly when tapped, through the game's own reward system — no purchase flow is ever started, nothing is charged, and purchase-failure popups are removed.",
       "default": true,
       "dependencies": [
         "RawResourcePatch"
@@ -1500,7 +1500,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "9.4.4",
+              "version": "9.5.0",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -1526,7 +1526,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "9.4.4",
+              "version": "9.5.0",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,

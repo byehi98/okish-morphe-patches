@@ -1,3 +1,9 @@
+## [1.47.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.6...v1.47.0-dev.7) (2026-10-29)
+
+### ✨ New Features
+
+* **lemmings:** update to 9.5.0 and add native grant hook ([e6cf9f8](https://github.com/byehi98/okish-morphe-patches/commit/e6cf9f827c1002f69171eb1b0c287434ed55b267))
+
 ## [1.47.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0-dev.5...v1.47.0-dev.6) (2026-10-29)
 
 ### ✨ New Features
