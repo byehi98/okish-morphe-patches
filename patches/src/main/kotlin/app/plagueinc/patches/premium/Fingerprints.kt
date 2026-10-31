@@ -2,6 +2,7 @@ package app.plagueinc.patches.premium
 
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.fieldAccess
+import app.morphe.patcher.methodCall
 import com.android.tools.smali.dexlib2.AccessFlags
 
 /**
@@ -45,4 +46,65 @@ object PurchaseManagerInitFingerprint : Fingerprint(
     name = "<init>",
     returnType = "V",
     parameters = listOf("Landroid/content/Context;")
+)
+
+/**
+ * DailyLevelSelect.onPlayButtonPressed() — branch point for the outbreak
+ * (daily mission) play flow. Used to locate the trial/bonus popup invokes.
+ *
+ * Confirmed smali (com/miniclip/plagueinc/menu/DailyLevelSelect.smali line 4258):
+ *   .method protected onPlayButtonPressed()V
+ *     .registers 3
+ */
+object DailyLevelSelectTrialBranchFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;",
+    name = "onPlayButtonPressed",
+    returnType = "V",
+    filters = listOf(
+        methodCall(smali = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;->showTrialLevelUx()V")
+    )
+)
+
+object DailyLevelSelectBonusBranchFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;",
+    name = "onPlayButtonPressed",
+    returnType = "V",
+    filters = listOf(
+        methodCall(smali = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;->showBonusLevelUx()V")
+    )
+)
+
+/**
+ * DailyLevelSelect.showPurchasePopup() / showOnboardingPopup() — failsafe stubs.
+ *
+ * Confirmed smali:
+ *   showPurchasePopup  line 3181  .method private showPurchasePopup()V
+ *   showOnboardingPopup line 3129  .method private showOnboardingPopup()V
+ */
+object DailyLevelSelectShowPurchasePopupFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;",
+    name = "showPurchasePopup",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PRIVATE)
+)
+
+object DailyLevelSelectShowOnboardingPopupFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;",
+    name = "showOnboardingPopup",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PRIVATE)
+)
+
+/**
+ * PurchaseManager.BeginOutbreakPurchaseUx() — opens the Google Play billing
+ * sheet for the outbreak SKU. Stubbed to return-void as a failsafe.
+ *
+ * Confirmed smali (com/miniclip/plagueinc/PurchaseManager.smali line 1164):
+ *   .method public BeginOutbreakPurchaseUx()V  .registers 2
+ */
+object PurchaseManagerBeginOutbreakPurchaseUxFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/PurchaseManager;",
+    name = "BeginOutbreakPurchaseUx",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PUBLIC)
 )

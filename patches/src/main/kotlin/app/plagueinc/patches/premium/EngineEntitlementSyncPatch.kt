@@ -52,13 +52,16 @@ val plagueIncEngineEntitlementSyncPatch = bytecodePatch(
                 "morpheSyncEntitlements",
                 emptyList(),
                 "V",
-                AccessFlags.PRIVATE.value or AccessFlags.STATIC.value,
+                AccessFlags.PUBLIC.value or AccessFlags.STATIC.value,
                 null,
                 null,
                 MutableMethodImplementation(5)
             )
         ).apply {
             val skus = listOf(
+                "cust_scen_a",
+                "cust_scen_b",
+                "cust_scen_c",
                 "fullversion",
                 "necroa",
                 "cure_expansion",
@@ -68,7 +71,10 @@ val plagueIncEngineEntitlementSyncPatch = bytecodePatch(
                 "simian_flu",
                 "vampire",
                 "xenolith",
-                "allgenes"
+                "allgenes",
+                "outbreak",
+                "outbreak_and_premium",
+                "all_scenarios"
             )
 
             addInstructions(
@@ -83,6 +89,9 @@ val plagueIncEngineEntitlementSyncPatch = bytecodePatch(
                 addInstructions(
                     2,
                     """
+                    const-string v0, "$sku"
+                    const-string v1, ""
+                    invoke-static {v0, v1}, Lcom/miniclip/plagueinc/jni/Unlocks;->addInAppPurchase(Ljava/lang/String;Ljava/lang/String;)V
                     const-string v0, "$sku"
                     const-string v1, ""
                     invoke-static {v0, v1, v1, v4}, Lcom/miniclip/plagueinc/jni/Unlocks;->setInAppPurchaseState(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)V
