@@ -67,11 +67,11 @@ import com.android.tools.smali.dexlib2.AccessFlags
  * class in the app carries this exact set.
  */
 object GoogleMobileAdsOnMethodCallFingerprint : Fingerprint(
-    definingClass = "Lio/flutter/plugins/googlemobileads/n;",
+    definingClass = "Lio/flutter/plugins/googlemobileads/GoogleMobileAdsPlugin;",
     name = "onMethodCall",
     returnType = "V",
     accessFlags = listOf(AccessFlags.PUBLIC),
-    parameters = listOf("Lw00/h;", "Lw00/i\$d;"),
+    parameters = listOf("Lhz/h;", "Lhz/i\$d;"),
     filters = listOf(
         string("loadRewardedInterstitialAd"),
         methodCall(
