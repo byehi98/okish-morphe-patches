@@ -1,3 +1,9 @@
+## [1.47.1-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.1-dev.8...v1.47.1-dev.9) (2026-10-31)
+
+### 🚀 Updated App Support
+
+* **onlyone:** update target version to 1.3053 ([a326761](https://github.com/byehi98/okish-morphe-patches/commit/a3267617530bbcab54ea046d4ebf998bcd4da8f7))
+
 ## [1.47.1-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.1-dev.7...v1.47.1-dev.8) (2026-10-31)
 
 ### 🚀 Updated App Support
