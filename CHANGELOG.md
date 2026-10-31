@@ -1,3 +1,9 @@
+## [1.47.1-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.1-dev.7...v1.47.1-dev.8) (2026-10-31)
+
+### 🚀 Updated App Support
+
+* **swampattack2:** update ARM64 patch offsets ([f8debbd](https://github.com/byehi98/okish-morphe-patches/commit/f8debbd65f1c23a0aed0f2339fd87ba76fc66973))
+
 ## [1.47.1-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.1-dev.6...v1.47.1-dev.7) (2026-10-31)
 
 ### 🚀 Updated App Support
