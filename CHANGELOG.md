@@ -1,3 +1,9 @@
+## [1.47.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.1-dev.3...v1.47.1-dev.4) (2026-10-31)
+
+### 🐛 Bug Fixes
+
+* **plagueinc:** add scenario unlocks and outbreak patches ([e5f021b](https://github.com/byehi98/okish-morphe-patches/commit/e5f021b17179ddec2fcef9474bff0477d56a0da6))
+
 ## [1.47.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.1-dev.2...v1.47.1-dev.3) (2026-10-30)
 
 ### 🚀 Updated App Support
