@@ -45,6 +45,36 @@ object UpdateMainBarFingerprint : Fingerprint(
     )
 )
 
+/**
+ * HttpManager.getClient(long) — shared request-queue factory used by both
+ * httpGet and httpPost. Injection anchor for the HTTP User-Agent override
+ * (runs before the first Volley request is enqueued).
+ *
+ * Confirmed smali (com/miniclip/plagueinc/HttpManager.smali):
+ *   .method private getClient(J)Lcom/android/volley/RequestQueue;  (.registers 4)
+ */
+object HttpManagerGetClientFingerprint : app.morphe.patcher.Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/HttpManager;",
+    name = "getClient",
+    returnType = "Lcom/android/volley/RequestQueue;",
+    accessFlags = listOf(com.android.tools.smali.dexlib2.AccessFlags.PRIVATE),
+    parameters = listOf("J")
+)
+
+/**
+ * PlagueApplication.onCreate() — app entry point. Used as an injection
+ * anchor for the helper-method call (no registers needed).
+ *
+ * Confirmed smali (com/miniclip/plagueinc/PlagueApplication.smali):
+ *   .method public onCreate()V  (.registers 2)
+ */
+object PlagueApplicationOnCreateFingerprint : app.morphe.patcher.Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/PlagueApplication;",
+    name = "onCreate",
+    returnType = "V",
+    accessFlags = listOf(com.android.tools.smali.dexlib2.AccessFlags.PUBLIC)
+)
+
 /** Shared filter pair tail: move-result immediately after the isPremium call. */
 private fun opcodeMatchResult() =
     app.morphe.patcher.opcode(

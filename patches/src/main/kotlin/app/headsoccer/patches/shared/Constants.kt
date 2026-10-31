@@ -17,7 +17,7 @@ object Constants {
         // #0496EC is the more distinctive brand accent, so it drives the chip colour.
         appIconColor = 0x0496EC,
         targets = listOf(
-            AppTarget(version = "7.1.10")
+            AppTarget(version = "7.1.12")
         ),
     )
 }

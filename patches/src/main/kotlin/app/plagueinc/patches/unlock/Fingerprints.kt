@@ -68,6 +68,93 @@ internal fun convertNativeUnlockMethodToTrueStub(mutableClass: MutableClass, met
  * Used as an anchor proving the Genes JNI bridge exists, and as the loop
  * condition source for the gene unlock-all injection (Option B).
  */
+/**
+ * Scenarios.isLocked(String) — native scenario lock check.
+ *
+ * Confirmed smali (classes6/com/miniclip/plagueinc/jni/Scenarios.smali):
+ *   .method public static native isLocked(Ljava/lang/String;)Z
+ *
+ * Converting this native declaration into a Java stub returning false
+ * (0x0) unlocks every official scenario at once — all Java call sites
+ * (ScenariosMenu.selectScenario, getScenarioToUnlock, comparator, and
+ * DiseaseTypeMenu.ShowScenarioButton) derive their locked state from it.
+ */
+object ScenariosClassFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/jni/Scenarios;",
+    name = "isLocked",
+    returnType = "Z",
+    parameters = listOf("Ljava/lang/String;")
+)
+
+/**
+ * Converts a `public static native` boolean method into a regular Java
+ * method that always returns false (inverted counterpart of
+ * convertNativeUnlockMethodToTrueStub).
+ */
+internal fun convertNativeUnlockMethodToFalseStub(mutableClass: MutableClass, methodName: String) {
+    val original = mutableClass.methods.first { it.name == methodName }
+
+    val stub = MutableMethod(
+        ImmutableMethod(
+            mutableClass.type,
+            methodName,
+            original.parameters,
+            "Z",
+            AccessFlags.PUBLIC.value or AccessFlags.STATIC.value,
+            null,
+            null,
+            MutableMethodImplementation(4)
+        )
+    ).apply {
+        addInstructions(0, """
+            const/4 v0, 0x0
+            return v0
+        """)
+    }
+
+    mutableClass.methods.remove(original)
+    mutableClass.methods.add(stub)
+}
+
+/**
+ * Scenarios.getDownloadsAvailable() — anchor for the Scenarios JNI class when
+ * patching download-cap methods (getDownloadsAvailable, getHoursTillDownloadReset).
+ */
+object ScenariosDownloadsFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/jni/Scenarios;",
+    name = "getDownloadsAvailable",
+    returnType = "I"
+)
+
+/**
+ * Converts a `public static native` int method into a regular Java method
+ * that always returns the given value.
+ */
+internal fun convertNativeUnlockMethodToIntStub(mutableClass: MutableClass, methodName: String, value: Int) {
+    val original = mutableClass.methods.first { it.name == methodName }
+
+    val stub = MutableMethod(
+        ImmutableMethod(
+            mutableClass.type,
+            methodName,
+            original.parameters,
+            "I",
+            AccessFlags.PUBLIC.value or AccessFlags.STATIC.value,
+            null,
+            null,
+            MutableMethodImplementation(4)
+        )
+    ).apply {
+        addInstructions(0, """
+            const v0, $value
+            return v0
+        """)
+    }
+
+    mutableClass.methods.remove(original)
+    mutableClass.methods.add(stub)
+}
+
 object GenesLockedCountFingerprint : Fingerprint(
     definingClass = "Lcom/miniclip/plagueinc/jni/Genes;",
     name = "getLockedGeneCount",

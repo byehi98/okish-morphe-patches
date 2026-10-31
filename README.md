@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.47.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;121 patches total
+> **[v1.47.1-dev.9](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.1-dev.9)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;125 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -75,7 +75,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 12.7.8 |
+| 12.8.3 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -290,7 +290,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 7.1.10 |
+| 7.1.12 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -453,7 +453,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.73.1 |
+| 1.73.2 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -599,7 +599,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.3052 |
+| 1.3053 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -611,7 +611,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Plague Inc.&nbsp;&nbsp;•&nbsp;&nbsp;8 patches</summary>
+<summary>📦 Plague Inc.&nbsp;&nbsp;•&nbsp;&nbsp;12 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -621,11 +621,15 @@ Direct URL:
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
+| [Plague Inc. Custom Scenario Download Fix](#plague-inc-custom-scenario-download-fix) | Fixes custom scenario downloads by setting the HTTP User-Agent the scenario server requires. |  |
+| [Plague Inc. Custom Scenario Upgrades](#plague-inc-custom-scenario-upgrades) | Gives 8 custom scenario save slots and unlimited downloads. |  |
+| [Plague Inc. Outbreak Popup Bypass](#plague-inc-outbreak-popup-bypass) | Auto-claims outbreak trial/bonus missions and suppresses outbreak purchase/onboarding popups. |  |
 | [Plague Inc. Premium](#plague-inc-premium) | Unlocks all premium features and disables premium prompts. |  |
 | [Plague Inc. Remove Banner Ads](#plague-inc-remove-banner-ads) | Removes AppLovin banner ads and the Ndemic premium promo during gameplay. |  |
 | [Plague Inc. Skip Rewarded Video Ads](#plague-inc-skip-rewarded-video-ads) | Grants rewarded video bonuses instantly without watching ads. |  |
 | [Plague Inc. Sync Premium Entitlements](#plague-inc-sync-premium-entitlements) | Registers unlocked premium content with the native engine so premium modes run without trial banners. |  |
 | [Plague Inc. Unlock All Genes](#plague-inc-unlock-all-genes) | Unlocks all genes by earning them through the game's own unlock path when the gene menu opens. |  |
+| [Plague Inc. Unlock All Scenarios](#plague-inc-unlock-all-scenarios) | Unlocks all official scenarios. |  |
 | [Plague Inc. Unlock Disease Types](#plague-inc-unlock-disease-types) | Unlocks all disease types including Neurax Worm, Necroa Virus, Simian Flu and Shadow Plague. |  |
 | [Plague Inc. Unlock Expansions](#plague-inc-unlock-expansions) | Unlocks Cure Mode, Plague Pack, custom scenarios and bypasses the Play Pass check. |  |
 | [Plague Inc. Unlock Fast-Forward](#plague-inc-unlock-fast-forward) | Removes the premium lock from the in-game fast-forward button. |  |
@@ -716,7 +720,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.3.10 |
+| 1.4.1 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -847,7 +851,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 3.44.1 |
+| 3.45.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

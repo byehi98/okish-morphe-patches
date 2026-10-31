@@ -119,14 +119,14 @@ private const val REWARD_STUB_ARM32 = "0100A0E31EFF2FE1"
 private val ARM64_REWARD_SITES = listOf(
     RewardGate(
         label = "player.AreInterstitialsDisabled -> true (no forced interstitials)",
-        rva = 0x1CDBF9C,
-        fileOffset = 0x1CD7F9C,
+        rva = 0x228DC8C,
+        fileOffset = 0x2289C8C,
         expectWords = arrayOf("F81F0FFE", "F9400C08", "B4000128", "F9406100"),
     ),
     RewardGate(
         label = "player.AreVideoAdsDisabled -> true (instant rewarded)",
-        rva = 0x1CDBFCC,
-        fileOffset = 0x1CD7FCC,
+        rva = 0x228DCBC,
+        fileOffset = 0x2289CBC,
         expectWords = arrayOf("F81F0FFE", "F9400C08", "B4000128", "F9406100"),
     ),
 )
@@ -134,14 +134,14 @@ private val ARM64_REWARD_SITES = listOf(
 private val ARM32_REWARD_SITES = listOf(
     RewardGate(
         label = "player.AreInterstitialsDisabled -> true (no forced interstitials)",
-        rva = 0xEA8030,
-        fileOffset = 0xEA8030,
+        rva = 0x1181524,
+        fileOffset = 0x1181524,
         expectWords = arrayOf("E92D4010", "E590400C", "E3540000", "1A000000"),
     ),
     RewardGate(
         label = "player.AreVideoAdsDisabled -> true (instant rewarded)",
-        rva = 0xEA8068,
-        fileOffset = 0xEA8068,
+        rva = 0x118155C,
+        fileOffset = 0x118155C,
         expectWords = arrayOf("E92D4010", "E590400C", "E3540000", "1A000000"),
     ),
 )
