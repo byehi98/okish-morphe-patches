@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.47.1-dev.9](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.1-dev.9)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;125 patches total
+> **[v1.48.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.48.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;126 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -301,7 +301,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Jetpack Joyride&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<summary>📦 Jetpack Joyride&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -314,6 +314,7 @@ Direct URL:
 | [Free Ad Rewards](#free-ad-rewards) | Every "watch an ad" offer in Jetpack Joyride pays out instantly — the reward is claimed without playing any video, with no countdown and no network round trip, and the offer stays repeatable. Works offline. |  |
 | [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
 | [Remove Ads](#remove-ads) | Stops the full-screen interstitial adverts Jetpack Joyride shows between runs. The game's own "no ad available" path is replayed, so the run continues immediately instead of freezing or waiting on a skipped advert. |  |
+| [Unlock Events](#unlock-events) | Unlocks every event (seasonal worlds, event missions and their pop-ups) by disabling the game's internal "IAP cheat" flag check. When a free-IAP patch forges a purchase the game's receipt validator marks the account as a cheater and locks all cheater-restricted events behind an 'Event Restricted' pop-up; this patch makes that check always answer 'not a cheat', so the events open normally. |  |
 
 </details>
 

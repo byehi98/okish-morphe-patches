@@ -1,3 +1,9 @@
+## [1.48.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.1-dev.9...v1.48.0-dev.1) (2026-11-01)
+
+### ✨ New Features
+
+* **jetpackjoyride:** add unlock events patch ([b5e87f4](https://github.com/byehi98/okish-morphe-patches/commit/b5e87f4307fc3172455972b3781d8fb3fee1266e))
+
 ## [1.47.1-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.1-dev.8...v1.47.1-dev.9) (2026-10-31)
 
 ### 🚀 Updated App Support
