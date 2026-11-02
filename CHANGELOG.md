@@ -1,3 +1,9 @@
+## [1.48.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.1...v1.48.0-dev.2) (2026-11-02)
+
+### ✨ New Features
+
+* **magicsurvival:** support offline store and repeatable purchases ([06d5271](https://github.com/byehi98/okish-morphe-patches/commit/06d52714a99b48bf7598898bcc3036973425d159))
+
 ## [1.48.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.1-dev.9...v1.48.0-dev.1) (2026-11-01)
 
 ### ✨ New Features
