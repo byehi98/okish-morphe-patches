@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-02T08:13:53",
-  "description": "## [1.48.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.2...v1.48.0-dev.3) (2026-11-02)\n\n### ✨ New Features\n\n* **lemmings:** support armv7 in native IAP patches ([c42743f](https://github.com/byehi98/okish-morphe-patches/commit/c42743f92f65b4b36fe7023beb5489cfcdacaae1))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.48.0-dev.3/patches-1.48.0-dev.3.mpp",
+  "created_at": "2026-11-02T14:25:44",
+  "description": "## [1.48.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.3...v1.48.0-dev.4) (2026-11-02)\n\n### ✨ New Features\n\n* **fancade:** add no ads and free IAP patches ([5e21409](https://github.com/byehi98/okish-morphe-patches/commit/5e2140929e09e537a151465e95231ccdea4565b7))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.48.0-dev.4/patches-1.48.0-dev.4.mpp",
   "signature_download_url": "",
-  "version": "1.48.0-dev.3"
+  "version": "1.48.0-dev.4"
 }

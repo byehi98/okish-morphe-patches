@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.48.0-dev.3",
+  "version": "1.48.0-dev.4",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -814,6 +814,34 @@
           "targets": [
             {
               "version": "1.14.10",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Free IAP",
+      "description": "Buy any gold pack without paying: each pack grants its gems and its no-ads time (the last pack is permanent), and purchases persist after a restart. No Play payment dialog is shown.",
+      "default": true,
+      "dependencies": [
+        "RawResourcePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.martinmagni.fancade",
+          "name": "Fancade",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#FFB300",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "1.15.24",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -2412,6 +2440,34 @@
           "targets": [
             {
               "version": "1.14.10",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Remove ads & free rewards",
+      "description": "Interstitial ads no longer show, and reward ads pay out instantly — tap the reward button and the coins/gems are granted without watching a video. The \"watch ad for gems\" button is always available.",
+      "default": true,
+      "dependencies": [
+        "RawResourcePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.martinmagni.fancade",
+          "name": "Fancade",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#FFB300",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "1.15.24",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,

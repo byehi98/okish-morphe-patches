@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.48.0-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.48.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;126 patches total
+> **[v1.48.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.48.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;128 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -334,6 +334,22 @@ Direct URL:
 | [Remove ads](#remove-ads) | Removes all ads. Reward videos now give you the prize instantly — no watching needed. |  |
 | [Unlimited money (restore save)](#unlimited-money-restore-save) | Loads the unlimited money save into the game the first time you open it. |  |
 | [Unlimited money (save bundle)](#unlimited-money-save-bundle) | Packs the special save file (unlimited coins & gems, everything unlocked) inside the app. |  |
+
+</details>
+
+<details>
+<summary>📦 Fancade&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.15.24 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free IAP](#free-iap) | Buy any gold pack without paying: each pack grants its gems and its no-ads time (the last pack is permanent), and purchases persist after a restart. No Play payment dialog is shown. |  |
+| [Remove ads & free rewards](#remove-ads-free-rewards) | Interstitial ads no longer show, and reward ads pay out instantly — tap the reward button and the coins/gems are granted without watching a video. The "watch ad for gems" button is always available. |  |
 
 </details>
 

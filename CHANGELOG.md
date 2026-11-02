@@ -1,3 +1,9 @@
+## [1.48.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.3...v1.48.0-dev.4) (2026-11-02)
+
+### ✨ New Features
+
+* **fancade:** add no ads and free IAP patches ([5e21409](https://github.com/byehi98/okish-morphe-patches/commit/5e2140929e09e537a151465e95231ccdea4565b7))
+
 ## [1.48.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.2...v1.48.0-dev.3) (2026-11-02)
 
 ### ✨ New Features
