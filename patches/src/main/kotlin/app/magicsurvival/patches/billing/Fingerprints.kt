@@ -75,6 +75,36 @@ object BillingAcknowledgePurchaseFingerprint : Fingerprint(
     ),
 )
 
+// zzcw.queryProductDetailsAsync(QueryProductDetailsParams, ProductDetailsResponseListener): void
+// The runtime client (BillingClient$Builder.build → zzcw) overrides the catalog query and runs
+// the real one on the client ExecutorService via zzaP(). Answering here keeps the fabricated
+// catalog on the caller's (Unity) thread and never touches Play, so the shop populates offline.
+// Smali (.registers 5 → v0, v1 locals + p0, p1, p2).
+object ZzcwQueryProductDetailsAsyncFingerprint : Fingerprint(
+    definingClass = "Lcom/android/billingclient/api/zzcw;",
+    name = "queryProductDetailsAsync",
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+    returnType = "V",
+    parameters = listOf(
+        "Lcom/android/billingclient/api/QueryProductDetailsParams;",
+        "Lcom/android/billingclient/api/ProductDetailsResponseListener;",
+    ),
+)
+
+// BillingClientImpl.queryProductDetailsAsync(...) — same catalog answer for the super
+// implementation, as a safety net if the client is ever used through the base class.
+// Smali (.registers 9 → v0..v5 locals + p0, p1, p2).
+object BillingQueryProductDetailsAsyncFingerprint : Fingerprint(
+    definingClass = "Lcom/android/billingclient/api/BillingClientImpl;",
+    name = "queryProductDetailsAsync",
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    returnType = "V",
+    parameters = listOf(
+        "Lcom/android/billingclient/api/QueryProductDetailsParams;",
+        "Lcom/android/billingclient/api/ProductDetailsResponseListener;",
+    ),
+)
+
 // zzcw.consumeAsync(...) — the runtime subclass wraps the real call in
 // zzaP(), which executes it on the client's ExecutorService (zzcw.java:225).
 // That would deliver our fabricated callback on a background thread, i.e. into
