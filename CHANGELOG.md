@@ -1,3 +1,9 @@
+## [1.48.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.2...v1.48.0-dev.3) (2026-11-02)
+
+### ✨ New Features
+
+* **lemmings:** support armv7 in native IAP patches ([c42743f](https://github.com/byehi98/okish-morphe-patches/commit/c42743f92f65b4b36fe7023beb5489cfcdacaae1))
+
 ## [1.48.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.1...v1.48.0-dev.2) (2026-11-02)
 
 ### ✨ New Features
