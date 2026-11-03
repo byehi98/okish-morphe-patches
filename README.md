@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.48.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.48.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;128 patches total
+> **[v1.48.0-dev.5](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.48.0-dev.5)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;129 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -628,19 +628,20 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Plague Inc.&nbsp;&nbsp;•&nbsp;&nbsp;12 patches</summary>
+<summary>📦 Plague Inc.&nbsp;&nbsp;•&nbsp;&nbsp;13 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.27.3 |
+| 1.27.5 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Plague Inc. Custom Scenario Download Fix](#plague-inc-custom-scenario-download-fix) | Fixes custom scenario downloads by setting the HTTP User-Agent the scenario server requires. |  |
 | [Plague Inc. Custom Scenario Upgrades](#plague-inc-custom-scenario-upgrades) | Gives 8 custom scenario save slots and unlimited downloads. |  |
-| [Plague Inc. Outbreak Popup Bypass](#plague-inc-outbreak-popup-bypass) | Auto-claims outbreak trial/bonus missions and suppresses outbreak purchase/onboarding popups. |  |
+| [Plague Inc. Native Custom Scenario Slots](#plague-inc-native-custom-scenario-slots) | Forces the native engine to report custom scenario slot tier 3 (8 slots, unlimited downloads). |  |
+| [Plague Inc. Outbreak Popup Bypass](#plague-inc-outbreak-popup-bypass) | Auto-claims outbreak trial missions and suppresses outbreak purchase/onboarding popups. |  |
 | [Plague Inc. Premium](#plague-inc-premium) | Unlocks all premium features and disables premium prompts. |  |
 | [Plague Inc. Remove Banner Ads](#plague-inc-remove-banner-ads) | Removes AppLovin banner ads and the Ndemic premium promo during gameplay. |  |
 | [Plague Inc. Skip Rewarded Video Ads](#plague-inc-skip-rewarded-video-ads) | Grants rewarded video bonuses instantly without watching ads. |  |

@@ -1,3 +1,9 @@
+## [1.48.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.4...v1.48.0-dev.5) (2026-11-03)
+
+### ✨ New Features
+
+* **Plagueinc:** updated the supported app version to 1.27.5 ([4940676](https://github.com/byehi98/okish-morphe-patches/commit/4940676b25cd3ad340284c7c3cc9893810fff484))
+
 ## [1.48.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.3...v1.48.0-dev.4) (2026-11-02)
 
 ### ✨ New Features
