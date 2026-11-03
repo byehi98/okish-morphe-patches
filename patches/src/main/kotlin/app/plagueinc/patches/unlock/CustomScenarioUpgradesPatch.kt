@@ -4,9 +4,11 @@ import app.morphe.patcher.util.proxy.mutableTypes.MutableClass
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
+import com.android.tools.smali.dexlib2.immutable.ImmutableField
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.patch.bytecodePatch
+import app.morphe.patcher.util.proxy.mutableTypes.MutableField.Companion.toMutable
 import app.plagueinc.patches.shared.Constants.COMPATIBILITY_PLAGUEINC
 
 @Suppress("unused")
@@ -25,8 +27,23 @@ val plagueIncCustomScenarioUpgradesPatch = bytecodePatch(
         convertNativeUnlockMethodToIntStub(scenariosClass, "getDownloadsAvailable", Int.MAX_VALUE)
         convertNativeUnlockMethodToIntStub(scenariosClass, "getHoursTillDownloadReset", 0)
 
-        // getFreeDownloadSlotIndex: replace native with a loop that finds the
-        // first slot whose scenario id is empty.
+        // Add a static counter field used as a fallback when no empty slot is
+        // detected (some builds return a non-empty placeholder for empty slots).
+        scenariosClass.fields.add(
+            ImmutableField(
+                scenariosClass.type,
+                "morpheDownloadSlot",
+                "I",
+                AccessFlags.PUBLIC.value or AccessFlags.STATIC.value,
+                null,
+                null,
+                null
+            ).toMutable()
+        )
+
+        // getFreeDownloadSlotIndex: prefer the first genuinely empty slot; fall
+        // back to a rotating counter so downloads keep working even when empty
+        // slots are not reported as empty.
         val original = scenariosClass.methods.first { it.name == "getFreeDownloadSlotIndex" }
         val stub = MutableMethod(
             ImmutableMethod(
@@ -49,11 +66,11 @@ val plagueIncCustomScenarioUpgradesPatch = bytecodePatch(
                 move-result-object v1
                 invoke-static {v1}, Landroid/text/TextUtils;->isEmpty(Ljava/lang/CharSequence;)Z
                 move-result v1
-                if-nez v1, :slot_found
+                if-eqz v1, :slot_next
+                return v0
+                :slot_next
                 add-int/lit8 v0, v0, 0x1
                 goto :slot_loop
-                :slot_found
-                return v0
                 :slot_none
                 const/4 v0, -0x1
                 return v0

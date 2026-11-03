@@ -1,21 +1,16 @@
 package app.plagueinc.patches.premium
 
 import app.morphe.patcher.patch.bytecodePatch
-import app.morphe.util.returnEarly
 import app.plagueinc.patches.shared.Constants.COMPATIBILITY_PLAGUEINC
+import app.morphe.util.addInstructionsToEnd
+import app.plagueinc.patches.premium.PurchaseManagerInitFingerprint
 
 /**
  * Forces the app into premium mode.
  *
- * PurchaseManager.isPremium() always returns true — this removes every
- * Java-side gate: fast-forward lock popup, "Unlock Premium" buttons in
- * DiseaseTypeMenu / GenesMenu / ScenariosMenu / DiseaseTypeMenuCure,
- * mega-brutal difficulty toggle, Ndemic ad background.
- *
- * NOTE: we deliberately do NOT call Main.setIsPremium(true) (native) at init.
- * The game only calls it after a completed purchase, once the engine is fully
- * ready; firing it during MainActivity.onCreate risks poking engine subsystems
- * before async init completes (observed as a crash when starting a game).
+ * The new version stores premium state in the field `k:Z` of the PurchaseManager
+ * singleton (js0) instead of an isPremium() method. Setting it to true in the
+ * constructor unlocks every Java-side premium gate.
  */
 @Suppress("unused")
 val plagueIncPremiumBypassPatch = bytecodePatch(
@@ -26,7 +21,9 @@ val plagueIncPremiumBypassPatch = bytecodePatch(
     compatibleWith(COMPATIBILITY_PLAGUEINC)
 
     execute {
-        // All Java-side premium checks return true
-        IsPremiumFingerprint.method.returnEarly(true)
+        PurchaseManagerInitFingerprint.method.addInstructionsToEnd("""
+            const/4 v0, 0x1
+            iput-boolean v0, p0, Ljs0;->k:Z
+        """)
     }
 }

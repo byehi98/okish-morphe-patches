@@ -6,46 +6,43 @@ import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.util.returnEarly
 import app.plagueinc.patches.shared.Constants.COMPATIBILITY_PLAGUEINC
 
-/**
- * Outbreak (daily mission) popup suppression + auto-claim.
- *
- * Primary fix is EngineEntitlementSyncPatch (SKU replay). This patch is the
- * Java-side failsafe: it auto-claims trial/bonus missions instead of showing
- * the claim popup, and stubs the purchase/onboarding popups and the billing
- * entry point so no Google Play sheet can ever appear.
- */
 @Suppress("unused")
 val plagueIncOutbreakPopupPatch = bytecodePatch(
     name = "Plague Inc. Outbreak Popup Bypass",
-    description = "Auto-claims outbreak trial/bonus missions and suppresses outbreak purchase/onboarding popups.",
+    description = "Auto-claims outbreak trial missions and suppresses outbreak purchase/onboarding popups.",
     default = true
 ) {
     compatibleWith(COMPATIBILITY_PLAGUEINC)
 
     execute {
-        // Trial branch: claimMissionTrial(focusedSeed) + goPlay() instead of popup.
-        val trialMatch = DailyLevelSelectTrialBranchFingerprint.instructionMatches.first()
-        val trialMethod = DailyLevelSelectTrialBranchFingerprint.method
-        trialMethod.removeInstruction(trialMatch.index)
-        trialMethod.addInstructions(trialMatch.index, """
-            iget v0, p0, Lcom/miniclip/plagueinc/menu/DailyLevelSelect;->focusedSeed:I
-            invoke-static {v0}, Lcom/miniclip/plagueinc/jni/GameSetup;->claimMissionTrial(I)V
-            invoke-direct {p0}, Lcom/miniclip/plagueinc/menu/DailyLevelSelect;->goPlay()V
-        """)
+        // Trial popup (r0) -> auto-claim + goPlay instead of showing popup.
+        val trialPopupMethod = DailyLevelSelectTrialPopupFingerprint.methodOrNull
+        if (trialPopupMethod != null) {
+            val impl = trialPopupMethod.implementation
+            if (impl != null) {
+                while (impl.instructions.isNotEmpty()) {
+                    trialPopupMethod.removeInstruction(0)
+                }
+            }
+            trialPopupMethod.addInstructions(0, """
+                invoke-static {}, Lcom/miniclip/plagueinc/jni/Main;->Click()V
+                iget v0, p0, Lcom/miniclip/plagueinc/menu/DailyLevelSelect;->l0:I
+                invoke-static {v0}, Lcom/miniclip/plagueinc/jni/GameSetup;->claimMissionTrial(I)V
+                invoke-virtual {p0}, Lcom/miniclip/plagueinc/menu/DailyLevelSelect;->l0()V
+                return-void
+            """)
+        }
 
-        // Bonus branch: claimMissionBonus(focusedSeed) + goPlay() instead of popup.
-        val bonusMatch = DailyLevelSelectBonusBranchFingerprint.instructionMatches.first()
-        val bonusMethod = DailyLevelSelectBonusBranchFingerprint.method
-        bonusMethod.removeInstruction(bonusMatch.index)
-        bonusMethod.addInstructions(bonusMatch.index, """
-            iget v0, p0, Lcom/miniclip/plagueinc/menu/DailyLevelSelect;->focusedSeed:I
-            invoke-static {v0}, Lcom/miniclip/plagueinc/jni/GameSetup;->claimMissionBonus(I)V
-            invoke-direct {p0}, Lcom/miniclip/plagueinc/menu/DailyLevelSelect;->goPlay()V
-        """)
+        // Onboarding popup trigger in on-show-page (R) -> force false.
+        val onShowFp = DailyLevelSelectOnShowPageFingerprint
+        if (onShowFp.methodOrNull != null && onShowFp.instructionMatches.size >= 2) {
+            val moveMatch = onShowFp.instructionMatches[1]
+            onShowFp.method.addInstructions(moveMatch.index + 1, "const/4 p1, 0x0")
+        }
 
         // Failsafe stubs.
-        DailyLevelSelectShowPurchasePopupFingerprint.method.returnEarly()
-        DailyLevelSelectShowOnboardingPopupFingerprint.method.returnEarly()
-        PurchaseManagerBeginOutbreakPurchaseUxFingerprint.method.returnEarly()
+        DailyLevelSelectShowPurchasePopupFingerprint.methodOrNull?.returnEarly()
+        DailyLevelSelectShowOnboardingPopupFingerprint.methodOrNull?.returnEarly()
+        PurchaseManagerBeginOutbreakPurchaseUxFingerprint.methodOrNull?.returnEarly()
     }
 }

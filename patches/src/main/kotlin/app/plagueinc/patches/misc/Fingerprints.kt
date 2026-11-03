@@ -72,7 +72,7 @@ object PlagueApplicationOnCreateFingerprint : app.morphe.patcher.Fingerprint(
     definingClass = "Lcom/miniclip/plagueinc/PlagueApplication;",
     name = "onCreate",
     returnType = "V",
-    accessFlags = listOf(com.android.tools.smali.dexlib2.AccessFlags.PUBLIC)
+    accessFlags = listOf(com.android.tools.smali.dexlib2.AccessFlags.PUBLIC, com.android.tools.smali.dexlib2.AccessFlags.FINAL)
 )
 
 /** Shared filter pair tail: move-result immediately after the isPremium call. */

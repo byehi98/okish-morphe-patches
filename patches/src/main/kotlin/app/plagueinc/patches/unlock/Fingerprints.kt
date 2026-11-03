@@ -190,8 +190,7 @@ object UnlocksUnlockRandomGeneFingerprint : Fingerprint(
  */
 object GenesMenuShowMainPageFingerprint : Fingerprint(
     definingClass = "Lcom/miniclip/plagueinc/menu/GenesMenu;",
-    name = "showMainPage",
+    name = "k0",
     returnType = "V",
-    accessFlags = listOf(AccessFlags.PRIVATE),
     parameters = listOf("Z")
 )

@@ -28,12 +28,14 @@ val plagueIncFastForwardUnlockPatch = bytecodePatch(
 
     execute {
         for (fingerprint in listOf(SelectSpeedButtonFingerprint, UpdateMainBarFingerprint)) {
+            val method = fingerprint.methodOrNull ?: continue
+            if (fingerprint.instructionMatches.isEmpty()) continue
             val match = fingerprint.instructionMatches.last() // the move-result
             val register = match.getInstruction<OneRegisterInstruction>().registerA
 
             // NOTE: must insert AFTER the move-result, never between an invoke
             // and its move-result — that fails dex verification (VerifyError).
-            fingerprint.method.addInstructions(match.index + 1, "const/4 v$register, 0x1")
+            method.addInstructions(match.index + 1, "const/4 v$register, 0x1")
         }
     }
 }

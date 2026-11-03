@@ -28,9 +28,10 @@ val plagueIncRewardedVideoBypassPatch = bytecodePatch(
     compatibleWith(COMPATIBILITY_PLAGUEINC)
 
     execute {
+        val method = CreateRewardedAdFingerprint.methodOrNull ?: return@execute
         // createRewardedAd has .registers 7: v0..v2 locals + p0..p4 params
         // (this + String + 3 Runnables). Inserted code only uses p2/p4.
-        CreateRewardedAdFingerprint.method.addInstructionsWithLabels(0, """
+        method.addInstructionsWithLabels(0, """
             if-eqz p2, :plague_skip_reward
             invoke-interface {p2}, Ljava/lang/Runnable;->run()V
             :plague_skip_reward

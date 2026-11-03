@@ -18,7 +18,7 @@ import app.plagueinc.patches.shared.Constants.COMPATIBILITY_PLAGUEINC
  * HttpManager uses Volley/HurlStack which never sets a User-Agent, so every
  * metadata fetch (scenarios_download?id=...) fails with 400 and the download
  * never starts. Setting the JVM http.agent property at app startup makes
- * HttpURLConnection (and thus Volley) send "PlagueInc/1.27.3", which the
+ * HttpURLConnection (and thus Volley) send "PlagueInc/1.27.5", which the
  * server accepts.
  *
  * Implementation: add a helper method `morpheSetHttpAgent()` to
@@ -52,7 +52,7 @@ val plagueIncCustomScenarioDownloadFixPatch = bytecodePatch(
         ).apply {
             addInstructions(0, """
                 const-string v0, "http.agent"
-                const-string v1, "PlagueInc/1.27.3"
+                const-string v1, "PlagueInc/1.27.5"
                 invoke-static {v0, v1}, Ljava/lang/System;->setProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
                 move-result-object v2
                 return-void

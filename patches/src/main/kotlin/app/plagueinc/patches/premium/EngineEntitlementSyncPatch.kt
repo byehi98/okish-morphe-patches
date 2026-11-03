@@ -99,7 +99,9 @@ val plagueIncEngineEntitlementSyncPatch = bytecodePatch(
                 )
             }
 
-            addInstructionsToEnd("return-void")
+            // addInstructionsToEnd() inserts *before* the last instruction, which
+            // silently made the final SKU's setInAppPurchaseState unreachable.
+            addInstructions(implementation!!.instructions.size, "return-void")
         }
 
         pmClass.methods.add(syncMethod)
