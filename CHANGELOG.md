@@ -1,3 +1,9 @@
+## [1.48.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.5...v1.48.0-dev.6) (2026-11-04)
+
+### 🚀 Updated App Support
+
+* **crossyroad:** updated the version. ([56d7005](https://github.com/byehi98/okish-morphe-patches/commit/56d7005ddb357b74d0f377c134712824fd56e942))
+
 ## [1.48.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.4...v1.48.0-dev.5) (2026-11-03)
 
 ### ✨ New Features
