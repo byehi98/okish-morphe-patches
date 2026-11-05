@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.49.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;132 patches total
+> **[v1.49.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;136 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -382,6 +382,24 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Free IAP](#free-iap) | Everything in the shop is free. Tap "Buy" on any item — remove ads, coin packs, or anything else — and you get it right away. No Google Play payment window opens and you are never charged. If something goes wrong you will just see a "purchase failed" message; the game keeps working as normal. |  |
+
+</details>
+
+<details>
+<summary>📦 Off The Road&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.18.2 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Rewarded Ads](#free-rewarded-ads) | The "watch a video" buttons pay out instantly. Tap one and you get the cash, repair or ticket reward without any ad or wait. |  |
+| [Free Store](#free-store) | Everything in the shop is free. Tap any item — coins, tickets, VIP, remove-ads, car packs or bundles — and it is granted immediately, with no Google Play payment screen and nothing charged. |  |
+| [Remove Ads](#remove-ads) | Removes full-screen and banner ads. Rewarded "watch a video" buttons keep working. |  |
+| [VIP Club Unlocked](#vip-club-unlocked) | Unlocks the VIP Club subscription automatically on every launch. No payment screen, no Google Play subscription, nothing charged. |  |
 
 </details>
 

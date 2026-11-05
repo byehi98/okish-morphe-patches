@@ -1,3 +1,9 @@
+## [1.49.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.1...v1.49.0-dev.2) (2026-11-05)
+
+### ✨ New Features
+
+* **offtheroad:** add patches for off the road. ([84007b9](https://github.com/byehi98/okish-morphe-patches/commit/84007b95b56a1a3a0767032f82934c55efe3edd1))
+
 ## [1.49.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0...v1.49.0-dev.1) (2026-11-05)
 
 ### ✨ New Features

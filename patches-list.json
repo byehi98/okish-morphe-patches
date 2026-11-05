@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.49.0-dev.1",
+  "version": "1.49.0-dev.2",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -909,6 +909,32 @@
       "options": []
     },
     {
+      "name": "Free Rewarded Ads",
+      "description": "The \"watch a video\" buttons pay out instantly. Tap one and you get the cash, repair or ticket reward without any ad or wait.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.dogbytegames.offtheroad",
+          "name": "Off The Road",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#F5C078",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "1.18.2",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Free Store",
       "description": "Everything in the shop is free. Tap an item and you get it instantly — no paying, no waiting, no Google Play involved.",
       "default": true,
@@ -950,6 +976,32 @@
           "targets": [
             {
               "version": "7.1.12",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Free Store",
+      "description": "Everything in the shop is free. Tap any item — coins, tickets, VIP, remove-ads, car packs or bundles — and it is granted immediately, with no Google Play payment screen and nothing charged.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.dogbytegames.offtheroad",
+          "name": "Off The Road",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#F5C078",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "1.18.2",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -2486,6 +2538,32 @@
     },
     {
       "name": "Remove Ads",
+      "description": "Removes full-screen and banner ads. Rewarded \"watch a video\" buttons keep working.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.dogbytegames.offtheroad",
+          "name": "Off The Road",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#F5C078",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "1.18.2",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Remove Ads",
       "description": "Forced ads are gone for good — interstitials never load or show, even offline and regardless of server settings. Rewarded videos you choose to watch still work.",
       "default": true,
       "dependencies": [],
@@ -3369,6 +3447,32 @@
           "targets": [
             {
               "version": "1.104.2",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "VIP Club Unlocked",
+      "description": "Unlocks the VIP Club subscription automatically on every launch. No payment screen, no Google Play subscription, nothing charged.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.dogbytegames.offtheroad",
+          "name": "Off The Road",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#F5C078",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "1.18.2",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
