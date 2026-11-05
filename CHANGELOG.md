@@ -1,3 +1,9 @@
+## [1.48.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.6...v1.48.0-dev.7) (2026-11-05)
+
+### 🚀 Updated App Support
+
+* **dantheman:** updated the version and made changes in IAP according ([63928e3](https://github.com/byehi98/okish-morphe-patches/commit/63928e32c3dcf9d7e5fa1431fb81d903d3e15412))
+
 ## [1.48.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0-dev.5...v1.48.0-dev.6) (2026-11-04)
 
 ### 🚀 Updated App Support
