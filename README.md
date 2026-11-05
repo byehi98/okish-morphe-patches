@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.48.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.48.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;129 patches total
+> **[v1.49.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;132 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -264,6 +264,23 @@ Direct URL:
 |----------|----------------|-----------|
 | [Fix app opening](#fix-app-opening) | Required so the modified app opens without crashing — skips signature, root and emulator checks. |  |
 | [Free purchases](#free-purchases) | Get paid items for free — tapping buy grants the item instantly without Google Play payment popup. |  |
+
+</details>
+
+<details>
+<summary>📦 FR Legends&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 0.4.9 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | The "watch a video" buttons give you the reward straight away. Tap one and the cash, gold or bonus is yours — no video, no waiting, and the buttons are always ready to use. |  |
+| [Free Store Purchases](#free-store-purchases) | Everything in the shop is free. Tap a cash pack, a gold pack, a car pack or the Livery Creator Pass and you get it straight away — no payment screen, no charge. |  |
+| [Remove Ads](#remove-ads) | Stops banners, roadside billboards and full-screen ads from appearing. Races and menus carry on as normal — the ads just never show up. |  |
 
 </details>
 

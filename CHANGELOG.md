@@ -1,3 +1,9 @@
+## [1.49.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0...v1.49.0-dev.1) (2026-11-05)
+
+### ✨ New Features
+
+* **frlegends:** added patches of ad removal + instant rewards, and IAP ([6071ccb](https://github.com/byehi98/okish-morphe-patches/commit/6071ccb81bf8d2bd06ac68677107baa41d2c3e79))
+
 ## [1.48.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0...v1.48.0) (2026-11-05)
 
 ### 🐛 Bug Fixes
