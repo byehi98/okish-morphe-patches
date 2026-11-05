@@ -5,7 +5,7 @@ import app.morphe.patcher.patch.rawResourcePatch
 import app.morphe.patches.all.misc.hex.hexPatch
 
 /**
- * Dan the Man — native IAP grant (libmortargame.so, arm64-v8a, 1.14.10).
+ * Dan the Man — native IAP grant (libmortargame.so, arm64-v8a, 1.14.11).
  *
  * WHY: the store's real GRANT gate is `GameStoreService::Update`
  * (0x9c4560) polling the active purchase object at `[svc+0xc8]` with
@@ -29,10 +29,16 @@ import app.morphe.patches.all.misc.hex.hexPatch
  * before any Firebase validation response could land). A later -1 from
  * failed cloud validation is harmless (purchase pointer already cleared).
  *
- * The pattern below is the 11-instruction run 0x6950e8..0x695114 in
- * IAP_Support::DoPurchase, verified UNIQUE in libmortargame.so
+ * The pattern below is the 12-instruction run 0x6950e8..0x695114 in
+ * IAP_Support::DoPurchase, verified UNIQUE in libmortargame.so 1.14.11
  * (occurrences = 1; .text vaddr == file offset, readelf confirmed).
- * Verified in `analysis/dantheaman/notes/iap-native-redirect.md`.
+ * 1.14.11 keeps the function at the same address and the same
+ * `mov w8, #0x1` at 0x6950f4, but the preceding ADRP/ADD pair was
+ * relocated (`41 49 00 B0`/`29 BC` -> `A1 49 00 90`/`2B BC`) because the
+ * string/data layout moved, which is why the 1.14.10 anchor no longer
+ * matched. The 1.14.11 pattern below was re-derived from the live binary
+ * and only the `28` -> `08` word changes in the replacement.
+ * Verified in `analysis/dantheman/notes/iap-native-redirect.md`.
  * hexPatch throws when the pattern is missing, so an app update that
  * changes these bytes fails the build instead of silently patching
  * nothing.
@@ -56,11 +62,11 @@ val dtmNativeIapPatch = rawResourcePatch(
 
     dependsOn(hexPatch(block = {
         // IAP_Support::DoPurchase @ 0x6950f4: mov w8, #0x1 -> mov w8, #0x0
-        "41 49 00 B0 F3 03 00 AA B5 22 08 91 28 00 80 52" +
-            "21 BC 29 91 E0 03 14 AA E2 03 1F AA A8 02 00 B9" +
-            "BE 58 FD 97 E0 03 13 AA BF 06 00 B9" asPatternTo
-        "41 49 00 B0 F3 03 00 AA B5 22 08 91 08 00 80 52" +
-            "21 BC 29 91 E0 03 14 AA E2 03 1F AA A8 02 00 B9" +
-            "BE 58 FD 97 E0 03 13 AA BF 06 00 B9" inFile LIB
+        "A1 49 00 90 F3 03 00 AA B5 22 08 91 28 00 80 52" +
+            "21 BC 2B 91 E0 03 14 AA E2 03 1F AA A8 02 00 B9" +
+            "BE 58 FD 97 E0 03 13 AA BF 06 00 B9 6F 54 FD 97" asPatternTo
+        "A1 49 00 90 F3 03 00 AA B5 22 08 91 08 00 80 52" +
+            "21 BC 2B 91 E0 03 14 AA E2 03 1F AA A8 02 00 B9" +
+            "BE 58 FD 97 E0 03 13 AA BF 06 00 B9 6F 54 FD 97" inFile LIB
     }))
 }
