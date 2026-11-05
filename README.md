@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.47.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.47.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;121 patches total
+> **[v1.48.0-dev.7](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.48.0-dev.7)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;129 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -75,7 +75,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 12.7.8 |
+| 12.8.3 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -290,7 +290,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 7.1.10 |
+| 7.1.12 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -301,7 +301,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Jetpack Joyride&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<summary>📦 Jetpack Joyride&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -314,6 +314,7 @@ Direct URL:
 | [Free Ad Rewards](#free-ad-rewards) | Every "watch an ad" offer in Jetpack Joyride pays out instantly — the reward is claimed without playing any video, with no countdown and no network round trip, and the offer stays repeatable. Works offline. |  |
 | [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
 | [Remove Ads](#remove-ads) | Stops the full-screen interstitial adverts Jetpack Joyride shows between runs. The game's own "no ad available" path is replayed, so the run continues immediately instead of freezing or waiting on a skipped advert. |  |
+| [Unlock Events](#unlock-events) | Unlocks every event (seasonal worlds, event missions and their pop-ups) by disabling the game's internal "IAP cheat" flag check. When a free-IAP patch forges a purchase the game's receipt validator marks the account as a cheater and locks all cheater-restricted events behind an 'Event Restricted' pop-up; this patch makes that check always answer 'not a cheat', so the events open normally. |  |
 
 </details>
 
@@ -323,7 +324,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.14.10 |
+| 1.14.11 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -333,6 +334,22 @@ Direct URL:
 | [Remove ads](#remove-ads) | Removes all ads. Reward videos now give you the prize instantly — no watching needed. |  |
 | [Unlimited money (restore save)](#unlimited-money-restore-save) | Loads the unlimited money save into the game the first time you open it. |  |
 | [Unlimited money (save bundle)](#unlimited-money-save-bundle) | Packs the special save file (unlimited coins & gems, everything unlocked) inside the app. |  |
+
+</details>
+
+<details>
+<summary>📦 Fancade&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.15.24 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free IAP](#free-iap) | Buy any gold pack without paying: each pack grants its gems and its no-ads time (the last pack is permanent), and purchases persist after a restart. No Play payment dialog is shown. |  |
+| [Remove ads & free rewards](#remove-ads-free-rewards) | Interstitial ads no longer show, and reward ads pay out instantly — tap the reward button and the coins/gems are granted without watching a video. The "watch ad for gems" button is always available. |  |
 
 </details>
 
@@ -392,7 +409,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 7.14.2 |
+| 7.14.3 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -453,7 +470,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.73.1 |
+| 1.73.2 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -570,7 +587,7 @@ Direct URL:
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Magic Survival Free Store](#magic-survival-free-store) | Grants every in-app purchase for free: tapping Buy fabricates a successful Google Play purchase (remove-ad, gem packs) and feeds it through the billing listener without opening the payment dialog, and granted entitlements are restored on every launch. |  |
+| [Magic Survival Free Store](#magic-survival-free-store) | Grants every in-app purchase for free: tapping Buy fabricates a successful Google Play purchase (remove-ad, gem packs) and feeds it through the billing listener without opening the payment dialog. Purchases can be repeated any number of times, granted entitlements are restored on every launch, and the store catalog is answered locally so the shop also works without an internet connection. |  |
 | [Magic Survival Instant Rewarded Rewards](#magic-survival-instant-rewarded-rewards) | Grants rewarded-ad rewards instantly on tap without watching an ad: the rewarded ad reports ready immediately and show() fires the reward and close callbacks synchronously. |  |
 | [Magic Survival Remove Ads](#magic-survival-remove-ads) | Removes interstitial, app-open and banner ads: nothing is ever loaded or displayed, and any show call resolves the game's ad callbacks instantly so the flow never stalls. |  |
 
@@ -599,7 +616,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.3052 |
+| 1.3053 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -611,21 +628,26 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Plague Inc.&nbsp;&nbsp;•&nbsp;&nbsp;8 patches</summary>
+<summary>📦 Plague Inc.&nbsp;&nbsp;•&nbsp;&nbsp;13 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.27.3 |
+| 1.27.5 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
+| [Plague Inc. Custom Scenario Download Fix](#plague-inc-custom-scenario-download-fix) | Fixes custom scenario downloads by setting the HTTP User-Agent the scenario server requires. |  |
+| [Plague Inc. Custom Scenario Upgrades](#plague-inc-custom-scenario-upgrades) | Gives 8 custom scenario save slots and unlimited downloads. |  |
+| [Plague Inc. Native Custom Scenario Slots](#plague-inc-native-custom-scenario-slots) | Forces the native engine to report custom scenario slot tier 3 (8 slots, unlimited downloads). |  |
+| [Plague Inc. Outbreak Popup Bypass](#plague-inc-outbreak-popup-bypass) | Auto-claims outbreak trial missions and suppresses outbreak purchase/onboarding popups. |  |
 | [Plague Inc. Premium](#plague-inc-premium) | Unlocks all premium features and disables premium prompts. |  |
 | [Plague Inc. Remove Banner Ads](#plague-inc-remove-banner-ads) | Removes AppLovin banner ads and the Ndemic premium promo during gameplay. |  |
 | [Plague Inc. Skip Rewarded Video Ads](#plague-inc-skip-rewarded-video-ads) | Grants rewarded video bonuses instantly without watching ads. |  |
 | [Plague Inc. Sync Premium Entitlements](#plague-inc-sync-premium-entitlements) | Registers unlocked premium content with the native engine so premium modes run without trial banners. |  |
 | [Plague Inc. Unlock All Genes](#plague-inc-unlock-all-genes) | Unlocks all genes by earning them through the game's own unlock path when the gene menu opens. |  |
+| [Plague Inc. Unlock All Scenarios](#plague-inc-unlock-all-scenarios) | Unlocks all official scenarios. |  |
 | [Plague Inc. Unlock Disease Types](#plague-inc-unlock-disease-types) | Unlocks all disease types including Neurax Worm, Necroa Virus, Simian Flu and Shadow Plague. |  |
 | [Plague Inc. Unlock Expansions](#plague-inc-unlock-expansions) | Unlocks Cure Mode, Plague Pack, custom scenarios and bypasses the Play Pass check. |  |
 | [Plague Inc. Unlock Fast-Forward](#plague-inc-unlock-fast-forward) | Removes the premium lock from the in-game fast-forward button. |  |
@@ -716,7 +738,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.3.10 |
+| 1.4.1 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -847,7 +869,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 3.44.1 |
+| 3.45.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

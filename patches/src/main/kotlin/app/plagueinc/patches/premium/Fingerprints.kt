@@ -2,7 +2,9 @@ package app.plagueinc.patches.premium
 
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.fieldAccess
+import app.morphe.patcher.methodCall
 import com.android.tools.smali.dexlib2.AccessFlags
+import com.android.tools.smali.dexlib2.Opcode
 
 /**
  * PurchaseManager.isPremium() — single source of truth for all Java-side
@@ -41,8 +43,92 @@ object IsPremiumFingerprint : Fingerprint(
  * flag which breaks exact flag matching.
  */
 object PurchaseManagerInitFingerprint : Fingerprint(
-    definingClass = "Lcom/miniclip/plagueinc/PurchaseManager;",
+    definingClass = "Ljs0;",
     name = "<init>",
     returnType = "V",
     parameters = listOf("Landroid/content/Context;")
+)
+
+/**
+ * DailyLevelSelect.onPlayButtonPressed() — branch point for the outbreak
+ * (daily mission) play flow. Used to locate the trial/bonus popup invokes.
+ *
+ * Confirmed smali (com/miniclip/plagueinc/menu/DailyLevelSelect.smali line 4258):
+ *   .method protected onPlayButtonPressed()V
+ *     .registers 3
+ */
+object DailyLevelSelectTrialBranchFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;",
+    name = "onPlayButtonPressed",
+    returnType = "V",
+    filters = listOf(
+        methodCall(smali = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;->showTrialLevelUx()V")
+    )
+)
+
+object DailyLevelSelectBonusBranchFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;",
+    name = "onPlayButtonPressed",
+    returnType = "V",
+    filters = listOf(
+        methodCall(smali = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;->showBonusLevelUx()V")
+    )
+)
+
+/**
+ * DailyLevelSelect.showPurchasePopup() / showOnboardingPopup() — failsafe stubs.
+ *
+ * Confirmed smali:
+ *   showPurchasePopup  line 3181  .method private showPurchasePopup()V
+ *   showOnboardingPopup line 3129  .method private showOnboardingPopup()V
+ */
+object DailyLevelSelectShowPurchasePopupFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;",
+    name = "showPurchasePopup",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PRIVATE)
+)
+
+object DailyLevelSelectShowOnboardingPopupFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;",
+    name = "showOnboardingPopup",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PRIVATE)
+)
+
+/**
+ * PurchaseManager.BeginOutbreakPurchaseUx() — opens the Google Play billing
+ * sheet for the outbreak SKU. Stubbed to return-void as a failsafe.
+ *
+ * Confirmed smali (com/miniclip/plagueinc/PurchaseManager.smali line 1164):
+ *   .method public BeginOutbreakPurchaseUx()V  .registers 2
+ */
+/**
+ * DailyLevelSelect.r0() — trial-claim popup display. Stubbed to auto-claim + goPlay.
+ */
+object DailyLevelSelectTrialPopupFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;",
+    name = "r0",
+    returnType = "V"
+)
+
+/**
+ * DailyLevelSelect.R(I) — on-show-page handler; contains the onboarding popup trigger.
+ */
+object DailyLevelSelectOnShowPageFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/menu/DailyLevelSelect;",
+    name = "R",
+    returnType = "V",
+    parameters = listOf("I"),
+    filters = listOf(
+        methodCall(smali = "Lcom/miniclip/plagueinc/jni/GameSetup;->getOnboardingTrialUXPopupSingleton()Z"),
+        app.morphe.patcher.opcode(com.android.tools.smali.dexlib2.Opcode.MOVE_RESULT, app.morphe.patcher.InstructionLocation.MatchAfterImmediately())
+    )
+)
+
+object PurchaseManagerBeginOutbreakPurchaseUxFingerprint : Fingerprint(
+    definingClass = "Lcom/miniclip/plagueinc/PurchaseManager;",
+    name = "BeginOutbreakPurchaseUx",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PUBLIC)
 )

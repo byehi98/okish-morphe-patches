@@ -37,7 +37,8 @@ val plagueIncBannerAdRemovalPatch = bytecodePatch(
     compatibleWith(COMPATIBILITY_PLAGUEINC)
 
     execute {
-        val onGameSessionStartedMethod = OnGameSessionStartedFingerprint.method
+        val onGameSessionStartedMethod = OnGameSessionStartedFingerprint.methodOrNull
+        if (onGameSessionStartedMethod == null) return@execute
         // Bail out before any ad view is created (kills the real AppLovin banner).
         onGameSessionStartedMethod.returnEarly()
         // Also hide the Ndemic "go premium" promo ImageView (layout-default VISIBLE)
@@ -47,6 +48,6 @@ val plagueIncBannerAdRemovalPatch = bytecodePatch(
             "invoke-direct {p0}, Lcom/miniclip/plagueinc/AdController;->hideNdemicAd()V"
         )
 
-        ShowNdemicAdFingerprint.method.returnEarly()
+        ShowNdemicAdFingerprint.methodOrNull?.returnEarly()
     }
 }
