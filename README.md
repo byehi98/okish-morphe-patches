@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.49.0-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;136 patches total
+> **[v1.49.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;139 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -248,6 +248,23 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Fancy Pants Unlock Premium](#fancy-pants-unlock-premium) | Unlocks premium, wardrobe, world 1 and world 2 by forcing OTTBilling.isPurchased to always return true. |  |
+
+</details>
+
+<details>
+<summary>📦 Dumbbell Workout at Home&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.3.6 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Firebase Cert Spoof](#firebase-cert-spoof) | Restores Firebase requests on a re-signed APK. The Firebase API key is restricted to the Play build's package + signing certificate, so Installations, Remote Config, Auth and Storage requests from a patched build are rejected with API_KEY_ANDROID_APP_BLOCKED. This patch forces the certificate hash Firebase sends in X-Android-Cert to the original signing certificate's SHA-1, so those requests are accepted again. It does not fix the Start-workout crash — that was a native asset-decryption check covered by the Signature Spoof patch. It also does not make Google Sign-In work — that is validated server-side against the developer's OAuth client and cannot be patched (use the unpatched app for cloud sync). |  |
+| [Remove Ads](#remove-ads) | Unlocks the paid "Remove ads" product locally, so the app behaves as if it was purchased: banners, native, interstitial, app-open and splash ads stop, and the "Remove ads" row disappears from settings. No Play payment is involved and the entitlement survives restarts. Rewarded ads are left untouched. Requires the Signature Spoof patch in the same bundle for the patched APK to start. Google Sign-In / Backup & Restore does not work on a re-signed APK: the app's OAuth client is bound to the developer's signing certificate and Google refuses token issuance server-side, so no microG-style patch or signature spoof can bypass it. Use the unpatched app if you need cloud sync. |  |
+| [Signature Spoof](#signature-spoof) | Neutralises the app's built-in certificate verifier so the patched APK keeps running. The app re-reads its own signing certificate on every screen and compares 46 hardcoded slices of it against baked-in values; because patching always re-signs the APK, those comparisons fail and the app force-closes while the first activity is being created. With this patch every verifier reports the original, unmodified certificate instead, so all 46 checks pass. The bundled native library runs two further certificate checks: one stops the library from loading, and one silently stops workout data from being decrypted, which crashes the app the moment you tap Start. Both are bypassed as well. This patch is required — the app can neither start nor open a workout without it. |  |
 
 </details>
 

@@ -1,3 +1,9 @@
+## [1.49.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.3...v1.49.0-dev.4) (2026-11-06)
+
+### ✨ New Features
+
+* **dumbbellworkout:** add patches for dumbbell workout app. ([57de74f](https://github.com/byehi98/okish-morphe-patches/commit/57de74f683a7ca831adc1ee31c018a694e77e662))
+
 ## [1.49.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.2...v1.49.0-dev.3) (2026-11-06)
 
 ### ✨ New Features
