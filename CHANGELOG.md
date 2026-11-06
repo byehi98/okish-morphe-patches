@@ -1,3 +1,9 @@
+## [1.49.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.2...v1.49.0-dev.3) (2026-11-06)
+
+### ✨ New Features
+
+* **swampattack:** bump to the version 4.8.10.0 ([5b4107d](https://github.com/byehi98/okish-morphe-patches/commit/5b4107d67be7eb25a41cf701e2724f8fe9b64310))
+
 ## [1.49.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.1...v1.49.0-dev.2) (2026-11-05)
 
 ### ✨ New Features
