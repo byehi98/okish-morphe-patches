@@ -1,3 +1,9 @@
+## [1.49.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.7...v1.49.0-dev.8) (2026-11-07)
+
+### 🚀 Updated App Support
+
+* **missiles:** bumping the version of the missiles to 1.42 ([2789b26](https://github.com/byehi98/okish-morphe-patches/commit/2789b26c88c230299c37416baf854e2c721a75d8))
+
 ## [1.49.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.6...v1.49.0-dev.7) (2026-11-07)
 
 ### 🚀 Updated App Support

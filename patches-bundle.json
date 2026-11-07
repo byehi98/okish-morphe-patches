@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-07T04:11:15",
-  "description": "## [1.49.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.6...v1.49.0-dev.7) (2026-11-07)\n\n### 🚀 Updated App Support\n\n* **vitamahjong:** bump to version 3.46.0 ([916de54](https://github.com/byehi98/okish-morphe-patches/commit/916de54cdde28461c7d72d3a0efbcd0ad5e8aa2e))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.49.0-dev.7/patches-1.49.0-dev.7.mpp",
+  "created_at": "2026-11-07T04:46:20",
+  "description": "## [1.49.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.7...v1.49.0-dev.8) (2026-11-07)\n\n### 🚀 Updated App Support\n\n* **missiles:** bumping the version of the missiles to 1.42 ([2789b26](https://github.com/byehi98/okish-morphe-patches/commit/2789b26c88c230299c37416baf854e2c721a75d8))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.49.0-dev.8/patches-1.49.0-dev.8.mpp",
   "signature_download_url": "",
-  "version": "1.49.0-dev.7"
+  "version": "1.49.0-dev.8"
 }
