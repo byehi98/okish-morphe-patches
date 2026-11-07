@@ -1,3 +1,9 @@
+## [1.49.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.4...v1.49.0-dev.5) (2026-11-07)
+
+### 🚀 Updated App Support
+
+* **shootyskies:** bumped the version to 3.441.100104 with changes in ([9e9ae23](https://github.com/byehi98/okish-morphe-patches/commit/9e9ae233407681b1a749ca7f63f978aa74d10f41))
+
 ## [1.49.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.3...v1.49.0-dev.4) (2026-11-06)
 
 ### ✨ New Features
