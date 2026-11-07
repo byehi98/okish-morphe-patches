@@ -1,3 +1,51 @@
+## [1.49.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.7...v1.49.0-dev.8) (2026-11-07)
+
+### 🚀 Updated App Support
+
+* **missiles:** bumping the version of the missiles to 1.42 ([2789b26](https://github.com/byehi98/okish-morphe-patches/commit/2789b26c88c230299c37416baf854e2c721a75d8))
+
+## [1.49.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.6...v1.49.0-dev.7) (2026-11-07)
+
+### 🚀 Updated App Support
+
+* **vitamahjong:** bump to version 3.46.0 ([916de54](https://github.com/byehi98/okish-morphe-patches/commit/916de54cdde28461c7d72d3a0efbcd0ad5e8aa2e))
+
+## [1.49.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.5...v1.49.0-dev.6) (2026-11-07)
+
+### 🚀 Updated App Support
+
+* **fancypants:** bump the version to 1.0.48 ([0b84786](https://github.com/byehi98/okish-morphe-patches/commit/0b84786b538afb33d6cbcbadd6b95e45ef72103c))
+
+## [1.49.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.4...v1.49.0-dev.5) (2026-11-07)
+
+### 🚀 Updated App Support
+
+* **shootyskies:** bumped the version to 3.441.100104 with changes in ([9e9ae23](https://github.com/byehi98/okish-morphe-patches/commit/9e9ae233407681b1a749ca7f63f978aa74d10f41))
+
+## [1.49.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.3...v1.49.0-dev.4) (2026-11-06)
+
+### ✨ New Features
+
+* **dumbbellworkout:** add patches for dumbbell workout app. ([57de74f](https://github.com/byehi98/okish-morphe-patches/commit/57de74f683a7ca831adc1ee31c018a694e77e662))
+
+## [1.49.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.2...v1.49.0-dev.3) (2026-11-06)
+
+### ✨ New Features
+
+* **swampattack:** bump to the version 4.8.10.0 ([5b4107d](https://github.com/byehi98/okish-morphe-patches/commit/5b4107d67be7eb25a41cf701e2724f8fe9b64310))
+
+## [1.49.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.1...v1.49.0-dev.2) (2026-11-05)
+
+### ✨ New Features
+
+* **offtheroad:** add patches for off the road. ([84007b9](https://github.com/byehi98/okish-morphe-patches/commit/84007b95b56a1a3a0767032f82934c55efe3edd1))
+
+## [1.49.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0...v1.49.0-dev.1) (2026-11-05)
+
+### ✨ New Features
+
+* **frlegends:** added patches of ad removal + instant rewards, and IAP ([6071ccb](https://github.com/byehi98/okish-morphe-patches/commit/6071ccb81bf8d2bd06ac68677107baa41d2c3e79))
+
 ## [1.48.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.47.0...v1.48.0) (2026-11-05)
 
 ### 🐛 Bug Fixes

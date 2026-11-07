@@ -20,7 +20,7 @@ private const val BFP_PRODUCT_DETAILS_PARAMS = "Lcom/android/billingclient/api/B
 private const val QUERY_PRODUCT = "Lcom/android/billingclient/api/QueryProductDetailsParams\$Product;"
 
 /**
- * Shooty Skies — Free store (DEX billing forge, Google Play Billing 8.0.0).
+ * Shooty Skies — Free store (DEX billing forge, Google Play Billing 9.0.0).
  *
  * The game has NO app-owned Java billing bridge: Unity IAP's C# GooglePlay
  * store talks straight to `com.android.billingclient.api.BillingClientImpl`
@@ -29,8 +29,7 @@ private const val QUERY_PRODUCT = "Lcom/android/billingclient/api/QueryProductDe
  * purchase from IL2CPP's point of view — C# then runs its OWN grant funnel
  * (ProcessPurchase → grant → PersistentStorage) with game-owned save code,
  * receipt bookkeeping and analytics intact. No Play sheet ever opens;
- * nothing is charged. Same strategy as the production Crossy Road patch
- * (identical billing 8.0.0, same class/method shapes).
+ * nothing is charged. Same strategy as the production Crossy Road patch.
  *
  * Five hooks on BillingClientImpl (public API names — never obfuscated;
  * every body/filter smali-verified in this build, see Fingerprints.kt):
@@ -45,7 +44,7 @@ private const val QUERY_PRODUCT = "Lcom/android/billingclient/api/QueryProductDe
  *     Proven failure mode elsewhere (ITD2): a fake token hitting the real
  *     consumeAsync returns Play error 5 → the grant is silently dropped.
  *  4. launchBillingFlow → fake Purchase for the TAPPED product, delivered on
- *     the SDK's own path (this.zzf → zzs.zzd() → onPurchasesUpdated(OK, …)),
+ *     the SDK's own path (this.zzf → zzab.zzf() → onPurchasesUpdated(OK, …)),
  *     then return OK. This IS the buy button — data-driven shop SKUs resolve
  *     live from BillingFlowParams, nothing hardcoded.
  *  5. queryProductDetailsAsync → fabricate a ProductDetails entry for EVERY
@@ -54,24 +53,23 @@ private const val QUERY_PRODUCT = "Lcom/android/billingclient/api/QueryProductDe
  *     (DEVELOPER_ERROR / SERVICE_UNAVAILABLE).
  *
  * WHY the launchBillingFlow helper (proven BurritoBison/Missiles regression
- * root cause): launchBillingFlow has a LARGE exception table (26
- * `.catch`/`.catchall` directives, 136 labels — verified in this build).
- * Morphe's instruction-tree writer DROPS labeled blocks when merging labeled
- * injections into a method with catches — the body lands truncated and falls
- * through to the original (real) flow. A freshly injected method has NO
- * exception table, so the labeled SKU-read + fake-Purchase body merges
- * intact; launchBillingFlow's own injected entry is a tiny straight-line
- * delegate (no labels/branches) — catch-safe. The other four targets have
- * ZERO catches (verified) → direct injection is safe.
+ * root cause): launchBillingFlow has a LARGE exception table — verified in
+ * this build. Morphe's instruction-tree writer DROPS labeled blocks when
+ * merging labeled injections into a method with catches — the body lands
+ * truncated and falls through to the original (real) flow. A freshly injected
+ * method has NO exception table, so the labeled SKU-read + fake-Purchase body
+ * merges intact; launchBillingFlow's own injected entry is a tiny
+ * straight-line delegate (no labels/branches) — catch-safe. The other four
+ * targets have ZERO catches (verified) → direct injection is safe.
  *
- * Register budgets (all verified against this build's smali):
- *  - queryPurchasesAsync:  `.registers 9` → p0=v6, p1=v7, p2=v8; body uses v0-v3.
+ * Register budgets (all re-verified against the 3.441.100104 build):
+ *  - queryPurchasesAsync:  `.registers 10` → p0=v7, p1=v8, p2=v9; body uses v0-v3.
  *  - acknowledgePurchase:  `.registers 9` → p2=v8; body uses v0-v1 + p2.
  *  - consumeAsync:         `.registers 9` → p1=v7, p2=v8; body uses v0-v1 + p1/p2.
  *  - queryProductDetailsAsync: `.registers 9` → p0=v6, p1=v7, p2=v8; body uses
  *                          v0-v5 exactly (accumulator in v2 survives to delivery).
- *  - launchBillingFlow:    `.registers 33` → p0=v30, p1=v31, p2=v32. Delegate
- *                          marshals p0/p2 into v0/v1 via /from16 ({v30,v32} is
+ *  - launchBillingFlow:    `.registers 26` → p0=v23, p1=v24, p2=v25. Delegate
+ *                          marshals p0/p2 into v0/v1 via /from16 ({v23,v25} is
  *                          unencodable: 35c caps at v15, 3rc needs a contiguous
  *                          range). v0/v1 are dead locals: the delegate returns
  *                          before the original (catch-tabled) body runs.
@@ -79,14 +77,14 @@ private const val QUERY_PRODUCT = "Lcom/android/billingclient/api/QueryProductDe
  *                          p1=BillingFlowParams=v8, locals v0-v6 — every
  *                          invoke register ≤ v15.
  *
- * Product id extraction order (deviation note): notes say the legacy
- * `zzj()` (SkuDetails) list must NOT be used for this app — C# builds
- * BillingFlowParams via `setProductDetailsParamsList` (→ `zzk()` →
- * ProductDetailsParams), so that is the PRIMARY path here. The zzj read is
- * kept only as a null-guarded FALLBACK so a SkuDetails-built flow (or a
- * future Unity IAP swap) still resolves; if both are empty the purchase is
- * delivered as `unknown_sku` — a safe no-grant, never a crash. All zz* and Sku
- * names are Google's own for the pinned 8.0.0 library (version-coupled).
+ * Product id extraction (9.0.0 reality): C# builds BillingFlowParams via
+ * `setProductDetailsParamsList` (→ `zzk()` → ProductDetailsParams), so that
+ * is the ONLY path read: zzk() → first element → ProductDetailsParams.zza()
+ * → ProductDetails.getProductId(). The deprecated `zzj()` SkuDetails list was
+ * DROPPED in 9.0.0 — SkuDetails no longer exists and the replacement `zzen`
+ * stubs throw on every method call. Empty/malformed → `unknown_sku` (safe
+ * no-grant, never a crash). All zz* names are Google's own for the pinned
+ * 9.0.0 library (version-coupled).
  *
  * Identity strategy (matches premium-bypass.md):
  *  - queryPurchasesAsync uses a STATIC identity (GPA.morphe.1 /
@@ -204,35 +202,29 @@ val shootySkiesFreeStorePatch = bytecodePatch(
                 move-result-object v0
 
                 # ── 2. Tapped product id from p1 (BillingFlowParams) ──
-                #      primary: zzk() → List<ProductDetailsParams> (the API C#
-                #      builds via setProductDetailsParamsList) → ProductDetailsParams
-                #      .zza() → ProductDetails.getProductId().
-                #      fallback: zzj() → ArrayList<SkuDetails> → getSku(), so a
-                #      SkuDetails-built flow still resolves.
-                #      zzby.zza(iterable, null) = first element or null (verified),
-                #      v2 doubles as the null sentinel (still 0 from step 1).
+                #      Billing 9.0.0: SkuDetails is GONE — BillingFlowParams.zzj()
+                #      now returns deprecated zzen stubs that throw on every method
+                #      call, so the legacy fallback had to be removed. Only the
+                #      ProductDetails path is read: zzk() → List<ProductDetailsParams>
+                #      (the API C# builds via setProductDetailsParamsList) →
+                #      ProductDetailsParams.zza() → ProductDetails.getProductId().
+                #      Empty/malformed → "unknown_sku" (safe no-grant, never a crash).
                 const-string v4, "unknown_sku"
                 invoke-virtual {p1}, Lcom/android/billingclient/api/BillingFlowParams;->zzk()Ljava/util/List;
                 move-result-object v1
-                invoke-static {v1, v2}, Lcom/google/android/gms/internal/play_billing/zzby;->zza(Ljava/lang/Iterable;Ljava/lang/Object;)Ljava/lang/Object;
+                if-eqz v1, :morphe_sku_done
+                invoke-interface {v1}, Ljava/util/List;->isEmpty()Z
+                move-result v6
+                if-nez v6, :morphe_sku_done
+                const/4 v6, 0x0
+                invoke-interface {v1, v6}, Ljava/util/List;->get(I)Ljava/lang/Object;
                 move-result-object v1
                 check-cast v1, $BFP_PRODUCT_DETAILS_PARAMS
-                if-eqz v1, :morphe_legacy
+                if-eqz v1, :morphe_sku_done
                 invoke-virtual {v1}, $BFP_PRODUCT_DETAILS_PARAMS->zza()Lcom/android/billingclient/api/ProductDetails;
                 move-result-object v1
-                if-eqz v1, :morphe_legacy
+                if-eqz v1, :morphe_sku_done
                 invoke-virtual {v1}, Lcom/android/billingclient/api/ProductDetails;->getProductId()Ljava/lang/String;
-                move-result-object v4
-                goto :morphe_json
-
-                :morphe_legacy
-                invoke-virtual {p1}, Lcom/android/billingclient/api/BillingFlowParams;->zzj()Ljava/util/ArrayList;
-                move-result-object v1
-                invoke-static {v1, v2}, Lcom/google/android/gms/internal/play_billing/zzby;->zza(Ljava/lang/Iterable;Ljava/lang/Object;)Ljava/lang/Object;
-                move-result-object v1
-                check-cast v1, Lcom/android/billingclient/api/SkuDetails;
-                if-eqz v1, :morphe_json
-                invoke-virtual {v1}, Lcom/android/billingclient/api/SkuDetails;->getSku()Ljava/lang/String;
                 move-result-object v4
 
                 # ── 3. Fake Purchase JSON — unique per tap (one currentTimeMillis,
@@ -241,7 +233,7 @@ val shootySkiesFreeStorePatch = bytecodePatch(
                 #      dedup never swallows repeat purchases. Both productId and
                 #      productIds are emitted (Purchase.getProducts() reads the
                 #      array, falling back to the scalar — verified) ──
-                :morphe_json
+                :morphe_sku_done
                 invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
                 move-result-wide v2
                 invoke-static {v2, v3}, Ljava/lang/String;->valueOf(J)Ljava/lang/String;
@@ -290,11 +282,11 @@ val shootySkiesFreeStorePatch = bytecodePatch(
                 new-instance v3, Lcom/android/billingclient/api/Purchase;
                 invoke-direct {v3, v5, v2}, Lcom/android/billingclient/api/Purchase;-><init>(Ljava/lang/String;Ljava/lang/String;)V
 
-                # ── 5. Registered listener: this.zzf → zzs.zzd(), null-guarded
-                #      so a pre-connect call returns OK instead of NPE-ing ──
-                iget-object v1, p0, Lcom/android/billingclient/api/BillingClientImpl;->zzf:Lcom/android/billingclient/api/zzs;
+                # ── 5. Registered listener: this.zzf (zzab holder) → zzab.zzf(),
+                #      null-guarded so a pre-connect call returns OK, not NPE ──
+                iget-object v1, p0, Lcom/android/billingclient/api/BillingClientImpl;->zzf:Lcom/android/billingclient/api/zzab;
                 if-eqz v1, :morphe_done
-                invoke-virtual {v1}, Lcom/android/billingclient/api/zzs;->zzd()Lcom/android/billingclient/api/PurchasesUpdatedListener;
+                invoke-virtual {v1}, Lcom/android/billingclient/api/zzab;->zzf()Lcom/android/billingclient/api/PurchasesUpdatedListener;
                 move-result-object v1
                 if-eqz v1, :morphe_done
                 invoke-static {v3}, Ljava/util/Collections;->singletonList(Ljava/lang/Object;)Ljava/util/List;
@@ -322,10 +314,10 @@ val shootySkiesFreeStorePatch = bytecodePatch(
         """.trimIndent())
 
         // ═══ 5. queryProductDetailsAsync — fake price catalog ═══════════════
-        // Loop p1.zza() → zzbt (implements List — verified `.implements
-        // Ljava/util/List;`) of QueryProductDetailsParams$Product; per product
-        // read zza()=productId and zzb()=type, so EVERY product the game asks
-        // about (data-driven shop SKUs included) gets a fake price entry.
+        // Loop p1.zza() → zzca (Billing 9.0.0's immutable List impl — verified
+        // `.implements Ljava/util/List;`) of QueryProductDetailsParams$Product;
+        // per product read zza()=productId and zzb()=type, so EVERY product the
+        // game asks about (data-driven shop SKUs included) gets a fake price entry.
         // ProductDetails ctor requires non-empty "productId"/"type"; PRICES are
         // read ONLY from the nested "oneTimePurchaseOfferDetailsList" (preferred;
         // wins when present) or the "oneTimePurchaseOfferDetails" object — flat
@@ -341,7 +333,7 @@ val shootySkiesFreeStorePatch = bytecodePatch(
             # p0=this(v6), p1=QueryProductDetailsParams(v7), p2=ProductDetailsResponseListener(v8)
             # locals: v0 StringBuilder / OK result scratch, v1 product list / result,
             #         v2 ArrayList accumulator, v3 loop index, v4/v5 temps
-            invoke-virtual {p1}, Lcom/android/billingclient/api/QueryProductDetailsParams;->zza()Lcom/google/android/gms/internal/play_billing/zzbt;
+            invoke-virtual {p1}, Lcom/android/billingclient/api/QueryProductDetailsParams;->zza()Lcom/google/android/gms/internal/play_billing/zzca;
             move-result-object v1
             new-instance v2, Ljava/util/ArrayList;
             invoke-direct {v2}, Ljava/util/ArrayList;-><init>()V
