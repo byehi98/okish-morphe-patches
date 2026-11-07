@@ -1,3 +1,9 @@
+## [1.49.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.6...v1.49.0-dev.7) (2026-11-07)
+
+### 🚀 Updated App Support
+
+* **vitamahjong:** bump to version 3.46.0 ([916de54](https://github.com/byehi98/okish-morphe-patches/commit/916de54cdde28461c7d72d3a0efbcd0ad5e8aa2e))
+
 ## [1.49.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.5...v1.49.0-dev.6) (2026-11-07)
 
 ### 🚀 Updated App Support
