@@ -5,32 +5,34 @@ import app.morphe.patcher.methodCall
 import com.android.tools.smali.dexlib2.AccessFlags
 
 // ============================================================================
-// Shooty Skies — Google Play Billing 8.0.0: com.android.billingclient.api.
-// BillingClientImpl (DEX classes12).
+// Shooty Skies — Google Play Billing 9.0.0: com.android.billingclient.api.
+// BillingClientImpl.
 //
 // The game ships Unity IAP's C# GooglePlay store and talks straight to the
-// Play Billing classes through JNI (no app-owned Java bridge — verified: no
-// `BillingClientImpl;->` caller exists outside classes12). Public API names
-// (queryPurchasesAsync, launchBillingFlow, …) are Google's — never app-
+// Play Billing classes through JNI (no app-owned Java bridge). Public API
+// names (queryPurchasesAsync, launchBillingFlow, …) are Google's — never app-
 // obfuscated. The `zz*` filter names are Google's own R8-minified internals:
-// stable for the pinned 8.0.0 library, but version-coupled — if a future
-// build bumps billing, re-verify them (they are the LAST filters so the
-// public name/params still pin the match first).
+// re-verified for the pinned 9.0.0 library in this build (Billing 9.0.0
+// renumbered every lambda class vs 8.0.0 — zzaw/zzat→zzbm/zzae,
+// zzaa/zzab→zzal/zzan, zzak/zzam→zzbc/zzbd, zzal/zzap→zzbh/zzbi, and the
+// getter holder zzs→zzab). Version-coupled by design — they are the LAST
+// filters so the public name/params still pin the match first.
 //
-// All six bodies verified in this build's smali (line numbers below):
-// registers, filter order and exception tables all read before writing.
-// Only launchBillingFlow carries a .catch table (26 directives) — it needs
-// the helper-method pattern; the other five are straight-line safe.
+// All bodies verified in this build's smali: registers, filter order and
+// exception tables read before writing. Only launchBillingFlow carries a
+// .catch table — it needs the helper-method pattern; the other four are
+// straight-line safe.
 // ============================================================================
 
 /**
  * BillingClientImpl.queryPurchasesAsync(QueryPurchasesParams, PurchasesResponseListener)V
  * — owned-items query (restore / startup entitlement grant).
  *
- * Confirmed smali (BillingClientImpl.smali:10625, `.registers 9`, public
+ * Confirmed smali (BillingClientImpl.smali:11777, `.registers 10`, public
  * final, NO catch table). Body reads `params.zza()` (the queried product
- * type), then builds the zzaw/zzat callables and posts them through zzG —
- * filter order matches exactly: zza → zzaw.<init> → zzat.<init>.
+ * type) + `getIncludeSuspendedSubscriptions()`, then builds the
+ * zzbm/zzae callables and posts them through zzN — filter order matches
+ * exactly: zza → getIncludeSuspendedSubscriptions → zzbm.<init> → zzae.<init>.
  *
  * Replacing the body with a fabricated owned list is what grants
  * `remove_ads_iap` on every launch (real Play returns [] for a repackaged
@@ -46,17 +48,22 @@ object QueryPurchasesAsyncFingerprint : Fingerprint(
         "Lcom/android/billingclient/api/PurchasesResponseListener;",
     ),
     filters = listOf(
-        // instruction order (verified): QueryPurchasesParams.zza -> zzaw.<init> -> zzat.<init>
+        // instruction order (verified): QueryPurchasesParams.zza ->
+        // getIncludeSuspendedSubscriptions -> zzbm.<init> -> zzae.<init> -> zzN
         methodCall(
             definingClass = "Lcom/android/billingclient/api/QueryPurchasesParams;",
             name = "zza",
         ),
         methodCall(
-            definingClass = "Lcom/android/billingclient/api/zzaw;",
+            definingClass = "Lcom/android/billingclient/api/QueryPurchasesParams;",
+            name = "getIncludeSuspendedSubscriptions",
+        ),
+        methodCall(
+            definingClass = "Lcom/android/billingclient/api/zzbm;",
             name = "<init>",
         ),
         methodCall(
-            definingClass = "Lcom/android/billingclient/api/zzat;",
+            definingClass = "Lcom/android/billingclient/api/zzae;",
             name = "<init>",
         ),
     )
@@ -66,9 +73,9 @@ object QueryPurchasesAsyncFingerprint : Fingerprint(
  * BillingClientImpl.acknowledgePurchase(AcknowledgePurchaseParams, AcknowledgePurchaseResponseListener)V
  * — acknowledges durable purchases (remove_ads_iap).
  *
- * Confirmed smali (BillingClientImpl.smali:7199, `.registers 9`, public, NO
- * catch table). Builds the zzaa/zzab callables → zzan handler → zzF executor →
- * zzG future. Filter order (verified): zzaa.<init> → zzab.<init> → zzG.
+ * Confirmed smali (BillingClientImpl.smali:8716, `.registers 9`, public, NO
+ * catch table). Builds the zzal/zzan callables → BillingClientImpl.zzN.
+ * Filter order (verified): zzal.<init> → zzan.<init> → zzN.
  *
  * A real service would reject our fabricated purchaseToken, so the fake must
  * never reach it: answer OK to the listener directly instead.
@@ -84,16 +91,16 @@ object AcknowledgePurchaseFingerprint : Fingerprint(
     ),
     filters = listOf(
         methodCall(
-            definingClass = "Lcom/android/billingclient/api/zzaa;",
+            definingClass = "Lcom/android/billingclient/api/zzal;",
             name = "<init>",
         ),
         methodCall(
-            definingClass = "Lcom/android/billingclient/api/zzab;",
+            definingClass = "Lcom/android/billingclient/api/zzan;",
             name = "<init>",
         ),
         methodCall(
             definingClass = "Lcom/android/billingclient/api/BillingClientImpl;",
-            name = "zzG",
+            name = "zzN",
         ),
     )
 )
@@ -102,9 +109,9 @@ object AcknowledgePurchaseFingerprint : Fingerprint(
  * BillingClientImpl.consumeAsync(ConsumeParams, ConsumeResponseListener)V
  * — consumes consumables (coin packs).
  *
- * Confirmed smali (BillingClientImpl.smali:7248, `.registers 9`, public, NO
- * catch table). Builds zzak/zzam callables → zzG. Filter order (verified):
- * zzak.<init> → zzam.<init>.
+ * Confirmed smali (BillingClientImpl.smali:8765, `.registers 9`, public, NO
+ * catch table). Builds zzbc/zzbd callables → BillingClientImpl.zzN.
+ * Filter order (verified): zzbc.<init> → zzbd.<init>.
  *
  * Proven failure mode elsewhere (ITD2): a fake token hitting the real
  * consumeAsync returns Play error 5 → the grant is dropped. Never let the
@@ -121,11 +128,11 @@ object ConsumeAsyncFingerprint : Fingerprint(
     ),
     filters = listOf(
         methodCall(
-            definingClass = "Lcom/android/billingclient/api/zzak;",
+            definingClass = "Lcom/android/billingclient/api/zzbc;",
             name = "<init>",
         ),
         methodCall(
-            definingClass = "Lcom/android/billingclient/api/zzam;",
+            definingClass = "Lcom/android/billingclient/api/zzbd;",
             name = "<init>",
         ),
     )
@@ -135,16 +142,17 @@ object ConsumeAsyncFingerprint : Fingerprint(
  * BillingClientImpl.launchBillingFlow(Activity, BillingFlowParams)BillingResult
  * — the buy button: opens the real Google Play payment sheet.
  *
- * Confirmed smali (BillingClientImpl.smali:8485, `.registers 33`, public) —
- * `Random.nextLong()` client ref id → `iget zzf:Lcom/android/billingclient/api/zzs;`
- * → `zzs.zzd()` → PurchasesUpdatedListener null-check → connectivity check →
- * logging → return. Filter order (verified): Random.<init> → zzs.zzd.
+ * Confirmed smali (BillingClientImpl.smali:10061, `.registers 26`, public) —
+ * `Random.nextLong()` client ref id → `iget zzf:Lcom/android/billingclient/api/zzab;`
+ * → `zzab.zzf()` (getter) → PurchasesUpdatedListener null-check → connectivity
+ * check → logging → return. Filter order (verified): Random.<init> →
+ * Random.nextLong → zzab.zzf.
  *
- * HAS A CATCH TABLE (26 `.catch`/`.catchall` directives, 136 labels) — a
- * labeled body injected at its entry gets truncated by the instruction-tree
- * writer (BurritoBison/Missiles regression). The patch therefore adds a
- * fresh helper method (no exception table) and injects a straight-line,
- * label-free delegate at the entry.
+ * HAS A CATCH TABLE (large .catch/.catchall set) — a labeled body injected at
+ * its entry gets truncated by the instruction-tree writer (BurritoBison/
+ * Missiles regression). The patch therefore adds a fresh helper method (no
+ * exception table) and injects a straight-line, label-free delegate at the
+ * entry.
  */
 object LaunchBillingFlowFingerprint : Fingerprint(
     definingClass = "Lcom/android/billingclient/api/BillingClientImpl;",
@@ -161,8 +169,12 @@ object LaunchBillingFlowFingerprint : Fingerprint(
             name = "<init>",
         ),
         methodCall(
-            definingClass = "Lcom/android/billingclient/api/zzs;",
-            name = "zzd",
+            definingClass = "Ljava/util/Random;",
+            name = "nextLong",
+        ),
+        methodCall(
+            definingClass = "Lcom/android/billingclient/api/zzab;",
+            name = "zzf",
         ),
     )
 )
@@ -171,10 +183,10 @@ object LaunchBillingFlowFingerprint : Fingerprint(
  * BillingClientImpl.queryProductDetailsAsync(QueryProductDetailsParams, ProductDetailsResponseListener)V
  * — fetches the price catalog so the store renders.
  *
- * Confirmed smali (BillingClientImpl.smali:10562, `.registers 9`, public, NO
- * catch table). Builds zzal/zzap callables → zzG; its own failure path shows
- * the QueryProductDetailsResult fabrication shape. Filter order (verified):
- * zzal.<init> → zzap.<init>.
+ * Confirmed smali (BillingClientImpl.smali:11714, `.registers 9`, public, NO
+ * catch table). Builds zzbh/zzbi callables → BillingClientImpl.zzN; its own
+ * failure path shows the QueryProductDetailsResult fabrication shape. Filter
+ * order (verified): zzbh.<init> → zzbi.<init>.
  *
  * Needed because C# reads prices via getOneTimePurchaseOfferDetails()
  * → getFormattedPrice(): fabricating ProductDetails entries (per queried
@@ -192,11 +204,11 @@ object QueryProductDetailsAsyncFingerprint : Fingerprint(
     ),
     filters = listOf(
         methodCall(
-            definingClass = "Lcom/android/billingclient/api/zzal;",
+            definingClass = "Lcom/android/billingclient/api/zzbh;",
             name = "<init>",
         ),
         methodCall(
-            definingClass = "Lcom/android/billingclient/api/zzap;",
+            definingClass = "Lcom/android/billingclient/api/zzbi;",
             name = "<init>",
         ),
     )
