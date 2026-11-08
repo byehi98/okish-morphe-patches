@@ -1,3 +1,9 @@
+## [1.49.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.10...v1.49.0-dev.11) (2026-11-08)
+
+### ✨ New Features
+
+* **tmnt:** Add full game unlock patch for TMNT Shredder's Revenge ([cd1eeb1](https://github.com/byehi98/okish-morphe-patches/commit/cd1eeb1c402e67d0d83d31f41e9d32ab707ba886))
+
 ## [1.49.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.9...v1.49.0-dev.10) (2026-11-08)
 
 ### 🚀 Updated App Support
