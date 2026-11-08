@@ -1,3 +1,9 @@
+## [1.49.0-dev.12](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.11...v1.49.0-dev.12) (2026-11-08)
+
+### ✨ New Features
+
+* **MinutesTillDawn:** Add static string pool values for 8.7 builds ([f09dd41](https://github.com/byehi98/okish-morphe-patches/commit/f09dd410dd7d6057c24e1cbe705dbdb2cfe17fb4))
+
 ## [1.49.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.10...v1.49.0-dev.11) (2026-11-08)
 
 ### ✨ New Features

@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-08T09:14:12",
-  "description": "## [1.49.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.10...v1.49.0-dev.11) (2026-11-08)\n\n### ✨ New Features\n\n* **tmnt:** Add full game unlock patch for TMNT Shredder's Revenge ([cd1eeb1](https://github.com/byehi98/okish-morphe-patches/commit/cd1eeb1c402e67d0d83d31f41e9d32ab707ba886))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.49.0-dev.11/patches-1.49.0-dev.11.mpp",
+  "created_at": "2026-11-08T14:45:58",
+  "description": "## [1.49.0-dev.12](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.11...v1.49.0-dev.12) (2026-11-08)\n\n### ✨ New Features\n\n* **MinutesTillDawn:** Add static string pool values for 8.7 builds ([f09dd41](https://github.com/byehi98/okish-morphe-patches/commit/f09dd410dd7d6057c24e1cbe705dbdb2cfe17fb4))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.49.0-dev.12/patches-1.49.0-dev.12.mpp",
   "signature_download_url": "",
-  "version": "1.49.0-dev.11"
+  "version": "1.49.0-dev.12"
 }
