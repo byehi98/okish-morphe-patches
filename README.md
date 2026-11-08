@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.49.0-dev.8](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0-dev.8)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;139 patches total
+> **[v1.49.0-dev.9](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0-dev.9)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;139 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -602,7 +602,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 9.5.0 |
+| 9.5.1 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

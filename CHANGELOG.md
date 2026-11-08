@@ -1,3 +1,9 @@
+## [1.49.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.8...v1.49.0-dev.9) (2026-11-08)
+
+### 🚀 Updated App Support
+
+* **lemmings:** bumped the supported version to 9.5.1 ([fcfaa7e](https://github.com/byehi98/okish-morphe-patches/commit/fcfaa7eeee575259b511323a8071cd3cbeb71c11))
+
 ## [1.49.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.7...v1.49.0-dev.8) (2026-11-07)
 
 ### 🚀 Updated App Support
