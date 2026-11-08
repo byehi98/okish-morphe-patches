@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.49.0-dev.9](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0-dev.9)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;139 patches total
+> **[v1.49.0-dev.10](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0-dev.10)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;139 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -91,13 +91,13 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 4.185.0 |
+| 4.186.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [All items owned](#all-items-owned) | Every gun, skin, glove and drone shows as unlocked, and you can equip any of them. Your save file is not changed. |  |
-| [Instant rewarded video](#instant-rewarded-video) | Reward buttons pay out instantly. Tap once and you get the reward, with no ad to watch. |  |
+| [Instant rewarded video](#instant-rewarded-video) | Rewards from "watch an ad" popups are granted immediately, without playing an ad. |  |
 | [Unlimited currency](#unlimited-currency) | Your cash, gold and diamonds always show the maximum. You never run short of money. |  |
 
 </details>

@@ -1,3 +1,9 @@
+## [1.49.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.9...v1.49.0-dev.10) (2026-11-08)
+
+### 🚀 Updated App Support
+
+* **deadtarget:** Update Dead Target patches for 4.186.0 armeabi-v7a ([66e6204](https://github.com/byehi98/okish-morphe-patches/commit/66e620494f7804038f6d78afa2ee5607d0d832a3))
+
 ## [1.49.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.8...v1.49.0-dev.9) (2026-11-08)
 
 ### 🚀 Updated App Support
