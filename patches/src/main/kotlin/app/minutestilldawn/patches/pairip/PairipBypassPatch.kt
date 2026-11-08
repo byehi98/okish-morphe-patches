@@ -50,7 +50,9 @@ import com.android.tools.smali.dexlib2.util.FieldUtil
  *   SafeDKApplication.onCreate       -> call super
  *   StartupLauncher.launch()         -> skip the VM program that faults natively
  *   VMRunner.invoke(...)             -> null at the single choke point
- *   static String pool holders       -> filled with "" (real values are unrecoverable)
+ *   static String pool holders       -> repopulated per build from PoolValues*.kt
+ *                                       (real strings recovered from the sibling
+ *                                       8.7 builds), "" where no value is known
  *
  * Remaining caveat: the app still registers the PairIP Application/provider and still
  * runs Play integrity checks, so this is a best-effort client-side bypass for a
@@ -195,68 +197,58 @@ val pairipBypassPatch = bytecodePatch(
         // static String fields the native VM was supposed to fill at runtime (it
         // cannot — the bytecode is encrypted and keyed to the original signature).
         // Consumers then die on StringBuilder.<init>(null) / String.length() NPEs.
-        // Fill them with "" so consumers get a valid (if empty) string.
-        // Fields already assigned a literal are left untouched.
+        //
+        // So the pool is rewritten with real values wherever they are known, and ""
+        // everywhere else so consumers still get a valid (if empty) string. The values
+        // come from the sibling 8.7 builds: R8 moves a string between a `const-string`
+        // literal and a pool field from one build to the next, and this app shipped
+        // three consecutive builds (1102, 1104, 1105) whose DEX we can diff. Every
+        // recovered value was independently confirmed by at least two build pairs with
+        // zero disagreements, which makes the per-version maps in PoolValues*.kt exact
+        // for the fields ordinary code reads.
+        //
+        // This matters because blanking pool fields breaks real logic, not just the VM:
+        //
+        //   WorkSpecDao_Impl.getRecentlyCompletedWork() reads the `run_attempt_count`
+        //   column through a pool field, and QueueEventDao_Impl.getEventsFromParams()
+        //   reads `params` the same way. With "" every cursor lookup throws:
+        //     IllegalArgumentException: column '' does not exist. Available columns: …
+        //
+        //   AnalyticsHWSdk's SQLiteOpenHelper (`com/dobest/analyticshwsdk/c/d`) builds
+        //   every CREATE TABLE with a pool field as the column list. In 1105 that field
+        //   is `interval`, and with "" the SDK throws on init:
+        //     SQLiteException: near ",": syntax error
+        //     … INSERT INTO sessions(duration,is_connected,start_time,is_launch,,session_id)
+        //
+        //   Room's generated DAOs also build their SELECT/INSERT statements and schema
+        //   validation queries out of pool fields, e.g. `work_spec_id` and
+        //   `SELECT state FROM workspec WHERE id=?`.
+        //
+        // R8 re-shuffles the pool class/field names on every build, so the values are
+        // keyed by versionCode. Fields already assigned a literal are left untouched.
         val staticStringPool = { cls: ClassDef ->
             cls.methods.count() == 0 &&
                 cls.fields.count() >= 10 &&
                 cls.fields.all { FieldUtil.isStatic(it) && it.type == "Ljava/lang/String;" }
         }
+        val poolValues = when (packageMetadata.versionCode) {
+            "1102" -> POOL_VALUES_1102
+            "1104" -> POOL_VALUES_1104
+            "1105" -> POOL_VALUES_1105
+            // Unknown build: blank everything. The PairIP VM never refills the pool on a
+            // re-signed install, so a null would crash consumers; "" at least does not NPE.
+            else -> emptyMap()
+        }
         classDefForEach { cls ->
             if (!staticStringPool(cls)) return@classDefForEach
+            val restores = poolValues[cls.type].orEmpty()
             val mutableCls = mutableClassDefBy(cls)
             mutableCls.staticFields.forEach { field ->
                 field.setInitialValue(
-                    MutableStringEncodedValue(ImmutableStringEncodedValue(""))
+                    MutableStringEncodedValue(
+                        ImmutableStringEncodedValue(restores[field.name] ?: "")
+                    )
                 )
-            }
-
-            // Targeted restores. R8 re-shuffles the pool class/field names on every build,
-            // so the values consumed by ordinary AndroidX code (not by the PairIP VM) must
-            // be re-mapped per version. Blanking these breaks real logic:
-            //
-            //   WorkSpecDao_Impl.getRecentlyCompletedWork() reads the `run_attempt_count`
-            //   column through XaivvuwuA->wzhRjA, and QueueEventDao_Impl.getEventsFromParams()
-            //   reads `params` through xpmjMmJpaeAPK->LTIUhCXiALq. With "" every cursor
-            //   lookup throws:
-            //     IllegalArgumentException: column '' does not exist. Available columns: …
-            //
-            //   AnalyticsHWSdk's SQLiteOpenHelper (`com/dobest/analyticshwsdk/c/d`) builds
-            //   every CREATE TABLE with luFkMTMuZpvz->bgkioDosd as the first column name.
-            //   It was a literal `_id` in 8.6; 8.7 moved it into the pool, so with "" the
-            //   SDK throws on init:
-            //     SQLiteException: AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY
-            //     … CREATE TABLE IF NOT EXISTS sessions ( INTEGER PRIMARY KEY autoincrement,…
-            //   and the Unity `Loading` coroutine dies, leaving the game on the loading screen.
-            //
-            // All names are confirmed by the literal reads in the 8.6 build at the same
-            // instruction positions (see analysis/minutestilldawn/notes/build.md).
-            listOf(
-                Triple(
-                    "Lcom/bykv/vk/openvk/preload/falconx/loader/nWuw/XaivvuwuA;",
-                    "wzhRjA",
-                    "run_attempt_count",
-                ),
-                Triple(
-                    "Lcom/bykv/vk/openvk/bg/bg/bg/bX/mGMm/xpmjMmJpaeAPK;",
-                    "LTIUhCXiALq",
-                    "params",
-                ),
-                Triple(
-                    "Lcom/ironsource/mediationsdk/adunit/data/rRSI/luFkMTMuZpvz;",
-                    "bgkioDosd",
-                    "_id",
-                ),
-            ).forEach { (owner, fieldName, value) ->
-                if (cls.type == owner) {
-                    mutableCls.staticFields
-                        .firstOrNull { it.name == fieldName }
-                        ?.setInitialValue(
-                            MutableStringEncodedValue(
-                                ImmutableStringEncodedValue(value)
-                            )
-                        )
-                }
             }
         }
     }
