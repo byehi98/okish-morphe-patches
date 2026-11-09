@@ -5,12 +5,12 @@ import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
 /**
- * wz5.e(action, path, data, hash, callback): PersistentConnection.putInternal — the single outgoing
+ * q86.e(action, path, data, hash, callback): PersistentConnection.putInternal — the single outgoing
  * write (setValue "p", updateChildren "m", transaction compare-and-put all funnel through it).
- * Firebase SDK is R8-obfuscated; names are pinned to 5.1.0.
+ * Firebase SDK is R8-obfuscated; names are pinned to 5.1.1.
  */
 object PersistentConnectionPutFingerprint : Fingerprint(
-    definingClass = "Lwz5;",
+    definingClass = "Lq86;",
     name = "e",
     returnType = "V",
     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
@@ -19,7 +19,7 @@ object PersistentConnectionPutFingerprint : Fingerprint(
         "Ljava/util/ArrayList;",
         "Ljava/lang/Object;",
         "Ljava/lang/String;",
-        "Lcl6;"
+        "Ltu6;"
     )
 )
 

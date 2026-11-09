@@ -7,7 +7,7 @@ import com.android.tools.smali.dexlib2.AccessFlags
 
 /**
  * V.getA(): master premium gate (all premium features read it).
- * Pinned by definingClass + Ljx <init>/invoke order — no obfuscated names.
+ * Pinned by definingClass + Lql <init>/invoke order — no obfuscated names.
  * See analysis/swiftbackup/notes/offline-premium.md.
  */
 object PremiumGateFingerprint : Fingerprint(
@@ -16,11 +16,11 @@ object PremiumGateFingerprint : Fingerprint(
     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
     filters = listOf(
         methodCall(
-            definingClass = "Ljx;",
+            definingClass = "Lql;",
             name = "<init>"
         ),
         methodCall(
-            definingClass = "Ljx;",
+            definingClass = "Lql;",
             name = "invoke"
         )
     )
