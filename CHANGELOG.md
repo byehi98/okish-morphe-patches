@@ -1,3 +1,9 @@
+## [1.49.0-dev.13](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.12...v1.49.0-dev.13) (2026-11-09)
+
+### ✨ New Features
+
+* **SwiftBackup:** Update to version 5.1.1 ([6cb2b19](https://github.com/byehi98/okish-morphe-patches/commit/6cb2b19c0054080fef77996bca7a3fa888fed961))
+
 ## [1.49.0-dev.12](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.11...v1.49.0-dev.12) (2026-11-08)
 
 ### ✨ New Features
