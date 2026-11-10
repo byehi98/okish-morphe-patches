@@ -1,3 +1,9 @@
+## [1.50.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.1...v1.50.0-dev.2) (2026-11-10)
+
+### ✨ New Features
+
+* **magicsort:** add patches for Magic Sort app ([4ab985c](https://github.com/byehi98/okish-morphe-patches/commit/4ab985c2caca0ed9d2c52314aaaaedce5f6a773d))
+
 ## [1.50.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0...v1.50.0-dev.1) (2026-11-10)
 
 ### ✨ New Features

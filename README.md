@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.50.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;141 patches total
+> **[v1.50.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;144 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -400,6 +400,23 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Free IAP](#free-iap) | Everything in the shop is free. Tap "Buy" on any item — remove ads, coin packs, or anything else — and you get it right away. No Google Play payment window opens and you are never charged. If something goes wrong you will just see a "purchase failed" message; the game keeps working as normal. |  |
+
+</details>
+
+<details>
+<summary>📦 Magic Sort&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 0.0.3420 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free IAP](#free-iap) | Every in-app purchase completes instantly — coin packs, bundles and the no-ads offer — with no Google Play payment sheet. |  |
+| [Instant Rewarded Ads](#instant-rewarded-ads) | Every watch-ad offer grants its reward instantly with no video. |  |
+| [Remove Ads](#remove-ads) | All ads are permanently removed — banners, interstitials and app-open ads never load, and the store treats the no-ads product as owned. |  |
 
 </details>
 
