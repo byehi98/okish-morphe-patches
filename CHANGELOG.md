@@ -1,3 +1,9 @@
+## [1.50.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.2...v1.50.0-dev.3) (2026-11-10)
+
+### ✨ New Features
+
+* **sonicdash:** add patches for Sonic Dash Run app ([9b11834](https://github.com/byehi98/okish-morphe-patches/commit/9b11834eca4eb582c8e9d9341ee5ce99674b1f62))
+
 ## [1.50.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.1...v1.50.0-dev.2) (2026-11-10)
 
 ### ✨ New Features

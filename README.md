@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.50.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;144 patches total
+> **[v1.50.0-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;147 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -350,6 +350,23 @@ Direct URL:
 | [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
 | [Remove Ads](#remove-ads) | Stops the full-screen interstitial adverts Jetpack Joyride shows between runs. The game's own "no ad available" path is replayed, so the run continues immediately instead of freezing or waiting on a skipped advert. |  |
 | [Unlock Events](#unlock-events) | Unlocks every event (seasonal worlds, event missions and their pop-ups) by disabling the game's internal "IAP cheat" flag check. When a free-IAP patch forges a purchase the game's receipt validator marks the account as a cheater and locks all cheater-restricted events behind an 'Event Restricted' pop-up; this patch makes that check always answer 'not a cheat', so the events open normally. |  |
+
+</details>
+
+<details>
+<summary>📦 Sonic Dash Run&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 10.7.0 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | The "watch a video" buttons give you the reward straight away. Tap one and the rings, red star rings, gems or unlock are yours — no video and no waiting. |  |
+| [Free Store Purchases](#free-store-purchases) | Everything sold for real money is free. Tap a ring pack, a gem pack, a red star ring bundle or a character offer and it is granted straight away — no payment screen and no charge. |  |
+| [Remove Ads](#remove-ads) | Stops banners, full-screen interstitials and ad pop-ups from appearing. Runs and menus carry on as normal — the ads just never show up. |  |
 
 </details>
 
