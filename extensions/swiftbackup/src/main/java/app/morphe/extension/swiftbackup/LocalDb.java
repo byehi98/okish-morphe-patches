@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings({"unchecked", "rawtypes", "unused"})
 public final class LocalDb {
     private static final String TAG = "MorpheLocalDb";
+    private static final boolean DEBUG = false;
     private static final String FILE_NAME = "morphe_local_db.json";
     private static final String FALLBACK_DIR = "/data/data/org.swiftapps.swiftbackup/files";
 
@@ -46,6 +47,7 @@ public final class LocalDb {
     private static long writeSeq;
     private static boolean stateLoaded;
     private static long lastPull;
+    private static int writeLogCount;
     private static ScheduledExecutorService executor;
 
     // Obfuscated app objects, handed over by the patched code and only used reflectively.
@@ -66,6 +68,7 @@ public final class LocalDb {
                 Object parsed = fromJson(new JSONObject(new String(readAll(f), "UTF-8")));
                 if (parsed instanceof Map) root = (Map<String, Object>) parsed;
             }
+            dbg("load: file=" + f + " exists=" + f.isFile() + " size=" + f.length() + " rootKeys=" + root.keySet());
         } catch (Throwable t) {
             log("load failed", t);
         }
@@ -81,6 +84,10 @@ public final class LocalDb {
         load();
         List<String> segments = new ArrayList<>();
         if (path != null) for (Object o : path) segments.add(String.valueOf(o));
+        if (DEBUG && writeLogCount < 20) {
+            writeLogCount++;
+            dbg("write " + action + " " + segments);
+        }
         try {
             if ("m".equals(action) && data instanceof Map) {
                 for (Map.Entry<?, ?> e : ((Map<?, ?>) data).entrySet()) {
@@ -118,6 +125,9 @@ public final class LocalDb {
         LocalDb.repo = repo;
         LocalDb.helper = helper;
         LocalDb.repoPostMethod = repoPostMethod;
+        dbg("attach: repo=" + (repo == null ? "null" : repo.getClass().getName())
+                + " helper=" + (helper == null ? "null" : helper.getName())
+                + " post=" + repoPostMethod);
         if (executor == null) {
             executor = Executors.newSingleThreadScheduledExecutor();
             executor.scheduleWithFixedDelay(new Runnable() {
@@ -142,8 +152,33 @@ public final class LocalDb {
             if (!dirty && lastPull != 0 && now - lastPull < PULL_INTERVAL_MS) return;
         }
         // null: no usable cloud client. Empty: connected, but no remote copy yet.
+        Object client = null;
+        Object path = null;
+        try {
+            Method mc = helper.getMethod("morpheCloudClient");
+            dbg("sync: helper method=" + mc + " decl=" + mc.getDeclaringClass().getName());
+            client = mc.invoke(null);
+            if (client != null) {
+                for (Method m : helper.getMethods()) {
+                    if (m.getName().equals("morpheCloudPath") && m.getParameterTypes().length == 1) {
+                        path = m.invoke(null, client);
+                        break;
+                    }
+                }
+            }
+        } catch (Throwable t) {
+            dbg("sync: probe failed " + t);
+        }
+        dbg("sync: client=" + (client == null ? "null" : client.getClass().getName())
+                + " path=" + path
+                + " dirty=" + dirty + " syncedRev=" + syncedRev
+                + " rootKeys=" + (root == null ? "null" : root.keySet().toString()));
         byte[] remote = (byte[]) helper.getMethod("morpheCloudDownload").invoke(null);
-        if (remote == null) return;
+        if (remote == null) {
+            dbg("sync: download=null (no client or failed)");
+            return;
+        }
+        dbg("sync: download=" + remote.length + " bytes");
         long remoteRev = 0;
         Map<String, Object> remoteData = null;
         if (remote.length > 0) {
@@ -175,8 +210,11 @@ public final class LocalDb {
             }
         }
         if (adopted) reseed();
+        dbg("sync: adopted=" + adopted + " remoteRev=" + remoteRev + " upload="
+                + (upload == null ? "none" : upload.length + " bytes"));
         if (upload != null) {
             Object ok = helper.getMethod("morpheCloudUpload", byte[].class).invoke(null, (Object) upload);
+            dbg("sync: upload ok=" + ok);
             if (!Boolean.TRUE.equals(ok)) return;
             synchronized (LocalDb.class) {
                 syncedRev++;
@@ -190,6 +228,7 @@ public final class LocalDb {
     /** Pushes the current tree into the database client again, on its run loop. */
     private static void reseed() throws Exception {
         final Object repo = LocalDb.repo;
+        dbg("reseed: repo=" + (repo == null ? "null" : repo.getClass().getName()) + " post=" + repoPostMethod);
         repo.getClass().getMethod(repoPostMethod, Runnable.class).invoke(repo, new Runnable() {
             @Override
             public void run() {
@@ -412,6 +451,10 @@ public final class LocalDb {
 
     private static void log(String message, Throwable t) {
         Log.e(TAG, message, t);
+    }
+
+    private static void dbg(String message) {
+        if (DEBUG) Log.i(TAG, message);
     }
 
     /**

@@ -8,167 +8,104 @@ import java.io.RandomAccessFile
 import kotlin.io.readBytes
 
 /**
- * Dead Target: Offline Games 3D 4.185.0 — Unlimited ALL in-game currency.
+ * Dead Target: Offline Games 3D 4.186.0 — Unlimited ALL in-game currency (armeabi-v7a).
  *
- * Dead Target is Unity IL2CPP: the smali layer is SDK plumbing only, every economy read
- * lives in `libil2cpp.so` (85,096,080 bytes, arm64-v8a, plaintext `.text`). All five
- * currencies are `DSystem` instance getters, so the value comes back in **x0** (AArch64
- * ABI) and the cheapest correct edit is to make each getter *return a constant*.
+ * ============================================================================
+ * WHY THIS FILE CHANGED ARCHITECTURE (4.185.0 → 4.186.0)
+ * ============================================================================
+ * The 4.185.0 patch set was written against an **arm64-v8a** XAPK
+ * (base + `UnityDataAssetPack.apk` + `config.arm64_v8a.apk`, libil2cpp.so = 85,096,080
+ * bytes). The 4.186.0 XAPK published for `com.vng.g6.a.zombie` (versionCode 586009263) is
+ * **armeabi-v7a only** — the split set is base + `UnityDataAssetPack.apk` +
+ * `config.armeabi_v7a.apk`, and libil2cpp.so is 76,435,716 bytes of 32-bit **A32/ARM**
+ * code (not Thumb — every function here starts with `push {…, lr}` as an ARM word).
  *
- * Forcing the GETTER (and only the getter) is the whole trick: every affordability check
- * and every UI read in the game goes through these properties, so they all pass, while
- * `set_gameMoney` / `set_payMoney` / `set_Diamond` / the int32 setters still run normally
- * on spend — so purchases, shops and the save file keep working. No `set_*` method is
- * touched.
+ * That is not a cosmetic difference: the old patch failed at execution with
+ * `get("lib/arm64-v8a/libil2cpp.so")` → `FileNotFoundException`, and even with the path
+ * fixed, not one AArch64 anchor can match an ARM32 library. So all five sites below were
+ * re-derived from a fresh Il2CppDumper run against the 4.186.0 armv7 library.
+ *
+ * **RVA == FILE OFFSET** in this ELF (Il2CppDumper prints `RVA:`/`Offset:`/`VA:` identical
+ * for every method), so the addresses below can be used directly as file offsets. There is
+ * no +0x4000 delta trap here; that trap was an arm64-segment artefact of 4.185.0.
  *
  * ============================================================================
  * SITES — five DSystem getters, byte-verified against the shipped libil2cpp.so
  * ============================================================================
- * ⚠️ **Il2CppDumper `script.json` Address is a VIRTUAL address.** Dead Target's
- * executable LOAD segment maps `file 0x1C165CC -> VA 0x1C1A5CC`, i.e. **delta = +0x4000**,
- * so **file offset = VA − 0x4000**. Re-verified by parsing the ELF program headers
- * (LOAD R E, off=0x1c1273c vaddr=0x1c1673c). Same trap documented in
- * AliensDriveMeCrazy's KDoc. Writing at the raw VA silently corrupts the library.
+ * All five currencies are `DSystem` instance getters, so the value comes back in the
+ * `r0` (and `r1` for the 64-bit ones) per the ARM AAPCS. Forcing the GETTER — and only the
+ * getter — is the whole trick: every affordability check and every UI read in the game goes
+ * through these properties, so they all pass, while `set_*` methods still run normally on
+ * spend, so purchases, shops and the save file keep working.
  *
- *  | Currency    | Method                            | VA        | File offset | Ret   |
- *  |-------------|-----------------------------------|-----------|-------------|-------|
- *  | Cash        | DProject.DSystem.get_gameMoney    | 0x02193D24| 0x0218FD24  | int64 |
- *  | Gold        | DProject.DSystem.get_payMoney     | 0x0219A588| 0x02196588  | int64 |
- *  | Diamonds    | DProject.DSystem.get_Diamond      | 0x0219B1E0| 0x021971E0  | int64 |
- *  | Tapjoy pts  | DProject.DSystem.get_tapjoyMoney  | 0x0219A410| 0x02196410  | int32 |
- *  | Mascot coin | DProject.DSystem.get_mascotCoin   | 0x0219C9D8| 0x021989D8  | int32 |
+ *  | Currency    | Method                          | RVA = offset | Return | Stub bytes |
+ *  |-------------|---------------------------------|--------------|--------|-----------:|
+ *  | Cash        | DProject.DSystem.get_gameMoney  | 0x013296D8   | int64  | 16 |
+ *  | Gold        | DProject.DSystem.get_payMoney   | 0x01332B44   | int64  | 16 |
+ *  | Diamonds    | DProject.DSystem.get_Diamond    | 0x01333A50   | int64  | 16 |
+ *  | Tapjoy pts  | DProject.DSystem.get_tapjoyMoney| 0x013329C8   | int32  | 12 |
+ *  | Mascot coin | DProject.DSystem.get_mascotCoin | 0x01335540   | int32  | 12 |
  *
- * Original 36 bytes at each file offset (the anchor) → 12-byte replacement:
- *
- *  Cash       0x0218FD24  FF 83 01 D1 FE 13 00 F9 F8 5F 03 A9 F6 57 04 A9 F4 4F 05 A9
- *                        91 47 7D 01 90 88 0A 78 39 F3 03 00 AA C8 00 00 37
- *             →           E0 3F 99 D2 40 73 A7 F2 C0 03 5F D6
- *  Gold       0x02196588  FF 43 01 D1 FE 0B 00 F9 F8 5F 02 A9 F6 57 03 A9 F4 4F 04 A9
- *                        D4 7C 01 B0 88 2A 78 39 F3 03 00 AA C8 00 00 37
- *             →           E0 3F 99 D2 40 73 A7 F2 C0 03 5F D6
- *  Diamonds   0x021971E0  FF 43 01 D1 FE 0B 00 F9 F8 5F 02 A9 F6 57 03 A9 F4 4F 04 A9
- *                        D4 7C 01 90 88 42 78 39 F3 03 00 AA C8 00 00 37
- *             →           E0 3F 99 D2 40 73 A7 F2 C0 03 5F D6
- *  Tapjoy     0x02196410  FE 0F 1F F8 08 D0 40 F9 88 00 00 B4 00 81 40 B9 FE 07 41 F8
- *                        C0 03 5F D6 57 FB F3 97 FE 0F 1F F8 08 D0 40 F9
- *             →           E0 3F 99 52 40 73 A7 72 C0 03 5F D6
- *  Mascot     0x021989D8  FE 0F 1E F8 F4 4F 01 A9 08 D0 40 F9 A8 00 00 B4 00 51 41 B9
- *                        F4 4F 41 A9 FE 07 42 F8 C0 03 5F D6 F3 03 00 AA
- *             →           E0 3F 99 52 40 73 A7 72 C0 03 5F D6
- *
- * Disassembly of the five entries (confirms these are real function entry points, not
- * mid-body offsets — capstone 5.0.7, arm64):
- *   cash    : sub sp,sp,#0x60 / str x30,[sp,#0x20] / stp x24,x23,[sp,#0x30] / … /
- *             ldr x8,[x19,#0x1A0]  ← the ProtectedLong holder field
- *   gold    : sub sp,sp,#0x50 / str x30,[sp,#0x10] / stp x24,x23,[sp,#0x20] / … /
- *             ldr x8,[x19,#0x1A0]
- *   diamonds: sub sp,sp,#0x50 / str x30,[sp,#0x10] / stp x24,x23,[sp,#0x20] / … /
- *             ldr x8,[x19,#0x1A0]
- *   tapjoy  : str x30,[sp,#-0x10]! / ldr x8,[x0,#0x1A0] / cbz x8,… / ldr w0,[x8,#0x80]
- *   mascot  : str x30,[sp,#-0x20]! / stp x20,x19,[sp,#0x10] / ldr x8,[x0,#0x1A0] /
- *             cbz x8,… / ldr w0,[x8,#0x150]
- * ([x0,#0x1A0] = the UserData/ProtectedLong holder; #0x80 / #0x150 = the two int32 slots.)
+ * Every entry is verified as a real function prologue by disassembly, e.g.
+ *   cash   0x013296D8: push {r4,r5,r6,r7,r8,r9,r10,r11,lr} / sub sp,sp,#28 / …
+ *                     ldr r4,[r6,#0xF0]   ← ProtectedLong holder
+ *   tapjoy 0x013329C8: push {r4,lr} / ldr r4,[r0,#0xF0] / cmp / ldr r0,[r4,#0x48]
+ *   mascot 0x01335540: push {r4,r5,r11,lr} / ldr r5,[r0,#0xF0] / … / ldr r0,[r5,#0xD4]
+ * (`[r0,#0xF0]` is the UserData/ProtectedLong holder in the 32-bit field layout; the int32
+ * slots moved from arm64's 0x80/0x150 to 0x48/0xD4.)
  *
  * ============================================================================
  * REPLACEMENT STUB — both return 999,999,999 (0x3B9AC9FF)
  * ============================================================================
- *  int64 (cash, gold, diamonds): E0 3F 99 D2 40 73 A7 F2 C0 03 5F D6
- *      movz  x0, #0xC9FF          (sf=1 → D2)
- *      movk  x0, #0x3B9A, lsl #16 (sf=1 → F2)
- *      ret                        (C0 03 5F D6)
- *  int32 (tapjoy, mascot):       E0 3F 99 52 40 73 A7 72 C0 03 5F D6
- *      movz  w0, #0xC9FF          (sf=0 → 52)
- *      movk  w0, #0x3B9A, lsl #16 (sf=0 → 72)
- *      ret
+ *  int64 (cash, gold, diamonds) — 16 bytes:
+ *      FF 09 0C E3   movw r0, #0xC9FF
+ *      9A 0B 43 E3   movt r0, #0x3B9A      → r0 = 0x3B9AC9FF
+ *      00 10 A0 E3   mov  r1, #0           → high word 0
+ *      1E FF 2F E1   bx   lr
+ *  int32 (tapjoy, mascot) — 12 bytes:
+ *      FF 09 0C E3 / 9A 0B 43 E3 / 1E FF 2F E1
  *
- * Bit 31 (`sf`) is the ONLY difference between the two stubs — the `w` vs `x` encodings are
- * asserted per-site in the anchor table, so the two int32 sites get `…52`/`…72` and the
- * three int64 sites get `…D2`/`…F2`.
- * 999,999,999 = 0x3B9AC9FF fits int32 (max 2,147,483,647), so the int32 getters stay valid.
- *
- * Encoding cross-validated: a MOVZ/MOVK encoder reproduces all four words, the same encoder
- * reproduces `movz w0,#1` = 0x52800020, and that exact `movz w0,#1 ; ret` stub occurs
- * **1,735** times in this library — so the layout matches what the IL2CPP compiler emits
- * rather than a hand-rolled guess. Neither stub occurs anywhere in the shipped library, so
- * the write cannot collide with existing code.
+ * Encodings produced with `llvm-mc -triple=armv7-linux-gnueabi -show-encoding`, not
+ * hand-assembled. 999,999,999 = 0x3B9AC9FF fits a signed int32, so the int32 getters stay
+ * valid.
  *
  * Overwriting the prologue is safe: the stub returns immediately and **never touches the
- * stack**, so the discarded `sub sp,sp,#0x60` / `str x30,[sp,…]` / `stp x24,x23,[sp,…]`
- * register-save prologue is simply never executed — no unbalanced sp, no leak.
+ * stack or a callee-saved register**, so the discarded `push`/`sub sp` is simply never
+ * executed — no unbalanced SP, no clobbered r4–r11.
  *
  * ============================================================================
- * ANCHOR UNIQUENESS — 12 bytes would be dangerously ambiguous, 36 bytes is exact
+ * ANCHOR UNIQUENESS — 36/48-byte windows, exactly one hit each
  * ============================================================================
- * The 12-byte prologues are NOT unique anywhere in the 85 MB lib:
- *   cash 312 hits · gold 418 hits · diamonds 418 hits (gold and diamonds share a
- *   byte-identical first 12 bytes) · tapjoy 40 hits · mascot 6 hits.
- * A 12-byte search would return an arbitrary earlier hit and corrupt an unrelated function.
- *
- * The **36-byte** window is exactly **1 hit** for all five sites, and in every case the
- * single hit is the expected file offset.
- *
- * What the 36 bytes cover per site (worth knowing when retargeting a version):
- *  - cash / gold / diamonds: 36 bytes = 9 instructions, entirely inside the getter
- *    (prologue + `adrp` + init-guard flag test).
- *  - tapjoy: the getter is only 32 bytes (`str x30,[sp,#-0x10]!` … `ret` + a trailing
- *    out-of-line `bl`), so bytes 32..36 are the first 8 bytes of the ADJACENT setter
- *    (whose prologue is identical). Only the first 12 bytes are ever written, so the setter
- *    is untouched — but the anchor deliberately spans it, because that is what makes the
- *    tapjoy match unique (its 12-byte count is only unique from 16 bytes up).
- *  - mascot: 36 bytes = 9 instructions = exactly the getter, ending on its `ret`.
- *
- * Every write is additionally guarded by read-original-bytes-then-compare (see
- * [applyAnchors]) and by the "exactly one occurrence" check, so a new build fails loudly
- * with a [PatchException] instead of writing into the wrong function.
+ * The first 12 bytes of the prologues are not unique (the game has thousands of
+ * `push {…, lr}` sites), so each entry carries a 36-byte window — 48 bytes for gold and
+ * diamonds, whose prologues are byte-identical to each other — and every window was
+ * verified to occur **exactly once** in the 76 MB library. A missing or ambiguous anchor
+ * throws [PatchException] with full context instead of writing into the wrong function.
  *
  * ============================================================================
  * DELIVERY — how the patched .so lands in the XAPK split pipeline
  * ============================================================================
- * Javap-verified against morphe-patcher 1.5.2 (see Dead Trigger's NativeIapVerifierBypass
- * KDoc for the full read-writeup of the classes involved):
- *  1. The CLI input is the `.xapk`; `PatchEngine` runs `ApkMerger.merge()` FIRST, so
- *     `base.apk` + `UnityDataAssetPack.apk` + `config.arm64_v8a.apk` become ONE merged APK
- *     before any patch executes. The config split is what carries `lib/arm64-v8a/libil2cpp.so`.
- *  2. A `rawResourcePatch` anywhere in the patch set forces `ResourceMode.RAW_ONLY`: decode
- *     = `ApkModuleRawDecoder` raw-extract of the merged APK into the working dir, libs at
- *     `root/lib/<abi>/libil2cpp.so`. `get(path, true)` resolves exactly there (the boolean
- *     is a vestigial `uncompress` hint, unused by the Arsclib coder).
- *  3. On encode, `detectFileChanges()` re-snapshots the extracted root tree — these are
- *     SAME-LENGTH in-place writes (12 bytes over 12 bytes), so only `lastModified` changes,
- *     which is exactly what the diff keys on — landing in `modifiedBinaryResources` →
- *     `getOtherResourceFiles(RAW_ONLY)` → `ApkUtils.applyTo` overlays them into the rebuilt
- *     APK → `signWithLegacyFallback`.
- *  4. Roundtrip losslessness for this exact pipeline shape was previously proven on Dead
- *     Trigger by CRC-comparing a patched output's two `libil2cpp.so` copies against the
- *     original config splits.
+ * `PatchEngine` runs `ApkMerger.merge()` FIRST, so base + `UnityDataAssetPack.apk` +
+ * `config.armeabi_v7a.apk` become ONE merged APK before any patch executes; the config
+ * split is what carries `lib/armeabi-v7a/libil2cpp.so`. A `rawResourcePatch` anywhere in
+ * the patch set forces `ResourceMode.RAW_ONLY`, so `get(path, true)` resolves the
+ * raw-extracted `lib/armeabi-v7a/libil2cpp.so`. Every write here is **same-length in
+ * place** (16-over-16, 12-over-12), so `detectFileChanges()` catches each on
+ * `lastModified` → `ApkUtils.applyTo` overlays them into the rebuilt APK →
+ * `signWithLegacyFallback`.
  *
  * Static file patch (chosen) vs runtime companion `.so`: the `.text` is plaintext on disk,
- * there is NO `.so` integrity / signature / anti-tamper check anywhere in the chain
- * (protection-bypass.md: no pairip, no Java signature verification, and VNG `libpglarmor.so`
- * is not even Java-loaded), and the whole bundle is re-signed as one unit — so a static byte
- * edit needs no NDK, no companion `.so`, no `System.loadLibrary` trigger and no `mprotect`
- * dance. It also sidesteps the ubisoftpop packed-lib timing lesson outright: nothing is
- * touched at runtime, before or after Unity's native init. (Dead Trigger's KDoc made the
- * same choice over the ubisoftpop companion-`.so` route.)
+ * there is no `.so` integrity check in the chain, and the whole bundle is re-signed as one
+ * unit — so a static byte edit needs no NDK, no companion `.so` and no `mprotect` dance.
  *
  * ============================================================================
  * SCOPE — deliberately narrow
  * ============================================================================
- * * `DProject.ProtectedLong.get_storedValue` (0x2ACB124) is NOT patched: it is shared by all
- *   three int64 currencies *and* by every other ProtectedLong use in the game, so it would
- *   over-reach. The five DSystem getters are precisely scoped.
+ * * `DProject.ProtectedLong.get_storedValue` is NOT patched: it is shared by all three
+ *   int64 currencies *and* by every other ProtectedLong use in the game.
  * * No `set_*` method is patched (spend must keep working).
- * * No ads / IAP-receipt / premium-entitlement / gun-unlock / god-mode behaviour is included
- *   here — those are separate concerns, deliberately out of scope for this patch.
- * * No armeabi-v7a branch: this XAPK ships **arm64-v8a ONLY** (splits: base +
- *   `UnityDataAssetPack.apk` + `config.arm64_v8a.apk`), so a second anchor table would be
- *   dead code.
- * * `DSystem` also has built-in cheat fields (`showcheat`, `EnableGod`, …) and dev cheats
- *   (`UnlockAllGuns`, `UnlockGunByIAPOK`) — reachable only with a runtime companion `.so`;
- *   deliberately not touched by this static currency patch.
- *
- * Discovery: a top-level `val … = rawResourcePatch(…)` IS a public static Patch-valued field,
- * which is what `PatchLoader` scans, so list-patches shows exactly one Dead Target entry.
+ * * No ads / IAP / gun-unlock behaviour here — separate concerns, separate files.
+ * * No arm64 branch: 4.186.0 ships armeabi-v7a only.
  */
 @Suppress("unused")
 val unlimitedCurrencyPatch = rawResourcePatch(
@@ -179,93 +116,97 @@ val unlimitedCurrencyPatch = rawResourcePatch(
     compatibleWith(COMPATIBILITY_DEAD_TARGET)
 
     execute {
-        // arm64-v8a only — this XAPK has no armeabi-v7a split.
-        applyAnchors(get("lib/arm64-v8a/libil2cpp.so", true), ARM64_ANCHORS)
+        applyAnchors(get("lib/armeabi-v7a/libil2cpp.so", true), ARM32_ANCHORS)
     }
 }
 
 /**
  * One guarded byte-range replacement in `libil2cpp.so`.
  *
- * [anchorHex] is the ORIGINAL 36-byte function window (must occur exactly ONCE in the
- * library — that uniqueness is what makes the match self-verifying); [replacementHex] is the
- * 12-byte stub written over the first 12 bytes of that window.
+ * [anchorHex] is the ORIGINAL 36- or 48-byte function window (must occur exactly ONCE in
+ * the library — that uniqueness is what makes the match self-verifying); [replacementHex]
+ * is the stub written over the first bytes of that window (16 bytes for the int64 getters,
+ * 12 for the int32 ones).
  */
 private class Anchor(
     /** Human label used in logs and [PatchException] messages. */
     val label: String,
-    /** VIRTUAL address from Il2CppDumper's script.json (kept for messages only). */
+    /** Virtual address from Il2CppDumper's script.json (= file offset in this ELF). */
     val va: Long,
-    /** Documented exact file offset = va − 0x4000 (exec LOAD delta, see KDoc). */
+    /** Exact file offset — identical to [va] for this 32-bit ELF. */
     val fileOffset: Long,
-    /** Hex of the ORIGINAL 36-byte window — must occur exactly once, or the patch aborts. */
+    /** Hex of the ORIGINAL window — must occur exactly once, or the patch aborts. */
     val anchorHex: String,
-    /** Hex of the 12-byte replacement written at that window's first 12 bytes. */
+    /** Hex of the replacement written at that window's first bytes. */
     val replacementHex: String,
 )
 
 /**
- * `movz x0,#0xC9FF ; movk x0,#0x3B9A,lsl#16 ; ret` → x0 = 0x3B9AC9FF = 999,999,999 (int64).
+ * `movw r0,#0xC9FF ; movt r0,#0x3B9A ; mov r1,#0 ; bx lr` → r0:r1 = 999,999,999 (int64).
  */
-private const val STUB_INT64 = "E03F99D24073A7F2C0035FD6"
+private const val STUB_INT64 = "FF090CE39A0B43E30010A0E31EFF2FE1"
 
 /**
- * `movz w0,#0xC9FF ; movk w0,#0x3B9A,lsl#16 ; ret` → w0 = 0x3B9AC9FF = 999,999,999 (int32).
+ * `movw r0,#0xC9FF ; movt r0,#0x3B9A ; bx lr` → r0 = 999,999,999 (int32).
  */
-private const val STUB_INT32 = "E03F99524073A772C0035FD6"
+private const val STUB_INT32 = "FF090CE39A0B43E31EFF2FE1"
 
-private val ARM64_ANCHORS = listOf(
+private val ARM32_ANCHORS = listOf(
     Anchor(
         label = "DSystem.get_gameMoney -> 999,999,999 (cash, int64)",
-        va = 0x02194758,
-        fileOffset = 0x02190758,
+        va = 0x013296D8,
+        fileOffset = 0x013296D8,
         anchorHex =
-            "FF8301D1FE1300F9F85F03A9" +
-            "F65704A9F44F05A9147D01D0" +
-            "88CA5F39F30300AAC8000037",
+            "F04F2DE91CD04DE214439FE50060A0E1" +
+                "04408FE00000D4E5000050E30400001A" +
+                "00039FE5",
         replacementHex = STUB_INT64,
     ),
     Anchor(
         label = "DSystem.get_payMoney -> 999,999,999 (gold, int64)",
-        va = 0x0219AFBC,
-        fileOffset = 0x02196FBC,
+        va = 0x01332B44,
+        fileOffset = 0x01332B44,
+        // 48 bytes: the 36-byte prologue alone is shared with get_Diamond, which has a
+        // byte-identical entry sequence.
         anchorHex =
-            "FF4301D1FE0B00F9F85F02A9" +
-            "F65703A9F44F04A9F47C0190" +
-            "88EA5F39F30300AAC8000037",
+            "F0472DE918D04DE298529FE50040A0E1" +
+                "05508FE00000D5E5000050E30400001A" +
+                "84029FE500009FE7EC9FF1EB0100A0E3",
         replacementHex = STUB_INT64,
     ),
     Anchor(
         label = "DSystem.get_Diamond -> 999,999,999 (diamonds, int64)",
-        va = 0x0219BC14,
-        fileOffset = 0x02197C14,
+        va = 0x01333A50,
+        fileOffset = 0x01333A50,
+        // 48 bytes for the same reason as gold — these two prologues differ only in the
+        // adrp/adr displacement and the class-init call displacement that follow.
         anchorHex =
-            "FF4301D1FE0B00F9F85F02A9" +
-            "F65703A9F44F04A9D47C01F0" +
-            "88026039F30300AAC8000037",
+            "F0472DE918D04DE298529FE50040A0E1" +
+                "05508FE00000D5E5000050E30400001A" +
+                "84029FE500009FE7299CF1EB0100A0E3",
         replacementHex = STUB_INT64,
     ),
     Anchor(
         label = "DSystem.get_tapjoyMoney -> 999,999,999 (tapjoy points, int32)",
-        va = 0x0219AE44,
-        fileOffset = 0x02196E44,
-        // This getter is 32 bytes; bytes 32..36 are the adjacent setter's first two
-        // instructions — kept in the anchor because that is what makes it unique, but
-        // NEVER written (the replacement is 12 bytes).
+        va = 0x013329C8,
+        fileOffset = 0x013329C8,
+        // 36 bytes = 9 instructions: `push {r4,lr}` … `ldr r0,[r4,#0x48]` / `pop {r4,pc}`,
+        // then the first instruction of the adjacent setter. Only the first 12 bytes are
+        // written, so the setter is untouched.
         anchorHex =
-            "FE0F1FF808D040F9880000B4" +
-            "008140B9FE0741F8C0035FD6" +
-            "5BFBF397FE0F1FF808D040F9",
+            "10402DE9F04090E5000054E30000001A" +
+                "E6A0F1EB480094E51080BDE830482DE9" +
+                "F05090E5",
         replacementHex = STUB_INT32,
     ),
     Anchor(
         label = "DSystem.get_mascotCoin -> 999,999,999 (mascot coin, int32)",
-        va = 0x0219D40C,
-        fileOffset = 0x0219940C,
+        va = 0x01335540,
+        fileOffset = 0x01335540,
         anchorHex =
-            "FE0F1EF8F44F01A908D040F9" +
-            "A80000B4005141B9F44F41A9" +
-            "FE0742F8C0035FD6F30300AA",
+            "30482DE9F05090E5000055E30100001A" +
+                "0040A0E10796F1EBD40095E53088BDE8" +
+                "0050A0E1",
         replacementHex = STUB_INT32,
     ),
 )
@@ -274,16 +215,15 @@ private val ARM64_ANCHORS = listOf(
  * Applies every [Anchor] to [lib], guarded by a unique-anchor search.
  *
  * Two-phase so a bad build fails with **zero** bytes written:
- *  1. the library is slurped once and every 36-byte anchor is searched for, requiring
- *     **exactly one** occurrence (12 bytes alone is hopelessly ambiguous —
- *     312/418/418/40/6 hits — and a wrong hit would corrupt an unrelated function);
+ *  1. the library is slurped once and every window is searched for, requiring **exactly
+ *     one** occurrence;
  *  2. each resolved offset is re-read through a [RandomAccessFile], compared against the
  *     original bytes, and only then overwritten.
  *
- * The write is the same length as the bytes it replaces (12 over 12), so the patcher's
- * `lastModified`-keyed change diff picks it up. Throws [PatchException] with full context
+ * The writes are same length as the bytes they replace, so the patcher's
+ * `lastModified`-keyed change diff picks them up. Throws [PatchException] with full context
  * if an anchor is missing or ambiguous, or if the bytes on disk are not what we expect —
- * i.e. new game build, unsupported version.
+ * i.e. a new game build / different ABI variant.
  */
 private fun applyAnchors(lib: File, anchors: List<Anchor>) {
     println("Dead Target unlimited currency: patching ${lib.name} (${lib.length()} bytes)")
@@ -296,15 +236,15 @@ private fun applyAnchors(lib: File, anchors: List<Anchor>) {
         val hits = indexOfAll(bytes, needle)
         when {
             hits.isEmpty() -> throw PatchException(
-                "Dead Target unlimited currency: ${anchor.label} — 36-byte anchor not found in " +
-                    "${lib.name} (size=${bytes.size}). Expected file offset 0x" +
+                "Dead Target unlimited currency: ${anchor.label} — ${needle.size}-byte anchor " +
+                    "not found in ${lib.name} (size=${bytes.size}). Expected file offset 0x" +
                     "${anchor.fileOffset.toString(16)} (VA 0x${anchor.va.toString(16)}). " +
-                    "Unsupported app version?",
+                    "Unsupported app version or ABI?",
             )
 
             hits.size > 1 -> throw PatchException(
-                "Dead Target unlimited currency: ${anchor.label} — 36-byte anchor is AMBIGUOUS " +
-                    "(${hits.size} occurrences: " +
+                "Dead Target unlimited currency: ${anchor.label} — ${needle.size}-byte anchor is " +
+                    "AMBIGUOUS (${hits.size} occurrences: " +
                     hits.joinToString(", ") { "0x" + it.toString(16) } +
                     "). Refusing to guess — unsupported app version?",
             )
@@ -317,18 +257,17 @@ private fun applyAnchors(lib: File, anchors: List<Anchor>) {
                     "app layout changed?",
             )
         }
-        val original12 = needle.copyOf(replacement.size)
-        if (!bytes.copyOfRange(at.toInt(), at.toInt() + replacement.size).contentEquals(original12)) {
+        val original = needle.copyOf(replacement.size)
+        if (!bytes.copyOfRange(at.toInt(), at.toInt() + replacement.size).contentEquals(original)) {
             throw PatchException(
                 "Dead Target unlimited currency: ${anchor.label} — anchor mismatch at VA 0x" +
                     "${anchor.va.toString(16)} (file 0x${at.toString(16)}): expected " +
-                    "${toHex(original12)} vs found ${toHex(bytes.copyOfRange(at.toInt(), at.toInt() + replacement.size))}. " +
+                    "${toHex(original)} vs found " +
+                    "${toHex(bytes.copyOfRange(at.toInt(), at.toInt() + replacement.size))}. " +
                     "libil2cpp.so layout changed — unsupported app version?",
             )
         }
         if (at != anchor.fileOffset) {
-            // Not fatal — the unique anchor is authoritative — but the .so moved, so say so
-            // loudly instead of silently shipping.
             println(
                 "Dead Target unlimited currency: ${anchor.label} — NOTE: unique anchor resolved " +
                     "to 0x${at.toString(16)}, documented file offset is 0x" +
@@ -341,22 +280,22 @@ private fun applyAnchors(lib: File, anchors: List<Anchor>) {
     // Phase 2 — guarded in-place writes.
     RandomAccessFile(lib, "rw").use { raf ->
         for ((anchor, at, replacement) in writes) {
-            val original12 = hex(anchor.anchorHex).copyOf(replacement.size)
+            val original = hex(anchor.anchorHex).copyOf(replacement.size)
             raf.seek(at)
             val actual = ByteArray(replacement.size)
             raf.readFully(actual)
-            if (!actual.contentEquals(original12)) {
+            if (!actual.contentEquals(original)) {
                 throw PatchException(
                     "Dead Target unlimited currency: ${anchor.label} — original bytes changed " +
                         "between resolve and write at file 0x${at.toString(16)}: expected " +
-                        "${toHex(original12)} vs found ${toHex(actual)}.",
+                        "${toHex(original)} vs found ${toHex(actual)}.",
                 )
             }
             raf.seek(at)
             raf.write(replacement)
             println(
                 "Dead Target unlimited currency: VA 0x${anchor.va.toString(16)} " +
-                    "(file 0x${at.toString(16)}): ${toHex(original12)} -> " +
+                    "(file 0x${at.toString(16)}): ${toHex(original)} -> " +
                     "${anchor.replacementHex}  [${anchor.label}]",
             )
         }

@@ -8,12 +8,12 @@ object Constants {
     val COMPATIBILITY_SHOOTYSKIES = Compatibility(
         name = "Shooty Skies",
         packageName = "com.mightygamesgroup.shootyskies",
-        // APKPure XAPK bundle — single base APK + OBB expansion, no split APKs.
-        apkFileType = ApkFileType.XAPK,
+        // APKMirror single-APK bundle (arm64-v8a, nodpi).
+        apkFileType = ApkFileType.APK,
         // Dominant gold of the sampled app icon (mipmap-xhdpi/app_icon.png).
         appIconColor = 0xF0E000,
         targets = listOf(
-            AppTarget(version = "3.441.100103")
+            AppTarget(version = "3.441.100104")
         )
     )
 }

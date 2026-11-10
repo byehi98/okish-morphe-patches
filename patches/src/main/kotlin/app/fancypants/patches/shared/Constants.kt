@@ -8,10 +8,12 @@ object Constants {
     val COMPATIBILITY_FANCYPANTS = Compatibility(
         name = "Fancy Pants Adventures",
         packageName = "com.overthetopgames.fancypants",
-        apkFileType = ApkFileType.APK,
+        // 1.0.48 is distributed as an XAPK bundle (base APK + config splits);
+        // morphe-cli resolves the bundle itself, so pass the .xapk directly.
+        apkFileType = ApkFileType.XAPK,
         appIconColor = 0xFF9800,
         targets = listOf(
-            AppTarget(version = "1.0.30")
+            AppTarget(version = "1.0.48")
         )
     )
 }

@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.48.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.48.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;129 patches total
+> **[v1.49.0-dev.13](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0-dev.13)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;140 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -91,13 +91,13 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 4.185.0 |
+| 4.186.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [All items owned](#all-items-owned) | Every gun, skin, glove and drone shows as unlocked, and you can equip any of them. Your save file is not changed. |  |
-| [Instant rewarded video](#instant-rewarded-video) | Reward buttons pay out instantly. Tap once and you get the reward, with no ad to watch. |  |
+| [Instant rewarded video](#instant-rewarded-video) | Rewards from "watch an ad" popups are granted immediately, without playing an ad. |  |
 | [Unlimited currency](#unlimited-currency) | Your cash, gold and diamonds always show the maximum. You never run short of money. |  |
 
 </details>
@@ -242,12 +242,29 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.0.30 |
+| 1.0.48 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Fancy Pants Unlock Premium](#fancy-pants-unlock-premium) | Unlocks premium, wardrobe, world 1 and world 2 by forcing OTTBilling.isPurchased to always return true. |  |
+
+</details>
+
+<details>
+<summary>📦 Dumbbell Workout at Home&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.3.6 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Firebase Cert Spoof](#firebase-cert-spoof) | Restores Firebase requests on a re-signed APK. The Firebase API key is restricted to the Play build's package + signing certificate, so Installations, Remote Config, Auth and Storage requests from a patched build are rejected with API_KEY_ANDROID_APP_BLOCKED. This patch forces the certificate hash Firebase sends in X-Android-Cert to the original signing certificate's SHA-1, so those requests are accepted again. It does not fix the Start-workout crash — that was a native asset-decryption check covered by the Signature Spoof patch. It also does not make Google Sign-In work — that is validated server-side against the developer's OAuth client and cannot be patched (use the unpatched app for cloud sync). |  |
+| [Remove Ads](#remove-ads) | Unlocks the paid "Remove ads" product locally, so the app behaves as if it was purchased: banners, native, interstitial, app-open and splash ads stop, and the "Remove ads" row disappears from settings. No Play payment is involved and the entitlement survives restarts. Rewarded ads are left untouched. Requires the Signature Spoof patch in the same bundle for the patched APK to start. Google Sign-In / Backup & Restore does not work on a re-signed APK: the app's OAuth client is bound to the developer's signing certificate and Google refuses token issuance server-side, so no microG-style patch or signature spoof can bypass it. Use the unpatched app if you need cloud sync. |  |
+| [Signature Spoof](#signature-spoof) | Neutralises the app's built-in certificate verifier so the patched APK keeps running. The app re-reads its own signing certificate on every screen and compares 46 hardcoded slices of it against baked-in values; because patching always re-signs the APK, those comparisons fail and the app force-closes while the first activity is being created. With this patch every verifier reports the original, unmodified certificate instead, so all 46 checks pass. The bundled native library runs two further certificate checks: one stops the library from loading, and one silently stops workout data from being decrypted, which crashes the app the moment you tap Start. Both are bypassed as well. This patch is required — the app can neither start nor open a workout without it. |  |
 
 </details>
 
@@ -264,6 +281,23 @@ Direct URL:
 |----------|----------------|-----------|
 | [Fix app opening](#fix-app-opening) | Required so the modified app opens without crashing — skips signature, root and emulator checks. |  |
 | [Free purchases](#free-purchases) | Get paid items for free — tapping buy grants the item instantly without Google Play payment popup. |  |
+
+</details>
+
+<details>
+<summary>📦 FR Legends&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 0.4.9 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | The "watch a video" buttons give you the reward straight away. Tap one and the cash, gold or bonus is yours — no video, no waiting, and the buttons are always ready to use. |  |
+| [Free Store Purchases](#free-store-purchases) | Everything in the shop is free. Tap a cash pack, a gold pack, a car pack or the Livery Creator Pass and you get it straight away — no payment screen, no charge. |  |
+| [Remove Ads](#remove-ads) | Stops banners, roadside billboards and full-screen ads from appearing. Races and menus carry on as normal — the ads just never show up. |  |
 
 </details>
 
@@ -369,6 +403,24 @@ Direct URL:
 </details>
 
 <details>
+<summary>📦 Off The Road&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.18.2 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Rewarded Ads](#free-rewarded-ads) | The "watch a video" buttons pay out instantly. Tap one and you get the cash, repair or ticket reward without any ad or wait. |  |
+| [Free Store](#free-store) | Everything in the shop is free. Tap any item — coins, tickets, VIP, remove-ads, car packs or bundles — and it is granted immediately, with no Google Play payment screen and nothing charged. |  |
+| [Remove Ads](#remove-ads) | Removes full-screen and banner ads. Rewarded "watch a video" buttons keep working. |  |
+| [VIP Club Unlocked](#vip-club-unlocked) | Unlocks the VIP Club subscription automatically on every launch. No payment screen, no Google Play subscription, nothing charged. |  |
+
+</details>
+
+<details>
 <summary>📦 Progressbar95&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
 
@@ -392,7 +444,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 4.8.9.0 |
+| 4.8.10.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -431,6 +483,21 @@ Direct URL:
 |----------|----------------|-----------|
 | [FreeJobAlert Ad Removal](#freejobalert-ad-removal) | Removes all Google AdMob ads (banner, interstitial, rewarded, app open, native). |  |
 | [FreeJobAlert License Bypass](#freejobalert-license-bypass) | Bypasses the Pairip Play Store installation check so the app launches normally. |  |
+
+</details>
+
+<details>
+<summary>📦 TMNT: Shredder's Revenge&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.2.20 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Full Game Unlock](#full-game-unlock) | Unlocks the full game, arcade, survival, custom game and DLC characters by faking Google Play purchase query results. |  |
 
 </details>
 
@@ -550,7 +617,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 9.5.0 |
+| 9.5.1 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -599,7 +666,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.41 |
+| 1.42 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -707,7 +774,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 3.441.100103 |
+| 3.441.100104 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -755,7 +822,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 5.1.0 |
+| 5.1.1 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -869,7 +936,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 3.45.0 |
+| 3.46.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

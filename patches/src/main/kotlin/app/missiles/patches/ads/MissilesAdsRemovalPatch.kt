@@ -74,17 +74,22 @@ val missilesAdsRemovalPatch = bytecodePatch(
             return-void
         """.trimIndent())
 
-        // 5. getRewardItem → construct a fresh com.google.ads.mediation.unity
-        //    UnityReward (public no-arg ctor, amount=1, type="") so the C# layer
-        //    reading the reward item after our spoofed show() never sees null and
-        //    never blocks on the (now never-populated) rewardedAd field. We build
-        //    the object ourselves instead of reading RewardItem.DEFAULT_REWARD:
-        //    that static field is R8-renamable and referencing a renamed field is
-        //    a NoSuchFieldError at runtime. UnityReward is a public class with a
-        //    public constructor — safe to instantiate from any injected package.
+        // 5. getRewardItem → return the GMS API's own default reward item.
+        //
+        // v1.42 ROOT-CAUSE FIX: the old body instantiated
+        // `com.google.ads.mediation.unity.UnityReward` (a class shipped by the
+        // *Unity Ads mediation adapter*). That class was REMOVED in 1.42 when the
+        // adapter was updated — the reference is legal at dex-build time (unresolved
+        // type refs are allowed) but throws NoClassDefFoundError the moment the
+        // game reads the reward item after a rewarded ad.
+        //
+        // `RewardItem.DEFAULT_REWARD` is a public static field of the Google
+        // play-services-ads-api AAR (verified present in 1.42 smali:
+        // classes/com/google/android/gms/ads/rewarded/RewardItem.smali) pointing at
+        // `zza`, a RewardItem with amount=1, type="" — semantically identical to
+        // the removed UnityReward instance. Public API fields are never R8-renamed.
         UnityRewardedAdGetRewardItemFingerprint.method.addInstructions(0, """
-            new-instance v0, Lcom/google/ads/mediation/unity/UnityReward;
-            invoke-direct {v0}, Lcom/google/ads/mediation/unity/UnityReward;-><init>()V
+            sget-object v0, Lcom/google/android/gms/ads/rewarded/RewardItem;->DEFAULT_REWARD:Lcom/google/android/gms/ads/rewarded/RewardItem;
             return-object v0
         """.trimIndent())
 
@@ -105,11 +110,10 @@ val missilesAdsRemovalPatch = bytecodePatch(
             return-void
         """.trimIndent())
 
-        // Same as #5: construct a fresh UnityReward instead of reading the
-        // R8-fragile RewardItem.DEFAULT_REWARD static field.
+        // Same as #5: return RewardItem.DEFAULT_REWARD (the removed UnityReward
+        // class no longer exists in 1.42 — see the note above).
         UnityRewardedInterstitialAdGetRewardItemFingerprint.method.addInstructions(0, """
-            new-instance v0, Lcom/google/ads/mediation/unity/UnityReward;
-            invoke-direct {v0}, Lcom/google/ads/mediation/unity/UnityReward;-><init>()V
+            sget-object v0, Lcom/google/android/gms/ads/rewarded/RewardItem;->DEFAULT_REWARD:Lcom/google/android/gms/ads/rewarded/RewardItem;
             return-object v0
         """.trimIndent())
 

@@ -7,17 +7,31 @@ import app.morphe.patcher.patch.rawResourcePatch
 import java.io.File
 
 /**
- * Lemmings: Puzzle Survival 9.5.0 · **Native Grant Hook** — store taps grant
+ * Lemmings: Puzzle Survival 9.5.1 · **Native Grant Hook** — store taps grant
  * the tapped item through the game's OWN reward chain, with Unity IAP never
  * entered at all, and the native fail-popup dispatcher is RET-killed (folded
  * inline dependency, single listing entry).
  *
- * **Both shipped ABIs are patched** (`lib/arm64-v8a/` + `lib/armeabi-v7a/`).
- * The 9.5.0 XAPK ships an armv7 split; on an armv7-only device Android executes
- * that lib, so the old arm64-only version of this patch silently did nothing
- * there. The armv7 offsets + evidence (mapped through the IL2CPP
- * method-pointer tables — `global-metadata.dat` is v39, which Il2CppDumper
- * cannot parse) are recorded in `analysis/lemmings/notes/armv7-parity.md`.
+ * **Scope for 9.5.1: arm64-v8a only.** The 9.5.1 APKPure XAPK this patch set
+ * was rebased against ships base + `config.arm64_v8a` only (manifest
+ * `split_configs: ["config.arm64_v8a"]`, versionCode 7952). APKPure also
+ * publishes a separate armeabi-v7a variant, but that build was not obtained,
+ * so no 9.5.1 armv7 offsets could be derived — the 9.5.0 armv7 addresses are
+ * stale and are deliberately NOT applied (the loop warns instead of writing
+ * to a drifted lib). 9.5.0 support (both ABIs) remains documented in git
+ * history.
+ *
+ * Rebase method: the 9.5.0 arm64 lib (md5 502bd49e80824697bf376a2f0e4c8bb1)
+ * and the 9.5.1 arm64 lib (md5 a67418b38a6d07e59c0c4a7dcd98a118, 71,240,224
+ * bytes) were disassembled with capstone and each of the four sites below was
+ * matched on its prologue + body shape. The matched functions are shifted by a
+ * per-cluster constant:
+ *   * store/grant cluster (`RockCakes.Store` + `RockCakes.Purchases`):
+ *     **+0x25FA4**
+ *   * fail-popup cluster: **+0x26194**
+ * Both clusters keep their internal distances (hook→target stays 0x1874,
+ * dispatcher→leaf stays 0x2684), so every relative branch encoding below is
+ * byte-identical to 9.5.0 and only the absolute file offsets moved.
  *
  * Why the tap-path hijack (full analysis in
  * `analysis/com.sadpuppy.lemmings/notes/native-grant-hook.md`):
@@ -41,44 +55,30 @@ import java.io.File
  * * The EXACT hook the real-money store button invokes on tap (2-arg
  *   overload `(this, bool)` — the second argument is unused by the hooked
  *   target).
- * * arm64 file offset **0x1EC7638** (`VA 0x1ECB638`, `VA = file + 0x4000`;
- *   Cpp2IL `AddressAttribute` == file offset directly, NO −0x4000 bias —
- *   re-confirmed in `.../notes/addresses-950.md`; lib md5
- *   `502bd49e80824697bf376a2f0e4c8bb1`, all offsets capstone-disasm-verified).
- *   Entry bytes `FE 5F BD A9` (`stp x30,x23,[sp,#-0x30]!`).
- *   Patch: word0 → `1D 06 00 14` — arm64 `b #0x1EC8EAC`, the entry of
+ * * arm64 file offset **0x1EED5DC** for 9.5.1 (9.5.0 was **0x1EC7638**;
+ *   `VA = file + 0x4000`, lib md5 `a67418b38a6d07e59c0c4a7dcd98a118`).
+ *   Entry words `FE 5F BD A9 / F6 57 01 A9 / F4 4F 02 A9`
+ *   (`stp x30,x23,[sp,#-0x30]! ; stp x22,x21,[sp,#0x10] ; stp x20,x19,[sp,#0x20]`).
+ *   Patch: word0 → `1D 06 00 14` — arm64 `b #0x1EEEE50`, the entry of
  *   `PurchaseCompleted` (md16190, takes only `this`). Encoding check:
- *   `0x14000000 | ((0x1EC8EAC − 0x1EC7638) >> 2) = 0x14000000 | 0x61D`
- *   — capstone-verified. Relative branch, build-independent.
- * * armv7 file offset **0x01131308** (ARM state, `VA == file offset`, lib md5
- *   `e1fe5b5b8a45c02704dbb5aca6a22116`). Entry bytes
- *   `F0 41 2D E9  08 D0 4D E2` (`push {r4,r5,r6,r7,r8,lr} ; sub sp,#8`) then
- *   `mov r4,r0 ; mov r5,r1` — same 2-arg `(this, bool)` shape as arm64
- *   (`mov x19,x0 ; mov w20,w1`).
- *   Patch: word0 → `E4 07 00 EA` — ARM `b #0x011332A0`, the armv7 entry of
- *   `PurchaseCompleted` (12-byte prologue
- *   `push {r4-r8,sb,fp,lr} ; sub sp,#0x10 ; mov r4,r0` — structurally identical
- *   to arm64 `0x1EC8EAC`). Encoding:
- *   `0xEA000000 | ((0x11332A0 − (0x1131308 + 8)) >> 2) = 0xEA000000 | 0x7E4`.
- * * Both hook into the method BEFORE its own `push`, so on each ABI `r0`/`x0`
- *   is still the controller instance and `lr`/`x30` the caller's return
- *   address; the target builds and pops its own frame. Convention preserved:
- *   the target's internal null-guards always pass on a tappable button, and
- *   the old IAPPurchase body (analytics / mute UI prep) never runs.
+ *   `0x14000000 | ((0x1EEEE50 − 0x1EED5DC) >> 2) = 0x14000000 | 0x61D`
+ *   — capstone-verified, unchanged from 9.5.0 because the two sites share the
+ *   same +0x25FA4 shift. Relative branch, build-independent.
+ * * Both hook into the method BEFORE its own `push`, so `x0` is still the
+ *   controller instance and `x30` the caller's return address; the target
+ *   builds and pops its own frame. Convention preserved: the target's internal
+ *   null-guards always pass on a tappable button, and the old IAPPurchase body
+ *   (analytics / mute UI prep) never runs.
  *
  * ============================================================================
  * READ-ONLY GUARD — `PurchaseCompleted` prologue (no write)
  * ============================================================================
- * * arm64: 16 bytes at **0x1EC8EAC** must read
+ * * arm64: 16 bytes at **0x1EEEE50** must read
  *   `FF 43 01 D1 FE 13 00 F9 F6 57 03 A9 F4 4F 04 A9`
  *   (`sub sp,sp,#0x50 ; str x30,[sp,#0x20] ; stp x22,x21,… ; stp x20,x19,…`).
- * * armv7: 8 bytes at **0x011332A0** must read
- *   `F0 4B 2D E9  10 D0 4D E2`
- *   (`push {r4-r8,sb,fp,lr} ; sub sp,#0x10`; word 2 is a PC-relative `ldr`
- *   and is deliberately excluded from the guard).
- * * Checked BEFORE the branch write on each ABI: if the grant target drifted
- *   layout, patching the caller blind would jump into garbage — fail loudly
- *   instead.
+ *   Verified byte-identical to 9.5.0 at the shifted address.
+ * * Checked BEFORE the branch write: if the grant target drifted layout,
+ *   patching the caller blind would jump into garbage — fail loudly instead.
  *
  * ============================================================================
  * FOLDED DEPENDENCY — native fail-popup RET (popup-kill.md TARGET A/B)
@@ -91,21 +91,17 @@ import java.io.File
  *
  * * PRIMARY: `RockCakes.Purchases.PurchaseReceiptManager::ShowPurchaseFailedPopup`
  *   — the CENTRAL fail-popup dispatcher (8 UI call sites converge here).
- *   * arm64 file offset **0x1F454AC**, entry `FE 4F BF A9 F3 03 00 AA E0 03 1F AA`
- *     (4th word is a `bl`, excluded). word0 → `C0035FD6` (`ret`).
- *   * armv7 file offset **0x011CF5CC**, entry `10 40 2D E9 00 40 A0 E1 00 00 A0 E3`
- *     (`push {r4,lr} ; mov r4,r0 ; mov r0,#0`; 4th word is a `bl`, excluded).
- *     ARM `B`/`BL` scan: exactly **8** xrefs — matches arm64's "8 UI call
- *     sites converge here". word0 → `1E FF 2F E1` (`bx lr`).
+ *   * arm64 file offset **0x1F6B640** for 9.5.1 (9.5.0 was 0x1F454AC,
+ *     delta +0x26194), entry `FE 4F BF A9 F3 03 00 AA E0 03 1F AA`.
+ *     word0 → `C0035FD6` (`ret`).
  * * BACKUP: `RockCakes.Purchases.PurchaseFailedPopupController::ShowPurchaseFailedPopup`
  *   — leaf, 1 caller (the dispatcher's tail-call `b`).
- *   * arm64 file offset **0x1F42E28**, 12-B anchor `FE0F1DF8 F65701A9 F44F02A9`
- *     (word3 is an `adrp`, excluded); word0 → `C0035FD6`. 9.4.4 used
- *     `FF0301D1…` there — the leaf prologue changed in 9.5.0.
- *   * armv7 file offset **0x011CC680**, 8-B anchor `F0412DE9 08D04DE2`
- *     (word2 is a PC-relative `ldr`, excluded); word0 → `1E FF 2F E1`.
- *     Scan finds exactly **1** xref (`0x011CF5F4`, the dispatcher's
- *     `b #0x011CC680`) — the same 1-caller relationship as arm64.
+ *   * arm64 file offset **0x1F68FBC** for 9.5.1 (9.5.0 was 0x1F42E28),
+ *     12-B anchor `FE0F1DF8 F65701A9 F44F02A9` (word3 is an `adrp`,
+ *     excluded); word0 → `C0035FD6`. Byte-identical prologue at the shifted
+ *     address.
+ * * 9.5.1 dispatcher→leaf distance is still 0x2684, so the tail-call `b`
+ *   from A1 to A2 needs no re-encoding.
  * * Neither anchor matches on an ABI → loud [PatchException], never a blind
  *   write.
  *
@@ -156,10 +152,13 @@ val lemmingsNativeGrantHookPatch = rawResourcePatch(
                     applyPopupAnchor(lib, abi)
                     patchedAbis++
                 }
+                warnUnsupportedAbis("Lemmings native popup kill") { path ->
+                    get(path, true)
+                }
                 if (patchedAbis == 0) {
                     throw PatchException(
-                        "Lemmings native popup kill: no libil2cpp.so found in any known ABI " +
-                            "split (arm64-v8a, armeabi-v7a) — unexpected split layout?",
+                        "Lemmings native popup kill: no libil2cpp.so found in any supported ABI " +
+                            "split (arm64-v8a) — unexpected split layout?",
                     )
                 }
             }
@@ -177,10 +176,30 @@ val lemmingsNativeGrantHookPatch = rawResourcePatch(
             applyGrantHook(lib, abi)
             patchedAbis++
         }
+        warnUnsupportedAbis("Lemmings native grant hook") { path ->
+            get(path, true)
+        }
         if (patchedAbis == 0) {
             throw PatchException(
-                "Lemmings native grant hook: no libil2cpp.so found in any known ABI split " +
-                    "(arm64-v8a, armeabi-v7a) — unexpected split layout?",
+                "Lemmings native grant hook: no libil2cpp.so found in any supported ABI split " +
+                    "(arm64-v8a) — unexpected split layout?",
+            )
+        }
+    }
+}
+
+/**
+ * Logs a loud warning when an ABI split is present but has no verified 9.5.1
+ * anchors. The patch leaves that lib untouched (never a blind write) so the
+ * user knows the APK is arm64-only-patched instead of silently assuming both.
+ */
+private fun warnUnsupportedAbis(tag: String, resolve: (String) -> java.io.File) {
+    for (abiId in LemmingsGrantAbi.unsupported) {
+        val lib = runCatching { resolve("lib/$abiId/libil2cpp.so") }.getOrNull() ?: continue
+        if (lib.exists()) {
+            println(
+                "$tag: WARNING lib/$abiId/libil2cpp.so is present but 9.5.1 $abiId offsets " +
+                    "are not derived — this ABI is left UNPATCHED.",
             )
         }
     }
@@ -210,18 +229,18 @@ private class LemmingsGrantAbi(
     val retStub: String,
 ) {
     companion object {
-        /** 9.5.0 arm64 (md5 502bd49e80824697bf376a2f0e4c8bb1, VA = file + 0x4000). */
+        /** 9.5.1 arm64 (md5 a67418b38a6d07e59c0c4a7dcd98a118, VA = file + 0x4000). */
         val ARM64 = LemmingsGrantAbi(
             id = "arm64-v8a",
-            versionNote = "9.5.0 arm64",
-            hookOffset = 0x1EC7638L,
-            hookOrig = "FE5FBDA9",
-            hookBranch = "1D060014", // b #0x1EC8EAC
-            targetOffset = 0x1EC8EACL,
+            versionNote = "9.5.1 arm64 (+0x25FA4 store/grant, +0x26194 popups vs 9.5.0)",
+            hookOffset = 0x1EED5DCL,
+            hookOrig = "FE5FBDA9F65701A9F44F02A9",
+            hookBranch = "1D060014", // b #0x1EEEE50
+            targetOffset = 0x1EEEE50L,
             targetExpected = "FF4301D1FE1300F9F65703A9F44F04A9",
-            popupPrimaryOffset = 0x1F454ACL,
+            popupPrimaryOffset = 0x1F6B640L,
             popupPrimaryOrig = "FE4FBFA9F30300AAE0031FAA",
-            popupBackupOffset = 0x1F42E28L,
+            popupBackupOffset = 0x1F68FBCL,
             popupBackupOrig = "FE0F1DF8F65701A9F44F02A9",
             retStub = "C0035FD6", // ret
         )
@@ -229,10 +248,13 @@ private class LemmingsGrantAbi(
         /**
          * 9.5.0 armeabi-v7a (md5 e1fe5b5b8a45c02704dbb5aca6a22116, VA == file
          * offset). ARM state (A32), not Thumb: every prologue starts `E92D…`.
+         *
+         * NOT applied for 9.5.1: no 9.5.1 armv7 lib was obtained, so these
+         * offsets are stale. Kept for reference only — see [all].
          */
-        val ARM32 = LemmingsGrantAbi(
+        val ARM32_9_5_0 = LemmingsGrantAbi(
             id = "armeabi-v7a",
-            versionNote = "9.5.0 armeabi-v7a (ARM state)",
+            versionNote = "9.5.0 armeabi-v7a (ARM state) — stale, not applied on 9.5.1",
             hookOffset = 0x1131308L,
             hookOrig = "F0412DE908D04DE2",
             hookBranch = "E40700EA", // b #0x11332A0
@@ -245,7 +267,11 @@ private class LemmingsGrantAbi(
             retStub = "1EFF2FE1", // bx lr
         )
 
-        val all = listOf(ARM64, ARM32)
+        /** 9.5.1 APKPure XAPK ships `config.arm64_v8a` only. */
+        val all = listOf(ARM64)
+
+        /** ABIs whose 9.5.1 offsets are not derived yet — skipped with a warning. */
+        val unsupported = listOf("armeabi-v7a")
     }
 }
 
