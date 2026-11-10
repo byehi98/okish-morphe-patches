@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.49.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;140 patches total
+> **[v1.50.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;141 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -319,7 +319,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Head Soccer&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<summary>📦 Head Soccer&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -331,6 +331,7 @@ Direct URL:
 |----------|----------------|-----------|
 | [Free Ad Rewards](#free-ad-rewards) | Every "watch ad" reward is granted instantly — no ad appears, no "failed to load advertisement" popup, and nothing to wait for. |  |
 | [Free Store](#free-store) | Everything in the shop is free. Tap an item and you get it right away — points, characters and presents — with no Google Play payment screen and nothing charged. |  |
+| [Unlock Collab Characters](#unlock-collab-characters) | Characters that normally want Head Boxing, Boom Tank Showdown or Head Basketball installed are unlocked from the start — no other game, no Play Store, nothing to download. |  |
 
 </details>
 

@@ -1,3 +1,9 @@
+## [1.50.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0...v1.50.0-dev.1) (2026-11-10)
+
+### ✨ New Features
+
+* **headsoccer:** add unlock collab characters patch ([f3a3d3c](https://github.com/byehi98/okish-morphe-patches/commit/f3a3d3c8c9e43a0e99f32a4f7f3deb4989f88c28))
+
 ## [1.49.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0...v1.49.0) (2026-11-10)
 
 ### ✨ New Features
