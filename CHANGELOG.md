@@ -1,3 +1,24 @@
+## [1.49.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0...v1.49.0) (2026-11-10)
+
+### ✨ New Features
+
+* **dumbbellworkout:** add patches for dumbbell workout app. ([57de74f](https://github.com/byehi98/okish-morphe-patches/commit/57de74f683a7ca831adc1ee31c018a694e77e662))
+* **frlegends:** added patches of ad removal + instant rewards, and IAP ([6071ccb](https://github.com/byehi98/okish-morphe-patches/commit/6071ccb81bf8d2bd06ac68677107baa41d2c3e79))
+* **MinutesTillDawn:** Add static string pool values for 8.7 builds ([f09dd41](https://github.com/byehi98/okish-morphe-patches/commit/f09dd410dd7d6057c24e1cbe705dbdb2cfe17fb4))
+* **offtheroad:** add patches for off the road. ([84007b9](https://github.com/byehi98/okish-morphe-patches/commit/84007b95b56a1a3a0767032f82934c55efe3edd1))
+* **swampattack:** bump to the version 4.8.10.0 ([5b4107d](https://github.com/byehi98/okish-morphe-patches/commit/5b4107d67be7eb25a41cf701e2724f8fe9b64310))
+* **SwiftBackup:** Update to version 5.1.1 ([6cb2b19](https://github.com/byehi98/okish-morphe-patches/commit/6cb2b19c0054080fef77996bca7a3fa888fed961))
+* **tmnt:** Add full game unlock patch for TMNT Shredder's Revenge ([cd1eeb1](https://github.com/byehi98/okish-morphe-patches/commit/cd1eeb1c402e67d0d83d31f41e9d32ab707ba886))
+
+### 🚀 Updated App Support
+
+* **deadtarget:** Update Dead Target patches for 4.186.0 armeabi-v7a ([66e6204](https://github.com/byehi98/okish-morphe-patches/commit/66e620494f7804038f6d78afa2ee5607d0d832a3))
+* **fancypants:** bump the version to 1.0.48 ([0b84786](https://github.com/byehi98/okish-morphe-patches/commit/0b84786b538afb33d6cbcbadd6b95e45ef72103c))
+* **lemmings:** bumped the supported version to 9.5.1 ([fcfaa7e](https://github.com/byehi98/okish-morphe-patches/commit/fcfaa7eeee575259b511323a8071cd3cbeb71c11))
+* **missiles:** bumping the version of the missiles to 1.42 ([2789b26](https://github.com/byehi98/okish-morphe-patches/commit/2789b26c88c230299c37416baf854e2c721a75d8))
+* **shootyskies:** bumped the version to 3.441.100104 with changes in ([9e9ae23](https://github.com/byehi98/okish-morphe-patches/commit/9e9ae233407681b1a749ca7f63f978aa74d10f41))
+* **vitamahjong:** bump to version 3.46.0 ([916de54](https://github.com/byehi98/okish-morphe-patches/commit/916de54cdde28461c7d72d3a0efbcd0ad5e8aa2e))
+
 ## [1.49.0-dev.13](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0-dev.12...v1.49.0-dev.13) (2026-11-09)
 
 ### ✨ New Features
