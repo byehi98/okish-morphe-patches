@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.50.0-dev.6](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.6)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;149 patches total
+> **[v1.50.0-dev.7](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.7)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;151 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -948,6 +948,22 @@ Direct URL:
 | [TrueCloud UX](#truecloud-ux) | Hides the in-app rating dialog and rate-us tip banner. |  |
 | [TrueCloud Update](#truecloud-update) | Blocks all app update and force-update dialogs and their version checks. |  |
 | [TrueCloud VIP](#truecloud-vip) | Unlocks cloud/WeChat-call entitlements, extends alarm replay duration and message window, and disables 4G trial countdown gates. - Doesn't unlock Cloud Server Side Storage. |  |
+
+</details>
+
+<details>
+<summary>📦 CSR Racing&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 5.1.5 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Unlimited Cash](#unlimited-cash) | Cash reads as 2,147,483,647 everywhere and cash purchases never deduct it. The game's OBB data file (462.6 MiB main.20251202.com.naturalmotion.csrracing.obb) must still be installed for the game to boot. |  |
+| [Unlimited Gold](#unlimited-gold) | Gold reads as 268,435,455 everywhere and gold purchases never deduct it. The game's OBB data file (462.6 MiB main.20251202.com.naturalmotion.csrracing.obb) must still be installed for the game to boot. |  |
 
 </details>
 

@@ -1,3 +1,9 @@
+## [1.50.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.6...v1.50.0-dev.7) (2026-11-11)
+
+### ✨ New Features
+
+* **csrracing:** add unlimited cash and gold patches ([cd4d33e](https://github.com/byehi98/okish-morphe-patches/commit/cd4d33edd14d614ad5053df6db807cb25bd7c677))
+
 ## [1.50.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.5...v1.50.0-dev.6) (2026-11-11)
 
 ### 🐛 Bug Fixes
