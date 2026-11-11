@@ -3,6 +3,8 @@ package app.swiftbackup.patches.backup
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
 import app.morphe.patcher.extensions.InstructionExtensions.getInstruction
+import app.morphe.patcher.extensions.InstructionExtensions.instructions
+import app.morphe.patcher.extensions.InstructionExtensions.replaceInstruction
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
 import app.morphe.util.getReference
@@ -11,8 +13,12 @@ import app.swiftbackup.patches.cloud.swiftBackupLocalCloudMetadataPatch
 import app.swiftbackup.patches.shared.Constants.COMPATIBILITY_SWIFTBACKUP
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
+import com.android.tools.smali.dexlib2.builder.BuilderOffsetInstruction
 import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
+import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction10x
+import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction30t
 import com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
@@ -24,6 +30,9 @@ private const val STRING_BUILDER = "Ljava/lang/StringBuilder;"
 private const val SWIFT_APP = "Lorg/swiftapps/swiftbackup/SwiftApp;"
 private const val SWIFT_APP_COMPANION = "Lorg/swiftapps/swiftbackup/SwiftApp\$Companion;"
 private const val ALARM_RECEIVER = "Lorg/swiftapps/swiftbackup/jobs/AlarmReceiver;"
+
+// jl4.a(Object, Object)Z — the null-safe equality the app uses to compare a Boolean with TRUE.
+private const val EQUALITY = "Ljl4;"
 
 /**
  * Extends the anonymous settings export/import with everything else the local account owns:
@@ -278,6 +287,70 @@ val swiftBackupLocalAccountBackupPatch = bytecodePatch(
             "invoke-static {v$rawJsonRegister}, ${helper}->morpheApply(Ljava/lang/String;)V"
         )
 
+        // SettingsActivity.onCreatePreferences gates the export/import entries behind the same
+        // isAnonymous check. Dropping the branch makes both Preference.D(true) calls run for every
+        // account type.
+        val settingsMethod = SettingsExportImportVisibilityFingerprint.method
+        settingsMethod.forceFallthrough(settingsMethod.anonymousGateIndex())
+        println("SwiftBackup: Export/Import settings now visible for every account type")
+
+        // The click handler runs the same check twice per branch, before it launches the
+        // CREATE_DOCUMENT / OPEN_DOCUMENT picker. Force all four gates so signed-in accounts can
+        // actually export/import.
+        val clickMethod = SettingsExportImportClickFingerprint.method
+        val clickGates = clickMethod.anonymousGateIndices()
+        check(clickGates.size == 4) {
+            "SwiftBackup: expected 4 export/import click gates in nl7.e, found ${clickGates.size}"
+        }
+        clickGates.sortedDescending().forEach { clickMethod.forceBranch(it) }
+        println("SwiftBackup: Export/Import preference clicks no longer bail out for signed-in accounts")
+
         println("SwiftBackup: settings export/import extended with local account data (rtdb, caches, prefs, schedule re-arm)")
     }
+}
+
+/** True for the `jl4.a(Object, Object)Z` comparison of the anonymous flag with TRUE. */
+private fun Instruction.isAnonymousGate(): Boolean =
+    opcode == Opcode.INVOKE_STATIC && getReference<MethodReference>()?.let {
+        it.definingClass == EQUALITY && it.name == "a" && it.parameterTypes.size == 2
+    } == true
+
+/**
+ * Index of the conditional branch that consumes `jl4.a(isAnonymous(), TRUE)`.
+ *
+ * The comparison is matched rather than the isAnonymous() call: m() contains a second jl4.a
+ * comparison (for the dynamic_colors switch) that is not a gate. Every real gate has the exact
+ * shape `invoke-static jl4.a(..)` → `move-result` → `if-eqz`/`if-nez`.
+ */
+private fun MutableMethod.anonymousGateIndex(): Int =
+    anonymousGateIndices().firstOrNull() ?: error("SwiftBackup: no anonymous gate found")
+
+/** Indices of every conditional branch that consumes `jl4.a(..., TRUE)`. */
+private fun MutableMethod.anonymousGateIndices(): List<Int> {
+    val instructionList = instructions
+    return buildList {
+        for (index in 0 until instructionList.size - 2) {
+            if (!instructionList[index].isAnonymousGate()) continue
+            if (instructionList[index + 1].opcode != Opcode.MOVE_RESULT) continue
+            val branch = instructionList[index + 2].opcode
+            if (branch == Opcode.IF_EQZ || branch == Opcode.IF_NEZ) add(index + 2)
+        }
+    }
+}
+
+/** Forces fall-through (the branch is never taken). */
+private fun MutableMethod.forceFallthrough(index: Int) {
+    replaceInstruction(index, BuilderInstruction10x(Opcode.NOP))
+}
+
+/**
+ * Forces the branch to be taken by replacing it with an unconditional goto.
+ *
+ * The goto has to be built against the branch's own label: a `replaceInstruction(index, "goto :x")`
+ * snippet cannot resolve a label that lives in the target method.
+ */
+@Suppress("unused")
+private fun MutableMethod.forceBranch(index: Int) {
+    val target = getInstruction<BuilderOffsetInstruction>(index).target
+    replaceInstruction(index, BuilderInstruction30t(Opcode.GOTO_32, target))
 }

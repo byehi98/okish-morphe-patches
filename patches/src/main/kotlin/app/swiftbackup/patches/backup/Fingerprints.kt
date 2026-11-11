@@ -38,3 +38,36 @@ object SettingsImportFingerprint : Fingerprint(
         )
     )
 )
+
+/**
+ * nl7.m() (SettingsActivity.onCreatePreferences): the export_settings/import_settings
+ * Preference.D(true) calls sit behind an isAnonymous check, so the anonymous account never sees
+ * them. Pinned to 5.1.1 (class name is R8-renamed).
+ *
+ * Gate: smali2/nl7.smali:3147 (`if-eqz v0, :cond_1a1`). m() contains more than one jl4.a(Object,
+ * Object) comparison, so the patch does not search textually: the gate is the comparison whose
+ * result is consumed straight away by move-result + if-eqz (the isAnonymous flag), and that one is
+ * followed by the Preference.D(true) block.
+ */
+object SettingsExportImportVisibilityFingerprint : Fingerprint(
+    definingClass = "Lnl7;",
+    name = "m",
+    parameters = listOf(),
+    returnType = "V"
+)
+
+/**
+ * nl7.e(Preference) (SettingsActivity.onPreferenceTreeClick): the export_settings and
+ * import_settings branches each run two isAnonymous() checks before launching the SAF document
+ * picker, so a non-anonymous (Google) account returns without doing anything.
+ *
+ * All four gates are `jl4.a(isAnonymous, TRUE)` → `move-result` → `if-nez`:
+ * smali2/nl7.smali:837 + :900 (export) and :1338 + :1401 (import). These are the only gates of
+ * that shape in the method. Pinned to 5.1.1 (class name is R8-renamed).
+ */
+object SettingsExportImportClickFingerprint : Fingerprint(
+    definingClass = "Lnl7;",
+    name = "e",
+    parameters = listOf("Landroidx/preference/Preference;"),
+    returnType = "Z"
+)
