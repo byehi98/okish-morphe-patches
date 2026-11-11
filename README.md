@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.50.0-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;147 patches total
+> **[v1.50.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;149 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -852,7 +852,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Swift Backup&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
+<summary>📦 Swift Backup&nbsp;&nbsp;•&nbsp;&nbsp;6 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -862,6 +862,8 @@ Direct URL:
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
+| [Swift Backup Cloud Backup Without Sign-In](#swift-backup-cloud-backup-without-sign-in) | Lets an anonymous account connect file-based cloud providers (SMB, WebDAV, SFTP, FTP, S3, Dropbox, OneDrive, Box, Mega, Filen, Drime, Yandex, pCloud, Mail.ru) and run cloud backups/restores without signing in with Google. |  |
+| [Swift Backup Local Account Backup](#swift-backup-local-account-backup) | Extends Export/Import settings with labels, configs, schedules, the cloud backup catalog and UI preferences so the local account survives a reinstall. |  |
 | [Swift Backup Local Cloud Metadata](#swift-backup-local-cloud-metadata) | Makes cloud backups work by keeping their metadata on the device and the connected cloud instead of the Swift Backup server. |  |
 | [Swift Backup Premium Unlock](#swift-backup-premium-unlock) | Unlocks all Premium features. |  |
 | [Swift Backup Tamper Protection](#swift-backup-tamper-protection) | Stops the app from closing itself on patched installs. |  |

@@ -1,3 +1,10 @@
+## [1.50.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.3...v1.50.0-dev.4) (2026-11-11)
+
+### ✨ New Features
+
+* **swiftbackup:** add patch for cloud backup without sign-in ([e3af89f](https://github.com/byehi98/okish-morphe-patches/commit/e3af89f5a6b00d1cbd326e0e4b5270691677dd77))
+* **swiftbackup:** add patch for local account backup and restore ([c812b0a](https://github.com/byehi98/okish-morphe-patches/commit/c812b0a5e32e0a7f66275259d9db7c13367d2c70))
+
 ## [1.50.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.2...v1.50.0-dev.3) (2026-11-10)
 
 ### ✨ New Features
