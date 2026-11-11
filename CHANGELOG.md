@@ -1,3 +1,9 @@
+## [1.50.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.4...v1.50.0-dev.5) (2026-11-11)
+
+### 🐛 Bug Fixes
+
+* **deadtarget:** add dual-abi support for arm64-v8a and armeabi-v7a ([adcd088](https://github.com/byehi98/okish-morphe-patches/commit/adcd0888bd5e34445bbcf79b319f4d552c282036))
+
 ## [1.50.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.3...v1.50.0-dev.4) (2026-11-11)
 
 ### ✨ New Features
