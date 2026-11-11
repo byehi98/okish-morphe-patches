@@ -8,16 +8,19 @@ object Constants {
     val COMPATIBILITY_DEAD_TARGET = Compatibility(
         name = "Dead Target: Offline Games 3D",
         packageName = "com.vng.g6.a.zombie",
-        // Split bundle: XAPK ships base + UnityDataAssetPack.apk + config.armeabi_v7a.apk
-        // (morphe-cli merges the splits into one APK before any patch executes, and the
-        // whole bundle is re-signed as a single unit).
+        // Split bundle. Two shapes exist for 4.186.0:
+        //  * APKPure XAPK — base + UnityDataAssetPack.apk + config.armeabi_v7a.apk
+        //    (armeabi-v7a only).
+        //  * apkcube / current apkeep .apks — base + UnityDataAssetPack.apk +
+        //    config.arm64_v8a.apk + config.armeabi_v7a.apk (both ABIs).
+        // morphe-cli merges the splits into one APK before any patch executes and the whole
+        // bundle is re-signed as a single unit, so the patch set probes and patches every
+        // lib/<abi>/libil2cpp.so that ends up in the merged APK.
         //
-        // ⚠️ 4.186.0 IS A 32-BIT-ONLY RELEASE. APKPure publishes exactly one variant for
-        // this version and it is `armeabi-v7a` (4.185.0 was the arm64-v8a one). Every
-        // anchor in this patch set is therefore ARM32 (A32) code from
-        // lib/armeabi-v7a/libil2cpp.so, which is 76,435,716 bytes — NOT the 85,096,080-byte
-        // arm64 library the previous revision targeted. There is no armeabi-v7a branch to
-        // keep in parallel: it is now the only branch.
+        // ⚠️ 4.186.0 SHIPS BOTH ARCHITECTURES depending on the mirror. Every anchor set
+        // now exists twice: ARM32 (armeabi-v7a, 76,435,716 B) and AArch64 (arm64-v8a,
+        // 85,202,576 B). The old "32-bit only" assumption is what caused the CI failure
+        // `lib/armeabi-v7a/libil2cpp.so (No such file or directory)` on arm64-only APKs.
         apkFileType = ApkFileType.XAPK,
         // Assumed brand colour (VNG shooter, dead-green HUD) — recon has no icon colour;
         // adjust if the patch UI wants the exact icon hue.
