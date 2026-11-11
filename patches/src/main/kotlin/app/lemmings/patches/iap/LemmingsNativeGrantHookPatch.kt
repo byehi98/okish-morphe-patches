@@ -12,14 +12,17 @@ import java.io.File
  * entered at all, and the native fail-popup dispatcher is RET-killed (folded
  * inline dependency, single listing entry).
  *
- * **Scope for 9.5.1: arm64-v8a only.** The 9.5.1 APKPure XAPK this patch set
- * was rebased against ships base + `config.arm64_v8a` only (manifest
- * `split_configs: ["config.arm64_v8a"]`, versionCode 7952). APKPure also
- * publishes a separate armeabi-v7a variant, but that build was not obtained,
- * so no 9.5.1 armv7 offsets could be derived — the 9.5.0 armv7 addresses are
- * stale and are deliberately NOT applied (the loop warns instead of writing
- * to a drifted lib). 9.5.0 support (both ABIs) remains documented in git
- * history.
+ * **Scope for 9.5.1: arm64-v8a + armeabi-v7a.** The 9.5.1 XAPK ships base +
+ * `config.arm64_v8a` + `config.armeabi_v7a` splits (versionCode 7952), and
+ * both native splits are patched. The armv7 offset set was re-derived from
+ * that `config.armeabi_v7a` split (`libil2cpp.so` md5
+ * 41d619ee37b1d371d9ef976695a06074, 60,094,268 bytes, VA == file offset).
+ * All four 9.5.0 armv7 anchors are byte-identical in 9.5.1, and the
+ * cluster-internal distances are unchanged (hook→target **0x1F98**,
+ * dispatcher→leaf **−0x2F4C**), which pins each site uniquely:
+ *   * hook **0x11424B0**, grant target **0x1144448**
+ *   * popup A1 **0x11E09C4**, popup A2 **0x11DDA78**
+ * (9.5.0 was 0x1131308 / 0x11332A0 and 0x11CF5CC / 0x11CC680.)
  *
  * Rebase method: the 9.5.0 arm64 lib (md5 502bd49e80824697bf376a2f0e4c8bb1)
  * and the 9.5.1 arm64 lib (md5 a67418b38a6d07e59c0c4a7dcd98a118, 71,240,224
@@ -158,7 +161,7 @@ val lemmingsNativeGrantHookPatch = rawResourcePatch(
                 if (patchedAbis == 0) {
                     throw PatchException(
                         "Lemmings native popup kill: no libil2cpp.so found in any supported ABI " +
-                            "split (arm64-v8a) — unexpected split layout?",
+                            "split (arm64-v8a, armeabi-v7a) — unexpected split layout?",
                     )
                 }
             }
@@ -182,7 +185,7 @@ val lemmingsNativeGrantHookPatch = rawResourcePatch(
         if (patchedAbis == 0) {
             throw PatchException(
                 "Lemmings native grant hook: no libil2cpp.so found in any supported ABI split " +
-                    "(arm64-v8a) — unexpected split layout?",
+                    "(arm64-v8a, armeabi-v7a) — unexpected split layout?",
             )
         }
     }
@@ -191,7 +194,8 @@ val lemmingsNativeGrantHookPatch = rawResourcePatch(
 /**
  * Logs a loud warning when an ABI split is present but has no verified 9.5.1
  * anchors. The patch leaves that lib untouched (never a blind write) so the
- * user knows the APK is arm64-only-patched instead of silently assuming both.
+ * user knows that ABI is unpatched instead of silently assuming all are
+ * covered.
  */
 private fun warnUnsupportedAbis(tag: String, resolve: (String) -> java.io.File) {
     for (abiId in LemmingsGrantAbi.unsupported) {
@@ -246,32 +250,34 @@ private class LemmingsGrantAbi(
         )
 
         /**
-         * 9.5.0 armeabi-v7a (md5 e1fe5b5b8a45c02704dbb5aca6a22116, VA == file
-         * offset). ARM state (A32), not Thumb: every prologue starts `E92D…`.
+         * 9.5.1 armeabi-v7a (md5 41d619ee37b1d371d9ef976695a06074, VA == file
+         * offset). ARM state (A32), not Thumb: every prologue starts `E9…`.
          *
-         * NOT applied for 9.5.1: no 9.5.1 armv7 lib was obtained, so these
-         * offsets are stale. Kept for reference only — see [all].
+         * All four anchors are byte-identical to 9.5.0 and the two
+         * cluster-internal distances are unchanged, so the relative branch
+         * encoding is byte-identical too (`b #0x1144448` from 0x11424B0 is
+         * `E40700EA`, exactly as in 9.5.0).
          */
-        val ARM32_9_5_0 = LemmingsGrantAbi(
+        val ARM32 = LemmingsGrantAbi(
             id = "armeabi-v7a",
-            versionNote = "9.5.0 armeabi-v7a (ARM state) — stale, not applied on 9.5.1",
-            hookOffset = 0x1131308L,
+            versionNote = "9.5.1 armeabi-v7a (VA == file offset)",
+            hookOffset = 0x11424B0L,
             hookOrig = "F0412DE908D04DE2",
-            hookBranch = "E40700EA", // b #0x11332A0
-            targetOffset = 0x11332A0L,
+            hookBranch = "E40700EA", // b #0x1144448
+            targetOffset = 0x1144448L,
             targetExpected = "F04B2DE910D04DE2",
-            popupPrimaryOffset = 0x11CF5CCL,
+            popupPrimaryOffset = 0x11E09C4L,
             popupPrimaryOrig = "10402DE90040A0E10000A0E3",
-            popupBackupOffset = 0x11CC680L,
+            popupBackupOffset = 0x11DDA78L,
             popupBackupOrig = "F0412DE908D04DE2",
             retStub = "1EFF2FE1", // bx lr
         )
 
-        /** 9.5.1 APKPure XAPK ships `config.arm64_v8a` only. */
-        val all = listOf(ARM64)
+        /** Both 9.5.1 ABI splits are supported. */
+        val all = listOf(ARM64, ARM32)
 
-        /** ABIs whose 9.5.1 offsets are not derived yet — skipped with a warning. */
-        val unsupported = listOf("armeabi-v7a")
+        /** ABIs whose 9.5.1 offsets are not derived yet — none. */
+        val unsupported = emptyList<String>()
     }
 }
 
