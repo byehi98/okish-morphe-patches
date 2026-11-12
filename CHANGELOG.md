@@ -1,3 +1,9 @@
+## [1.50.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.8...v1.50.0-dev.9) (2026-11-12)
+
+### 🚀 Updated App Support
+
+* **missiles:** update target to v1.43 and change apk type to APKS ([5988239](https://github.com/byehi98/okish-morphe-patches/commit/5988239e64206eb77be078c5741772a0f673c6f3))
+
 ## [1.50.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.7...v1.50.0-dev.8) (2026-11-12)
 
 ### 🚀 Updated App Support
