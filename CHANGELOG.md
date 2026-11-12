@@ -1,3 +1,9 @@
+## [1.50.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.7...v1.50.0-dev.8) (2026-11-12)
+
+### 🚀 Updated App Support
+
+* **fancypants:** bump target version to 1.0.49 ([5c1e134](https://github.com/byehi98/okish-morphe-patches/commit/5c1e1348bbd1daeeb9d045cefb6b457259d80954))
+
 ## [1.50.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.6...v1.50.0-dev.7) (2026-11-11)
 
 ### ✨ New Features
