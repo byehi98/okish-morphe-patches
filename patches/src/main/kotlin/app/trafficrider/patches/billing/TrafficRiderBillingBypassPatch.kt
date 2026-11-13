@@ -10,25 +10,52 @@ import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethodParameter
 
+private const val BILLING_CLIENT_IMPL = "Lcom/android/billingclient/api/BillingClientImpl;"
+private const val BILLING_FLOW_PARAMS = "Lcom/android/billingclient/api/BillingFlowParams;"
 private const val BFP_PRODUCT_DETAILS_PARAMS = "Lcom/android/billingclient/api/BillingFlowParams\$ProductDetailsParams;"
 private const val QUERY_PRODUCT = "Lcom/android/billingclient/api/QueryProductDetailsParams\$Product;"
 private const val BILLING_RESULT_BUILDER = "Lcom/android/billingclient/api/BillingResult\$Builder;"
 
+// ── billing@@9.0.0 R8-minified internals (verified against 2.20 classes2.dex) ──
+//
+// These are NOT public API and are renamed by R8 between billing releases, so they
+// are re-verified for every version bump (see Fingerprints.kt for the public hooks):
+//
+//   9.0.0 (2.20):  BillingClientImpl.zzf : zzab   →  zzab.zzf() : PurchasesUpdatedListener
+//   8.0.0 (2.11):  BillingClientImpl.zzf : zzs    →  zzs.zzd() : PurchasesUpdatedListener
+//
+//   QueryProductDetailsParams.zza() : play_billing.zzca (implements java.util.List)
+//   8.0.0 was play_billing.zzbt.
+//
+// `SkuDetails` was deleted from billing 8.0.0 onwards, so the old deprecated
+// `BillingFlowParams.zzj()` fallback (which returned SkuDetails) is gone — the
+// new-style `zzk()` ProductDetailsParams list is the only supported path.
+private const val PURCHASES_UPDATED_HOLDER = "Lcom/android/billingclient/api/zzab;"
+private const val QUERY_PRODUCT_DETAILS_LIST = "Lcom/google/android/gms/internal/play_billing/zzca;"
+
 /**
- * Traffic Rider — IAP Bypass (Google Play Billing 8.0.0 + Unity IAP 5.0.4)
- * (com.skgames.trafficrider v2.11, Unity 6000.2.15f1 IL2CPP)
+ * Traffic Rider — IAP Bypass (Google Play Billing 9.0.0 + Unity IAP 5.x)
+ * (com.skgames.trafficrider v2.20, Unity 6000.5.11f1 IL2CPP)
  *
  * Same engine as pl.macaque.Missiles v1.41: Unity IAP C# → JNI → Java BillingClient.
  * Strategy: spoof the trusted Java source. No Play sheet ever opens; C# grants instantly.
  *
- * Four hooks on com.android.billingclient.api.BillingClientImpl (billing@@8.0.0):
- *   1. launchBillingFlow → fake Purchase for tapped SKU, deliver via this.zzf→zzs.zzd()→onPurchasesUpdated(OK, [purchase]), return OK.
+ * Four hooks on com.android.billingclient.api.BillingClientImpl (billing@@9.0.0):
+ *   1. launchBillingFlow → fake Purchase for tapped SKU, deliver via zzf→zzab.zzf()→onPurchasesUpdated(OK, [purchase]), return OK.
  *   2. acknowledgePurchase → listener OK.
  *   3. consumeAsync → listener OK + token.
  *   4. queryProductDetailsAsync → fake ProductDetails per SKU from params.
  *
- * SKU-agnostic, no hardcoded catalog. Adapted from Missiles patch which is
- * production-verified on same billing version (see missiles/patches/billing docs).
+ * SKU-agnostic, no hardcoded catalog.
+ *
+ * ── Version history ──────────────────────────────────────────────────────────
+ * The 2.11 build shipped billing@@8.0.0 (zzf:zzs → zzs.zzd(), QueryProductDetailsParams.zza():zzbt).
+ * 2.20 ships billing@@9.0.0, which renamed the R8 internals: the listener holder is
+ * now zzab (getter zzf) and the query list is play_billing.zzca. `SkuDetails` no
+ * longer exists, so the deprecated zzj() fallback was dropped. Public fingerprints
+ * (method names/signatures) were unchanged, which is why the patch still *applied*
+ * on 2.20 before these internal references were corrected — the failure mode was
+ * a silent NoSuchFieldError/NoSuchMethodError at runtime, not a build error.
  *
  * IL2CPP note: Traffic Rider stores garage/currency natively and validates via
  * Unity.Purchasing.Security — fake purchases may still be rejected by that
@@ -77,11 +104,18 @@ val trafficRiderBillingBypassPatch = bytecodePatch(
                 move-result-object v0
 
                 # ── 2. SKU from p1 (BillingFlowParams): new-style zzk() ──
-                invoke-virtual {p1}, Lcom/android/billingclient/api/BillingFlowParams;->zzk()Ljava/util/List;
+                # billing@@9.0.0: zzk() returns play_billing.zzca (a List). The old
+                # zzj()/SkuDetails path is dead code now (SkuDetails was removed), so
+                # only the ProductDetailsParams path is emitted.
+                invoke-virtual {p1}, $BILLING_FLOW_PARAMS->zzk()Ljava/util/List;
                 move-result-object v1
                 invoke-interface {v1}, Ljava/util/List;->isEmpty()Z
                 move-result v2
-                if-nez v2, :sku_old
+                # isEmpty()==1 means no ProductDetailsParams were supplied -> fallback.
+                # (Was inverted: if-eqz jumped to the fallback for a *populated* list,
+                # which shipped the hardcoded "morphe.product" SKU and made Unity IAP
+                # reject the purchase with "Unrecognized product".)
+                if-nez v2, :sku_fallback
                 const/4 v2, 0x0
                 invoke-interface {v1, v2}, Ljava/util/List;->get(I)Ljava/lang/Object;
                 move-result-object v2
@@ -92,15 +126,8 @@ val trafficRiderBillingBypassPatch = bytecodePatch(
                 move-result-object v2
                 goto :sku_done
 
-                :sku_old
-                invoke-virtual {p1}, Lcom/android/billingclient/api/BillingFlowParams;->zzj()Ljava/util/ArrayList;
-                move-result-object v1
-                const/4 v2, 0x0
-                invoke-virtual {v1, v2}, Ljava/util/ArrayList;->get(I)Ljava/lang/Object;
-                move-result-object v2
-                check-cast v2, Lcom/android/billingclient/api/SkuDetails;
-                invoke-virtual {v2}, Lcom/android/billingclient/api/SkuDetails;->getSku()Ljava/lang/String;
-                move-result-object v2
+                :sku_fallback
+                const-string v2, "morphe.product"
 
                 :sku_done
                 new-instance v3, Ljava/lang/StringBuilder;
@@ -119,7 +146,7 @@ val trafficRiderBillingBypassPatch = bytecodePatch(
                 const-string v6, "-1234-5678-9012-34567\",\"purchaseState\":0,\"packageName\":\"com.skgames.trafficrider\",\"purchaseTime\":"
                 invoke-virtual {v3, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
                 invoke-virtual {v3, v4, v5}, Ljava/lang/StringBuilder;->append(J)Ljava/lang/StringBuilder;
-                const-string v6, ",\"acknowledged\":false}"
+                const-string v6, ",\"quantity\":1,\"acknowledged\":false}"
                 invoke-virtual {v3, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
                 invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
                 move-result-object v4
@@ -128,8 +155,10 @@ val trafficRiderBillingBypassPatch = bytecodePatch(
                 new-instance v6, Lcom/android/billingclient/api/Purchase;
                 invoke-direct {v6, v4, v5}, Lcom/android/billingclient/api/Purchase;-><init>(Ljava/lang/String;Ljava/lang/String;)V
 
-                iget-object v4, p0, Lcom/android/billingclient/api/BillingClientImpl;->zzf:Lcom/android/billingclient/api/zzs;
-                invoke-virtual {v4}, Lcom/android/billingclient/api/zzs;->zzd()Lcom/android/billingclient/api/PurchasesUpdatedListener;
+                # billing@@9.0.0: zzf is now zzab, whose zzf() exposes the listener
+                # (was zzs.zzd() in 8.0.0).
+                iget-object v4, p0, $BILLING_CLIENT_IMPL->zzf:$PURCHASES_UPDATED_HOLDER
+                invoke-virtual {v4}, $PURCHASES_UPDATED_HOLDER->zzf()Lcom/android/billingclient/api/PurchasesUpdatedListener;
                 move-result-object v4
 
                 new-instance v5, Ljava/util/ArrayList;
@@ -187,7 +216,7 @@ val trafficRiderBillingBypassPatch = bytecodePatch(
 
         // ═══ 4. queryProductDetailsAsync — fake catalog ═══
         BillingClientImplQueryProductDetailsAsyncFingerprint.method.addInstructionsWithLabels(0, """
-            invoke-virtual {p1}, Lcom/android/billingclient/api/QueryProductDetailsParams;->zza()Lcom/google/android/gms/internal/play_billing/zzbt;
+            invoke-virtual {p1}, Lcom/android/billingclient/api/QueryProductDetailsParams;->zza()$QUERY_PRODUCT_DETAILS_LIST
             move-result-object v1
             new-instance v2, Ljava/util/ArrayList;
             invoke-direct {v2}, Ljava/util/ArrayList;-><init>()V
@@ -214,7 +243,7 @@ val trafficRiderBillingBypassPatch = bytecodePatch(
             invoke-virtual {v4}, $QUERY_PRODUCT->zzb()Ljava/lang/String;
             move-result-object v4
             invoke-virtual {v0, v4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-            const-string v5, "\",\"title\":\"Morphe\",\"name\":\"Morphe\",\"price\":\"${'$'}1.99\",\"priceCurrencyCode\":\"USD\",\"originalPrice\":\"${'$'}1.99\",\"originalPriceAmountMicros\":1990000,\"priceAmountMicros\":1990000}"
+            const-string v5, "\",\"title\":\"Morphe\",\"name\":\"Morphe\",\"description\":\"Morphe\",\"price\":\"${'$'}1.99\",\"priceCurrencyCode\":\"USD\",\"priceAmountMicros\":1990000,\"oneTimePurchaseOfferDetails\":{\"formattedPrice\":\"${'$'}1.99\",\"priceAmountMicros\":1990000,\"priceCurrencyCode\":\"USD\"}}"
             invoke-virtual {v0, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
             invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
             move-result-object v4
