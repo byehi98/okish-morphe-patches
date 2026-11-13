@@ -1,89 +1,91 @@
 package app.magicsort.ads
 
+import app.magicsort.shared.AbiAnchorSet
 import app.magicsort.shared.Constants.COMPATIBILITY_MAGIC_SORT
 import app.magicsort.shared.NativeAnchor
 import app.magicsort.shared.applyLibil2cppEdits
 import app.morphe.patcher.patch.rawResourcePatch
 
 /**
- * Magic Sort 0.0.3420 — **Instant Rewarded Ads** (static native patch).
+ * Magic Sort 0.0.3480 — **Instant Rewarded Ads** (static native patch, both ABIs).
  *
  * Rewarded ads are opt-in and are *not* gated by `HasNoAds`, which is why they keep
  * working after the Remove Ads patch. But under Remove Ads the ad SDK is never
- * initialised, so `AdService._rewarded` stays `null` and the stock rewarded flow
+ * initialised, so the rewarded provider stays `null` and the stock rewarded flow
  * either null-references or hangs waiting for a fill that can never arrive. This
  * patch makes the app's own success path run unconditionally, so every
  * "watch ad for X" surface pays out instantly with no video.
  *
- * Two anchors, both required — the patch aborts if either is absent.
+ * Two anchors per ABI, both required — the patch aborts if either is absent.
  *
- * ── 1. `AdService.<ShowRewarded>d__40.MoveNext` @ `0x1B61B80` ─────────────
- * The state machine's provider-read guard. Verified words:
- * ```
- * 0x1B61B7C  ldr  x22, [x22, #0xd98]     ; rewarded-provider slot
- * 0x1B61B80  cbz  w8,  #0x1B61BDC        ; <- REPLACED (first-run / not-initialised path)
- * 0x1B61B84  cbz  x23, #0x1B61D88
- * 0x1B61B88  ldr  x20, [x23, #0x18]
- * 0x1B61B8C  cbz  x20, #0x1B61D44
- *            ... provider IsReady / Show path ...
- * ```
- * At `0x1B61B80`, `x19` is already the state-machine `this` (the success tail at
- * `0x1B61D40` stores into `[x19], #8`), and `x22` has already been loaded from
- * `[x22, #0xd98]` at `0x1B61B7C`, after the metadata-init guard. Every instruction
- * from `0x1B61B84` on is a provider-nullability guard, and `0x1B61B88` dereferences
- * `x23` — exactly the dereference that NREs when the ad SDK was never initialised
- * (the normal state under Remove Ads). Replacing the 4-byte `cbz w8` with
- * `b 0x1B61D40` (`70 00 00 14`) jumps straight to the existing success tail:
+ * ── 1. `AdService.<ShowRewarded>d__40.MoveNext` — jump straight to the success tail ──
  *
+ * arm64-v8a @ `0x184DB68` (success tail `0x184DD28`):
  * ```
- * 0x1B61D40  mov  w20, #1                          ; result = true
- * 0x1B61D44  mov  w8, #-2                          ; <>1__state = finished
- * 0x1B61D48  str  w8, [x19], #8                    ; store state, advance builder ptr
- *            ...
- *            bl   AsyncTaskMethodBuilder<bool>.SetResult(..., true)
- *            epilogue + ret
+ * 0x184DB5C  ldr  w8,  [x19]            ; <>1__state
+ * 0x184DB60  ldr  x23, [x19, #0x20]
+ * 0x184DB64  ldr  x22, [x22, #0x698]    ; rewarded-provider slot
+ * 0x184DB68  cbz  w8,  #0x184DBC4       ; <- REPLACED (first-run / not-initialised path)
+ * 0x184DB6C  cbz  x23, #0x184DD70
+ * 0x184DB70  ldr  x20, [x23, #0x18]     ; <- NREs when the ad SDK never initialised
+ * 0x184DB74  cbz  x20, #0x184DD2C
+ * ```
+ * Replacing the 4-byte `cbz w8` with `b 0x184DD28` (`70 00 00 14`) jumps to the
+ * existing success tail:
+ * ```
+ * 0x184DD28  mov  w20, #1               ; result = true
+ * 0x184DD2C  mov  w8,  #-2              ; <>1__state = finished
+ * 0x184DD30  str  w8,  [x19], #8
+ *            ... AsyncTaskMethodBuilder<bool>.SetResult(..., true)
  * ```
  *
- * i.e. the `Task<bool>` completes with `true` without ever executing the provider
- * guard chain above (the `ldr x20,[x23,#0x18]` at `0x1B61B88` is exactly the
- * dereference that NREs when the ad SDK was never initialised). Because the
- * original conditional branch is replaced by an unconditional one, the hook is
- * inert only if the anchor bytes do not match (in which case the whole patch
+ * armeabi-v7a @ `0x1136798` (completion block `0x11369D4`) — ARM/A32 mode:
+ * ```
+ * 0x1136790  ldr  r1, [r4]              ; <>1__state
+ * 0x1136794  ldr  r7, [r4, #0x10]
+ * 0x1136798  cmp  r1, #0                ; <- REPLACED by `mov r5,#1`
+ * 0x113679C  beq  #0x1136808            ; <- REPLACED by `b 0x11369D4`
+ * 0x11367A0  cmp  r7, #0
+ *            ... provider deref ldr r5,[r7,#0xc] ...
+ * 0x11367B4  beq  #0x1136820            ; provider null -> completes FALSE
+ * ```
+ * The 8-byte replacement `mov r5, #1 ; b 0x11369D4`
+ * (`01 00 50 E3` / `8C 00 00 EA`) enters the shared completion block with the
+ * result register already `true`. That block stores `<>1__state = -2`, advances to
+ * `<>t__builder` and calls `SetResult`, so `Task<bool>` completes `true` without
+ * ever touching the provider chain (the `ldr r5,[r7,#0xc]` dereference is exactly
+ * what NREs when the ad SDK was never initialised).
+ *
+ * Because the original conditional branch is replaced by an unconditional one, the
+ * hook is inert only if the anchor bytes do not match (in which case the whole patch
  * fails, it does not silently ship).
  *
- * ── 2. `AdService.IsRewardedReady()` @ `0x1B5F73C` ────────────────────────
- * ```
- * 0x1B5F73C  str  x20, [sp, #-0x20]!
- * 0x1B5F740  stp  x19, x30, [sp, #0x10]
- * 0x1B5F744  adrp x20, ...
- * 0x1B5F748  ldrb w8, [x20, ...]
- * 0x1B5F74C  mov  x19, x0
- * 0x1B5F750  tbnz w8, #0, ...
- * ```
+ * ── 2. `AdService.IsRewardedReady()` — always ready ────────────────────────
+ *
+ * arm64-v8a @ `0x184B840`, armeabi-v7a @ `0x1133C68`.
  * `LifeRewardedButton.Show()` → `ShowLoadingBarIfRewardedNotReady()` calls this and
  * shows an endless spinner when the rewarded provider is null — the normal state
- * under Remove Ads. Overwriting the prologue with `mov w0, #1 ; ret`
- * (`20 00 80 52 C0 03 5F D6`) makes readiness report `true`, so the offer button
- * stays usable and the loading bar never appears. This is the swampattack2-proven
- * pattern: the stub returns before touching the stack, so the discarded frame setup
- * never executes and there is no `sp` imbalance or link-register leak.
+ * under Remove Ads. Overwriting the prologue with `mov w0,#1 ; ret`
+ * (`20 00 80 52 C0 03 5F D6`) / `mov r0,#1 ; bx lr` (`01 00 A0 E3 1E FF 2F E1`)
+ * makes readiness report `true`, so the offer button stays usable and the loading
+ * bar never appears. This is the swampattack2-proven pattern: the stub returns
+ * before touching the stack, so the discarded frame setup never executes and there
+ * is no `sp` imbalance or link-register leak.
  *
  * ── Why the reward becomes instant on *every* surface ─────────────────────
- * The callers were xref-checked and all call `AdService.ShowRewarded` (`0x1B5F494`)
- * directly with no readiness gate: `LifeRewardedButton.<ShowRewardedToEarnLife>d__8`
- * (`0x16E96E8`), `Rewarded2xButton`, `PlayOnManager.TryUseWithRewarded`,
- * `WatchAndWinController` and the daily `RewardedButton`. `ShowRewarded`
- * unconditionally starts this state machine, so hook 1 covers all of them.
- * `Rewarded.IsReady` (`0x1B642BC`) has zero xrefs (dead code) and needs no patch.
+ * The callers all call `AdService.ShowRewarded` directly with no readiness gate:
+ * `LifeRewardedButton.<ShowRewardedToEarnLife>d__8`, `Rewarded2xButton`,
+ * `PlayOnManager.TryUseWithRewarded`, `WatchAndWinController` and the daily
+ * `RewardedButton`. `ShowRewarded` unconditionally starts this state machine, so
+ * hook 1 covers all of them. `Rewarded.IsReady` has zero xrefs (dead code).
  *
  * Rewards are granted 100 % locally: `LifeRewardedButton` simply does
- * `if (await ShowRewarded()) InventoryService.Earn(...)` (`0x16E93EC`), a pure local
- * model write with no server round-trip. Nothing validates that an ad was watched.
+ * `if (await ShowRewarded()) InventoryService.Earn(...)`, a pure local model write
+ * with no server round-trip. Nothing validates that an ad was watched.
  *
- * Deliberately **compatible with Remove Ads**. The naive alternative — forcing
- * `mov w20, #1` at the grant site `0x1B61CD4` — still requires the real ad SDK to
- * reach that instruction, so it does nothing once ads are disabled. Branching to the
- * tail at `0x1B61D40` does not.
+ * Deliberately **compatible with Remove Ads**: forcing the grant site alone still
+ * requires the real ad SDK to reach it, so it does nothing once ads are disabled.
+ * Branching to the completion tail does not.
  */
 @Suppress("unused")
 val instantRewardedPatch = rawResourcePatch(
@@ -96,45 +98,98 @@ val instantRewardedPatch = rawResourcePatch(
     execute {
         applyLibil2cppEdits(
             patchName = "Instant Rewarded Ads",
-            // Both anchors are mandatory: the branch alone would still leave the
-            // offer button stuck behind an endless loading bar, and the readiness
+            // Both anchors are mandatory per ABI: the branch alone would still leave
+            // the offer button stuck behind an endless loading bar, and the readiness
             // stub alone would not grant anything (ShowRewarded would still NRE).
-            anchors = listOf(SHOW_REWARDED_SUCCESS_TAIL, IS_REWARDED_READY),
+            anchorSets = listOf(
+                AbiAnchorSet(
+                    "arm64-v8a",
+                    listOf(SHOW_REWARDED_SUCCESS_TAIL_ARM64, IS_REWARDED_READY_ARM64),
+                ),
+                AbiAnchorSet(
+                    "armeabi-v7a",
+                    listOf(SHOW_REWARDED_SUCCESS_TAIL_V7A, IS_REWARDED_READY_V7A),
+                ),
+            ),
         )
     }
 }
 
 /**
- * `AdService.<ShowRewarded>d__40.MoveNext` @ `0x1B61B80`:
- * `cbz w8,#0x1B61BDC` → `b 0x1B61D40` (the success tail that sets the
- * `Task<bool>` result to `true`).
+ * `AdService.<ShowRewarded>d__40.MoveNext` @ `0x184DB68` (arm64-v8a, 0.0.3480):
+ * `cbz w8,#0x184DBC4` → `b 0x184DD28` (the success tail that sets the
+ * `Task<bool>` result to `true`; imm26 = (0x184DD28 − 0x184DB68)/4 = 0x70).
  *
- * Verify window (24 B, one hit in 95,548,936 B):
- * `e8 02 00 34` = `cbz w8,#0x1B61BDC` (the instruction we replace),
+ * Verify window (24 B, one hit in 95,838,880 B):
+ * `e8 02 00 34` = `cbz w8,#0x184DBC4` (the instruction we replace),
  * `37 10 00 b4` = a `cbz x23` guard, `f4 0e 40 f9` = `ldr x20,[x23,#0x18]`,
  * `d4 0d 00 b4` = a `cbz x20` guard, then an `adrp`/`ldr` pair. The surrounding
  * words exist only to make the locator unique — only the first 4 bytes are written.
  */
-private val SHOW_REWARDED_SUCCESS_TAIL = NativeAnchor(
+private val SHOW_REWARDED_SUCCESS_TAIL_ARM64 = NativeAnchor(
     label = "AdService.ShowRewarded -> branch to success tail (task completes true, no provider deref)",
-    rva = 0x1B61B80,
-    fileOffset = 0x1B61B80,
-    verifyHex = "e8020034371000b4f40e40f9d40d00b46adb0190880240f9",
+    rva = 0x184DB68,
+    fileOffset = 0x184DB68,
+    verifyHex = "e8020034371000b4f40e40f9d40d00b40af601f0880240f9",
     replacementHex = "70000014",
 )
 
 /**
- * `AdService.IsRewardedReady()` @ `0x1B5F73C` → `true`.
+ * `AdService.<ShowRewarded>d__40.MoveNext` @ `0x1136798` (armeabi-v7a, 0.0.3480):
+ * `cmp r1,#0 ; beq 0x1136808` → `mov r5,#1 ; b 0x11369D4`
+ * (`00 00 51 E3` / `19 00 00 0A` → `01 00 50 E3` / `8C 00 00 EA`;
+ * A32 `b` imm24 = (0x11369D4 − 0x1136798 − 8)/4 = 0x8C).
  *
- * Verify window (24 B, one hit in 95,548,936 B):
+ * The 32-bit build has no single branch to the success tail (the tail is a shared
+ * completion block that reads the result from `r5`), so the state compare itself is
+ * replaced. `r4` (the state-machine `this`) is already live at this point
+ * (`mov r4,r0` in the prologue) and the completion block sets `<>1__state = -2`,
+ * advances `r4` to `<>t__builder` and calls `SetResult(builder, r5)` with `r5 = 1`.
+ *
+ * Verify window (24 B, one hit in 86,265,520 B): the state compare/branch, the
+ * `r7` null guard, its throw call, and the provider load `ldr r5,[r7,#0xc]`.
+ */
+private val SHOW_REWARDED_SUCCESS_TAIL_V7A = NativeAnchor(
+    label = "AdService.ShowRewarded -> completion block with result true (no provider deref)",
+    rva = 0x1136798,
+    fileOffset = 0x1136798,
+    verifyHex = "000051e31900000a000057e30000001a621de3eb0c5097e5",
+    replacementHex = "010050e38c0000ea",
+)
+
+/**
+ * `AdService.IsRewardedReady()` @ `0x184B840` → `true` (arm64-v8a, 0.0.3480).
+ *
+ * Verify window (24 B, one hit in 95,838,880 B):
  * `f4 0f 1e f8` = `str x20,[sp,#-0x20]!`, `f3 7b 01 a9` = `stp x19,x30,[sp,#0x10]`,
- * `34 fe 01 f0` + `88 ba 6c 39` = the `adrp`/`ldrb` config read,
+ * `14 19 02 b0` + `88 e2 51 39` = the `adrp`/`ldrb` config read,
  * `f3 03 00 aa` = `mov x19,x0`, `c8 00 00 37` = `tbnz w8,...`.
  */
-private val IS_REWARDED_READY = NativeAnchor(
+private val IS_REWARDED_READY_ARM64 = NativeAnchor(
     label = "AdService.IsRewardedReady -> true (no endless loading bar on watch-ad offers)",
-    rva = 0x1B5F73C,
-    fileOffset = 0x1B5F73C,
-    verifyHex = "f40f1ef8f37b01a934fe01f088ba6c39f30300aac8000037",
+    rva = 0x184B840,
+    fileOffset = 0x184B840,
+    verifyHex = "f40f1ef8f37b01a9141902b088e25139f30300aac8000037",
     replacementHex = "20008052c0035fd6",
+)
+
+/**
+ * `AdService.IsRewardedReady()` @ `0x1133C68` → `true` (armeabi-v7a, 0.0.3480).
+ *
+ * Verify window (48 B, one hit in 86,265,520 B — the 24 B prologue prefix is *not*
+ * unique in the 32-bit lib: it occurs 165 times, because `push {r4,r5,r11,lr}` +
+ * `ldr rN,[pc,#…]` + `add rN,pc` is the standard IL2CPP metadata-init guard. The
+ * window therefore extends over the null-path `bl` and the `ldrb`/`cmp`/`bne`
+ * triple):
+ * `30 48 2d e9` = `push {r4,r5,r11,lr}`, `a4 50 9f e5` = `ldr r5,[pc,#0xa4]`,
+ * `00 40 a0 e1` = `mov r4,r0`, `05 50 8f e0` = `add r5,pc,r5`,
+ * `00 00 d5 e5` = `ldrb r0,[r5]`, `00 00 50 e3` = `cmp r0,#0`,
+ * `04 00 00 1a` = `bne`, then the lazy-init `ldr`/`ldr`/`bl`/`mov`/`strb` body.
+ */
+private val IS_REWARDED_READY_V7A = NativeAnchor(
+    label = "AdService.IsRewardedReady -> true (no endless loading bar on watch-ad offers)",
+    rva = 0x1133C68,
+    fileOffset = 0x1133C68,
+    verifyHex = "30482de9a4509fe50040a0e105508fe00000d5e5000050e30400001a90009fe500009fe7e227e3eb0100a0e30000c5e5",
+    replacementHex = "0100a0e31eff2fe1",
 )

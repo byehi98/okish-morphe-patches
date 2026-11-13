@@ -1,5 +1,6 @@
 package app.magicsort.billing
 
+import app.magicsort.shared.AbiAnchorSet
 import app.magicsort.shared.Constants.COMPATIBILITY_MAGIC_SORT
 import app.magicsort.shared.Constants.PACKAGE_NAME
 import app.magicsort.shared.NativeAnchor
@@ -34,7 +35,7 @@ private const val ARRAY_LIST = "Ljava/util/ArrayList;"
 private const val LIST = "Ljava/util/List;"
 
 /**
- * Magic Sort 0.0.3420 — **Free IAP** (Java Billing forge + native grant-branch hardening).
+ * Magic Sort 0.0.3480 — **Free IAP** (Java Billing forge + native grant-branch hardening).
  *
  * Two layers, one listing entry. Neither half is useful alone:
  *  - the Java hook is the *source* of the fake `Purchase` — without it the game
@@ -52,36 +53,55 @@ private const val LIST = "Ljava/util/List;"
  *
  * ══ PART 1 — NATIVE: force the local-grant branch in `IAPManager.ProcessPurchase` ══
  *
- * `IAPManager.ProcessPurchase` (`0x1389530`) has three branches, and only the legacy
- * one blocks:
+ * `IAPManager.ProcessPurchase` has three branches, and only the legacy one blocks.
+ * Both ABIs are patched; the branch structure is identical, the encodings are not.
+ *
+ * arm64-v8a — `ProcessPurchase` @ `0x146C0A0`, local grant @ `0x146C114`:
  * ```
- * 0x138956C  tbnz w0, #0, #0x13895A4   ; after ShouldProceedWithoutLegacyVerification
- * 0x1389588  ldrb w8, [x8, #0x30]      ; RootLevelConfigModel.IsAndroidIapVerificationEnabled
- * 0x138958C  cbz  w8, #0x13895A4
- * 0x1389590  mov  x0, x20
- * 0x1389598  bl   #0x1389910           ; ProcessPurchaseWithVerificationAsync  <- BLOCKING
- * 0x13895A4  mov  x0, x20
- * 0x13895AC  bl   #0x1389868           ; ProcessPurchaseWithoutVerification     <- local grant
+ * 0x146C0DC  tbnz w0, #0, #0x146C114   ; after ShouldProceedWithoutLegacyVerification
+ * 0x146C0F8  ldrb w8, [x8, #0x30]      ; RootLevelConfigModel.IsAndroidIapVerificationEnabled
+ * 0x146C0FC  cbz  w8, #0x146C114
+ * 0x146C100  mov  x0, x20
+ * 0x146C108  bl   #0x146C480           ; ProcessPurchaseWithVerificationAsync  <- BLOCKING
+ * 0x146C114  mov  x0, x20
+ * 0x146C11C  bl   #0x146C3D8           ; ProcessPurchaseWithoutVerification     <- local grant
  * ```
- * Both conditional branches are rewritten to the unconditional `b 0x13895A4`
- * (`0e 00 00 14` at `0x138956C`, `06 00 00 14` at `0x138958C`), so the flow always
- * reaches `ProcessPurchaseWithoutVerification`. That function makes **no network
- * call at all**: it calls `PurchaseResult.Success()` (`0x1388394`) and completes the
- * `TaskCompletionSource`; downstream `ApplyPurchaseSuccessCommand.ExecuteAsync`
- * (`0x2B03480`) calls `RewardService.GiveDirectlyRewards`, records the purchase in
+ * Rewritten to the unconditional `b 0x146C114` (`0e 00 00 14` at `0x146C0DC`,
+ * `06 00 00 14` at `0x146C0FC`).
+ *
+ * armeabi-v7a — `ProcessPurchase` @ `0xC1210C`, local grant @ `0xC1222C`
+ * (ARM/A32 code, not Thumb):
+ * ```
+ * 0xC121D0  bl   #0xC1932C             ; proceeds-without-legacy check
+ * 0xC121D4  cmp  r0, #0
+ * 0xC121D8  beq  #0xC1222C             ; -> local grant
+ * 0xC1220C  ldrb r0, [r6, #0x28]       ; IsAndroidIapVerificationEnabled
+ * 0xC12210  cmp  r0, #0
+ * 0xC12214  beq  #0xC1222C
+ * 0xC12220  bl   #0xC12734             ; ProcessPurchaseWithVerificationAsync  <- BLOCKING
+ * 0xC1222C  bl   #0xC12648             ; ProcessPurchaseWithoutVerification     <- local grant
+ * ```
+ * Both `beq` are rewritten to the unconditional `b 0xC1222C`
+ * (`13 00 00 EA` at `0xC121D8`, `04 00 00 EA` at `0xC12214`).
+ *
+ * The flow therefore always reaches `ProcessPurchaseWithoutVerification`. That
+ * function makes **no network call at all**: it calls `PurchaseResult.Success()` and
+ * completes the `TaskCompletionSource`; downstream
+ * `ApplyPurchaseSuccessCommand.ExecuteAsync` (`0x2B3E0E4`… in 0.0.3480) calls
+ * `RewardService.GiveDirectlyRewards`, records the purchase in
  * `InAppPurchaseHistoryService` and calls `SyncService.TrySyncAllData` *after* the
- * grant. `IsVerified` is consumed only at `0x2B03A90`, to decide whether to send an
- * Adjust analytics event — it never gates the reward. Server verification
+ * grant. `IsVerified` is consumed only to decide whether to send an Adjust analytics
+ * event — it never gates the reward. Server verification
  * (`IAPVerificationRemoteService`) is enqueued after the local grant and fails open
  * after 5 attempts, so it cannot revoke anything.
  *
- * Do **NOT** patch `IAPVerificationService.IsEnabled` (`0x13895C4`) → `false`: with
- * `IsEnabled == false` the code falls through to `0x1389570` and reads the
- * server-controlled legacy flag, which can be `true` and land in the blocking
+ * Do **NOT** patch `IAPVerificationService.IsEnabled` (`0x146C134`) → `false`: with
+ * `IsEnabled == false` the code falls through to reading the server-controlled
+ * legacy flag, which can be `true` and land in the blocking
  * `ProcessPurchaseWithVerificationAsync`. Also do **NOT** patch
- * `RootLevelConfigModel.get_IsAndroidIapVerificationEnabled` (`0x1CC4CD4`) — it is
- * never called; the flag is read as a raw field at `0x1389588`, which is why the
- * branch at `0x138958C` is the correct edit.
+ * `RootLevelConfigModel.get_IsAndroidIapVerificationEnabled` (`0x1B41874`) — it is
+ * never called; the flag is read as a raw field at `0x146C0F8` (`0xC1220C` on
+ * armeabi-v7a), which is why the branch is the correct edit.
  *
  * ══ PART 2 — JAVA: `com.android.billingclient.api.BillingClientImpl` (Billing 8.3.0) ══
  *
@@ -184,10 +204,19 @@ val freeIapPatch = bytecodePatch(
             execute {
                 applyLibil2cppEdits(
                     patchName = "Free IAP (grant branches)",
-                    // Both anchors are mandatory — they cover the IsEnabled==true and
-                    // IsEnabled==false entry conditions respectively; either one alone
-                    // leaves a path into the blocking verification flow.
-                    anchors = listOf(SKIP_LEGACY_VERIFICATION, FORCE_LOCAL_GRANT),
+                    // Both anchors are mandatory per ABI — they cover the legacy-check
+                    // and IsAndroidIapVerificationEnabled entry conditions respectively;
+                    // either one alone leaves a path into the blocking verification flow.
+                    anchorSets = listOf(
+                        AbiAnchorSet(
+                            "arm64-v8a",
+                            listOf(SKIP_LEGACY_VERIFICATION_ARM64, FORCE_LOCAL_GRANT_ARM64),
+                        ),
+                        AbiAnchorSet(
+                            "armeabi-v7a",
+                            listOf(SKIP_LEGACY_VERIFICATION_V7A, FORCE_LOCAL_GRANT_V7A),
+                        ),
+                    ),
                 )
             }
         },
@@ -467,39 +496,68 @@ val freeIapPatch = bytecodePatch(
 }
 
 /**
- * `IAPManager.ProcessPurchase` @ `0x138956C`:
- * `tbnz w0,#0,#0x13895A4` → `b 0x13895A4`
- * (`c0 01 00 37` → `0e 00 00 14`).
+ * `IAPManager.ProcessPurchase` @ `0x146C0DC` (arm64-v8a, 0.0.3480):
+ * `tbnz w0,#0,#0x146C114` → `b 0x146C114` (`c0 01 00 37` → `0e 00 00 14`).
  *
- * Verify window (24 B, one hit in 95,548,936 B): the `tbnz` followed by the
- * `ldr x8,[x20,#0x38]` / `ldr x8,[x8,#0x18]` remote-config chain that starts the
- * legacy branch.
+ * Verify window (24 B, one hit in 95,838,880 B): the `tbnz` followed by the
+ * `ldr x8,[x20,#0x38]` / … remote-config chain that starts the legacy branch.
  */
-private val SKIP_LEGACY_VERIFICATION = NativeAnchor(
+private val SKIP_LEGACY_VERIFICATION_ARM64 = NativeAnchor(
     label = "IAPManager.ProcessPurchase -> always ProcessPurchaseWithoutVerification (batch-verification branch)",
-    rva = 0x138956C,
-    fileOffset = 0x138956C,
+    rva = 0x146C0DC,
+    fileOffset = 0x146C0DC,
     verifyHex = "c0010037881e40f9680200b4080d40f9280200b4080940f9",
     replacementHex = "0e000014",
 )
 
 /**
- * `IAPManager.ProcessPurchase` @ `0x138958C`:
- * `cbz w8,#0x13895A4` → `b 0x13895A4`
- * (`c8 00 00 34` → `06 00 00 14`).
+ * `IAPManager.ProcessPurchase` @ `0x146C0FC` (arm64-v8a, 0.0.3480):
+ * `cbz w8,#0x146C114` → `b 0x146C114` (`c8 00 00 34` → `06 00 00 14`).
  *
- * This is the `IsEnabled()==false` path. Verify window (24 B, one hit): the `cbz`
- * followed by `mov x0,x20; mov x1,x19; bl ProcessPurchaseWithVerificationAsync;
- * mov w0,#1; b ...` — i.e. the blocking legacy call we are skipping. Note that the
- * flag itself is read as a raw field at `0x1389588`; patching
- * `RootLevelConfigModel.get_IsAndroidIapVerificationEnabled` would do nothing.
+ * Verify window (24 B, one hit): the `cbz` followed by
+ * `mov x0,x20; mov x1,x19; bl ProcessPurchaseWithVerificationAsync; mov w0,#1; b …`
+ * — i.e. the blocking legacy call we are skipping.
  */
-private val FORCE_LOCAL_GRANT = NativeAnchor(
+private val FORCE_LOCAL_GRANT_ARM64 = NativeAnchor(
     label = "IAPManager.ProcessPurchase -> always ProcessPurchaseWithoutVerification (legacy-config branch)",
-    rva = 0x138958C,
-    fileOffset = 0x138958C,
+    rva = 0x146C0FC,
+    fileOffset = 0x146C0FC,
     verifyHex = "c8000034e00314aae10313aade0000942000805205000014",
     replacementHex = "06000014",
+)
+
+/**
+ * `IAPManager.ProcessPurchase` @ `0xC121D8` (armeabi-v7a, 0.0.3480):
+ * `beq 0xC1222C` → `b 0xC1222C`
+ * (`13 00 00 0a` → `13 00 00 ea`; A32 `b` imm24 = (0xC1222C − 0xC121D8 − 8)/4 = 0x13).
+ *
+ * Verify window (24 B, one hit in 86,265,520 B): the `beq` followed by the field
+ * dereference chain (`ldr r6,[r5,#0x1c]` …) that begins the legacy branch.
+ */
+private val SKIP_LEGACY_VERIFICATION_V7A = NativeAnchor(
+    label = "IAPManager.ProcessPurchase -> always ProcessPurchaseWithoutVerification (batch-verification branch)",
+    rva = 0xC121D8,
+    fileOffset = 0xC121D8,
+    verifyHex = "1300000a1c6095e5000056e30000001ad2aef7eb0c6096e5",
+    replacementHex = "130000ea",
+)
+
+/**
+ * `IAPManager.ProcessPurchase` @ `0xC12214` (armeabi-v7a, 0.0.3480):
+ * `beq 0xC1222C` → `b 0xC1222C`
+ * (`04 00 00 0a` → `04 00 00 ea`; imm24 = (0xC1222C − 0xC12214 − 8)/4 = 0x04).
+ *
+ * Verify window (24 B, one hit): the `beq` followed by
+ * `mov r0,r5; mov r1,r4; bl ProcessPurchaseWithVerificationAsync; mov r0,#1; pop` —
+ * the blocking legacy call this edit skips. The flag itself is read at `0xC1220C`
+ * (`ldrb r0,[r6,#0x28]`), so patching the getter would do nothing.
+ */
+private val FORCE_LOCAL_GRANT_V7A = NativeAnchor(
+    label = "IAPManager.ProcessPurchase -> always ProcessPurchaseWithoutVerification (legacy-config branch)",
+    rva = 0xC12214,
+    fileOffset = 0xC12214,
+    verifyHex = "0400000a0500a0e10410a0e1430100eb0100a0e3f088bde8",
+    replacementHex = "040000ea",
 )
 
 /**
