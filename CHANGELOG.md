@@ -1,3 +1,9 @@
+## [1.50.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.9...v1.50.0-dev.10) (2026-11-13)
+
+### 🚀 Updated App Support
+
+* **magicsort:** update target to v0.0.3480 and add armeabi-v7a support ([c260770](https://github.com/byehi98/okish-morphe-patches/commit/c2607708634d954bc015da40265eff8c99861e11))
+
 ## [1.50.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.8...v1.50.0-dev.9) (2026-11-12)
 
 ### 🚀 Updated App Support
