@@ -1,3 +1,9 @@
+## [1.50.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.10...v1.50.0-dev.11) (2026-11-13)
+
+### 🚀 Updated App Support
+
+* **trafficrider:** update target to v2.20 and adapt patches for billing ([01adfe7](https://github.com/byehi98/okish-morphe-patches/commit/01adfe7315d813f89bc3a2890013e0e063203bcf))
+
 ## [1.50.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.9...v1.50.0-dev.10) (2026-11-13)
 
 ### 🚀 Updated App Support
