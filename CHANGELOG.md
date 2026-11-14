@@ -1,3 +1,89 @@
+## [1.50.0-dev.14](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.13...v1.50.0-dev.14) (2026-11-14)
+
+### ✨ New Features
+
+* **smashbandits:** add patches for smashbandits ([81f4105](https://github.com/byehi98/okish-morphe-patches/commit/81f4105f25136b428b185cebc4d453cd7171f00e))
+
+## [1.50.0-dev.13](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.12...v1.50.0-dev.13) (2026-11-14)
+
+### 🚀 Updated App Support
+
+* **fancade:** update target to v1.15.26 and add armeabi-v7a support for ([c08e070](https://github.com/byehi98/okish-morphe-patches/commit/c08e070ae78144fc21dd3802a975977825766367))
+* **vitamahjong:** update target to v3.47.0 and adapt patches ([1eb89ae](https://github.com/byehi98/okish-morphe-patches/commit/1eb89aeec2e6f8572d9da47c2dc87af3c63ccdbb))
+
+## [1.50.0-dev.12](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.11...v1.50.0-dev.12) (2026-11-14)
+
+### 🚀 Updated App Support
+
+* **hillclimb:** update target to v1.73.3 ([3264a3a](https://github.com/byehi98/okish-morphe-patches/commit/3264a3aabe8800d9fbbe4d9db071a868a46159ee))
+
+## [1.50.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.10...v1.50.0-dev.11) (2026-11-13)
+
+### 🚀 Updated App Support
+
+* **trafficrider:** update target to v2.20 and adapt patches for billing ([01adfe7](https://github.com/byehi98/okish-morphe-patches/commit/01adfe7315d813f89bc3a2890013e0e063203bcf))
+
+## [1.50.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.9...v1.50.0-dev.10) (2026-11-13)
+
+### 🚀 Updated App Support
+
+* **magicsort:** update target to v0.0.3480 and add armeabi-v7a support ([c260770](https://github.com/byehi98/okish-morphe-patches/commit/c2607708634d954bc015da40265eff8c99861e11))
+
+## [1.50.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.8...v1.50.0-dev.9) (2026-11-12)
+
+### 🚀 Updated App Support
+
+* **missiles:** update target to v1.43 and change apk type to APKS ([5988239](https://github.com/byehi98/okish-morphe-patches/commit/5988239e64206eb77be078c5741772a0f673c6f3))
+
+## [1.50.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.7...v1.50.0-dev.8) (2026-11-12)
+
+### 🚀 Updated App Support
+
+* **fancypants:** bump target version to 1.0.49 ([5c1e134](https://github.com/byehi98/okish-morphe-patches/commit/5c1e1348bbd1daeeb9d045cefb6b457259d80954))
+
+## [1.50.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.6...v1.50.0-dev.7) (2026-11-11)
+
+### ✨ New Features
+
+* **csrracing:** add unlimited cash and gold patches ([cd4d33e](https://github.com/byehi98/okish-morphe-patches/commit/cd4d33edd14d614ad5053df6db807cb25bd7c677))
+
+## [1.50.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.5...v1.50.0-dev.6) (2026-11-11)
+
+### 🐛 Bug Fixes
+
+* **lemmings:** add dual-abi support for arm64-v8a and armeabi-v7a ([3abf56d](https://github.com/byehi98/okish-morphe-patches/commit/3abf56da2db4387a7ead307893936a71dc7dc664))
+
+## [1.50.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.4...v1.50.0-dev.5) (2026-11-11)
+
+### 🐛 Bug Fixes
+
+* **deadtarget:** add dual-abi support for arm64-v8a and armeabi-v7a ([adcd088](https://github.com/byehi98/okish-morphe-patches/commit/adcd0888bd5e34445bbcf79b319f4d552c282036))
+
+## [1.50.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.3...v1.50.0-dev.4) (2026-11-11)
+
+### ✨ New Features
+
+* **swiftbackup:** add patch for cloud backup without sign-in ([e3af89f](https://github.com/byehi98/okish-morphe-patches/commit/e3af89f5a6b00d1cbd326e0e4b5270691677dd77))
+* **swiftbackup:** add patch for local account backup and restore ([c812b0a](https://github.com/byehi98/okish-morphe-patches/commit/c812b0a5e32e0a7f66275259d9db7c13367d2c70))
+
+## [1.50.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.2...v1.50.0-dev.3) (2026-11-10)
+
+### ✨ New Features
+
+* **sonicdash:** add patches for Sonic Dash Run app ([9b11834](https://github.com/byehi98/okish-morphe-patches/commit/9b11834eca4eb582c8e9d9341ee5ce99674b1f62))
+
+## [1.50.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.1...v1.50.0-dev.2) (2026-11-10)
+
+### ✨ New Features
+
+* **magicsort:** add patches for Magic Sort app ([4ab985c](https://github.com/byehi98/okish-morphe-patches/commit/4ab985c2caca0ed9d2c52314aaaaedce5f6a773d))
+
+## [1.50.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.49.0...v1.50.0-dev.1) (2026-11-10)
+
+### ✨ New Features
+
+* **headsoccer:** add unlock collab characters patch ([f3a3d3c](https://github.com/byehi98/okish-morphe-patches/commit/f3a3d3c8c9e43a0e99f32a4f7f3deb4989f88c28))
+
 ## [1.49.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.48.0...v1.49.0) (2026-11-10)
 
 ### ✨ New Features

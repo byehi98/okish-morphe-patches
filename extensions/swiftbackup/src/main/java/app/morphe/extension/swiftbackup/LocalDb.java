@@ -114,6 +114,72 @@ public final class LocalDb {
     }
 
     /**
+     * Returns the node at the given path (plain Maps/Lists/scalars) or null.
+     * Used by the local account export. Never throws.
+     */
+    public static synchronized Object node(String... path) {
+        try {
+            load();
+            Object node = root;
+            for (String key : path) {
+                if (key == null || key.isEmpty()) continue;
+                if (!(node instanceof Map)) return null;
+                node = ((Map<?, ?>) node).get(key);
+            }
+            return node;
+        } catch (Throwable t) {
+            log("node failed", t);
+            return null;
+        }
+    }
+
+    /**
+     * Merges slash-separated paths into the tree, persists it and pushes it back into the database
+     * client. Used by the local account import. Child paths are applied with {@link #put}, so server
+     * value placeholders are resolved as usual.
+     */
+    public static synchronized void importNodes(Map<String, Object> bySlashPath) throws Exception {
+        if (bySlashPath == null || bySlashPath.isEmpty()) return;
+        load();
+        for (Map.Entry<String, Object> entry : bySlashPath.entrySet()) {
+            List<String> segments = new ArrayList<>();
+            for (String part : String.valueOf(entry.getKey()).split("/")) {
+                if (!part.isEmpty()) segments.add(part);
+            }
+            put(segments, entry.getValue());
+        }
+        save();
+        loadState();
+        writeSeq++;
+        dirty = true;
+        saveState();
+        if (repo != null) reseed();
+    }
+
+    /** Serialises a plain tree/scalar (as returned by {@link #node} or {@link #parseJson}). */
+    public static String toJsonString(Object value) throws Exception {
+        Object json = toJson(value);
+        return json instanceof JSONObject || json instanceof JSONArray
+                ? json.toString()
+                : String.valueOf(json);
+    }
+
+    /** Parses JSON into the plain Map/List/scalar tree used by the database. */
+    public static Object parseJson(String json) throws Exception {
+        return fromJson(new JSONObject(json));
+    }
+
+    /** The app's files dir, or null when it cannot be resolved. Never throws. */
+    public static File filesDir() {
+        try {
+            return file().getParentFile();
+        } catch (Throwable t) {
+            log("filesDir failed", t);
+            return null;
+        }
+    }
+
+    /**
      * Called once the database client is set up.
      *
      * @param repo           the Firebase Repo.

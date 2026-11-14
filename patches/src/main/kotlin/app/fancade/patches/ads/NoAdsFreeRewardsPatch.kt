@@ -10,7 +10,7 @@ import app.morphe.patches.all.misc.hex.HexPatchBuilder
 import app.morphe.patches.all.misc.hex.hexPatch
 
 /**
- * Fancade 1.15.24 (versionCode 184) — Remove ads & free rewards.
+ * Fancade 1.15.26 (versionCode 190) — Remove ads & free rewards.
  *
  * ============================================================
  * SHAPE OF THE FEATURE
@@ -67,17 +67,16 @@ import app.morphe.patches.all.misc.hex.hexPatch
  * `ad_rewarded_show_os` does not grant anything itself — it kicks off a native
  * flow. The native engine polls `ad_rewarded_is_showing()` (true while the
  * state machine sits in state 7) and, once that returns false, reads
- * `ad_rewarded_get_reward()` (the flag at `0x477a7b0`, set by
- * `ad_rewarded_on_rewarded`) and only then runs its own `ad_rewarded_reward()`
- * grant. So the minimal "instant payout" is: set the reward flag, then move
- * the state machine OUT of 7 — which is exactly what
- * `ad_rewarded_on_showed(true, 0.0)` does — and the engine's poll finishes on
- * its own next tick and pays out.
+ * `ad_rewarded_get_reward()` (the flag set by `ad_rewarded_on_rewarded`) and
+ * only then runs its own `ad_rewarded_reward()` grant. So the minimal "instant
+ * payout" is: set the reward flag, then move the state machine OUT of 7 —
+ * which is exactly what `ad_rewarded_on_showed(true, 0.0)` does — and the
+ * engine's poll finishes on its own next tick and pays out.
  *
  * `ad_rewarded_on_loaded(true)` afterwards re-arms the gate so the button stays
- * available for the next tap (`ad_rewarded_is_loaded` is also force-true in
- * Part B, but keeping the engine's own flag in sync avoids any UI that reads
- * the callback-driven copy).
+ * available for the next tap (the native `ad_rewarded_is_loaded` is also
+ * force-true in Part B, but keeping the engine's own flag in sync avoids any UI
+ * that reads the callback-driven copy).
  *
  * Register budget: `.registers 4` → v0–v3 locals, `p0` = v3 (these are
  * instance methods, so the receiver takes the last register). The injected
@@ -86,75 +85,100 @@ import app.morphe.patches.all.misc.hex.hexPatch
  * wide double. No frame expansion is needed.
  *
  * ============================================================
- * PART B — NATIVE (`lib/arm64-v8a/libfancade.so`)
+ * PART B — NATIVE (`libfancade.so`, both ABIs)
  * ============================================================
  * The engine is a custom, hand-written C++ engine — NOT IL2CPP, NOT Unity — and
  * it is **not stripped**: every symbol below is exported and visible through
  * `nm -D libfancade.so`, so each site can be re-derived on a future version by
  * name even if the bytes move.
  *
- * WHY `hexPatch` AND NOT `replaceWith`: the library is 45,921,576 B. Embedding
- * it in the `.mpp` would bloat the patch bundle by that much for a handful of
- * bytes. `hexPatch` edits `lib/arm64-v8a/libfancade.so` in place while the APK
- * is being assembled, and it throws a `PatchException` when an anchor is
- * missing — so a stale anchor fails the build instead of shipping an APK whose
- * native half silently does nothing.
+ * Since 1.15.26 the XAPK ships `armeabi-v7a` next to `arm64-v8a`, so the native
+ * half is applied to both libraries with their own instruction encodings.
+ * `ignoreMissingTargetFiles = true` keeps the two ABI halves independent: an
+ * APK that ships only one of them still patches cleanly, while a *present*
+ * library with a stale anchor still fails the build loudly.
  *
- * OFFSETS: the executable LOAD segment starts at offset 0 / vaddr 0, so file
- * offset == vaddr for this binary. All three anchors are 20 B and were
- * byte-scanned against the shipped `.so`; each occurs **exactly once**.
- * Replacements are the same length, so every surrounding instruction stays
- * byte-identical.
+ * WHY `hexPatch` AND NOT `replaceWith`: each library is ~40-45 MB. Embedding it
+ * in the `.mpp` would bloat the patch bundle by that amount for a handful of
+ * bytes. `hexPatch` edits the `.so` in place while the APK is assembled, and it
+ * throws a `PatchException` when an anchor is missing — so a stale anchor fails
+ * the build instead of shipping an APK whose native half silently does nothing.
  *
- *  1. `ad_rewarded_is_loaded` @0x341bd8 → `mov w0, #1 ; ret`. This is the gate
- *     the UI (`shop_draw` / `draw_action` action ids 12/13) consults before
- *     offering "watch ad for gems", so the reward button is always there and
- *     always tappable.
+ * 1.15.26 sites (file offset == vaddr in both binaries; executable LOAD segment
+ * starts at offset 0):
  *
- *  2. `app_gems_for_ad_available` @0x34a3d0 → `mov w0, #1 ; ret`. Its real body
- *     checks "ad loaded" AND a 24 h cooldown (cmp/branch at 0x34a3d8–0x34a3f4).
- *     Forcing true removes the cooldown, so the gems-for-ad offer is repeatable.
+ *   | symbol                      | arm64-v8a              | armeabi-v7a (Thumb)  |
+ *   |-----------------------------|------------------------|----------------------|
+ *   | ad_rewarded_is_loaded       | 0x3359d0               | 0x23a088             |
+ *   | app_gems_for_ad_available   | 0x33e270               | 0x241b78             |
+ *   | ad_rewarded_show            | 0x335a00 (b.hi 0x335a40 → 0x335a60) | 0x23a0ac (bhi 0x23a0d2 → 0x23a0e6) |
  *
- *  3. `ad_rewarded_show` @0x341c48 → retarget `b.hi bail` into an unconditional
- *     `b 0x341c68`, i.e. always take the "state := 7 + call
- *     `ad_rewarded_show_os`" arm instead of bailing out when the current state
- *     is not the expected one. Branch math: `imm26 = (0x341c68 - 0x341c48) >> 2
- *     = 8`, opcode `0x14000000` → word `0x14000008` → LE bytes `08 00 00 14`.
- *     Only the last word of the anchor changes; llvm-objdump confirms it
- *     disassembles to `b 0x341c68 <ad_rewarded_show+0x60>`, the arm that sets
- *     state 7 and calls into the Java wrapper patched in Part A.
+ * Replacements are the same length as the anchor, so every surrounding
+ * instruction stays byte-identical, and each anchor occurs exactly once per
+ * library.
  *
- * Updating for a new version:
- *   `nm -D libfancade.so | rg 'ad_rewarded_is_loaded|app_gems_for_ad_available|
- *    ad_rewarded_show'`, dump the first bytes at each address, re-check the
- *   anchor is unique, and recompute the branch if `ad_rewarded_show` moved.
- *   See `analysis/fancade/possible-patches.md` §3 and §5.3.
+ *  1. `ad_rewarded_is_loaded` → `mov w0, #1 ; ret` (`movs r0, #1 ; bx lr`).
+ *     This is the gate the UI (`shop_draw` / `draw_action` action ids 12/13)
+ *     consults before offering "watch ad for gems", so the reward button is
+ *     always there and always tappable.
+ *
+ *  2. `app_gems_for_ad_available` → same force-true. Its real body checks
+ *     "ad loaded" AND a 24 h cooldown, so this removes the cooldown and the
+ *     gems-for-ad offer becomes repeatable.
+ *
+ *  3. `ad_rewarded_show` → retarget the guard branch into an unconditional
+ *     branch to the "state := 7 + call `ad_rewarded_show_os`" arm, instead of
+ *     bailing out when the current state is not the expected one.
+ *       - arm64: `b.hi 0x335b2c` → `b 0x335a60`,
+ *         `imm26 = (0x335a60 - 0x335a40) >> 2 = 8` → `0x14000008` → `08 00 00 14`.
+ *       - v7a: `bhi 0x23a12e` → `b 0x23a0e6` (16-bit Thumb-2 B.T2,
+ *         PC = addr + 4, `offset = 0x23a0e6 - 0x23a0d6 = 0x10`,
+ *         `imm11 = 0x10 >> 1 = 8`) → `0xE008` → `08 E0`.
+ *
+ * Updating for a new version: `nm -D libfancade.so | rg
+ * 'ad_rewarded_is_loaded|app_gems_for_ad_available|ad_rewarded_show'`, dump the
+ * first bytes at each address for BOTH ABIs (arm64: 5 words; v7a: 16 bytes),
+ * re-check each anchor is unique, and recompute the two branches.
  */
-private const val LIB = "lib/arm64-v8a/libfancade.so"
+private const val LIB_ARM64 = "lib/arm64-v8a/libfancade.so"
+private const val LIB_ARM32 = "lib/armeabi-v7a/libfancade.so"
 
 private const val FANCADE_CLASS = "Lcom/martinmagni/fancade/Fancade;"
 
 private const val PATCH_NAME = "Remove ads & free rewards"
 
 /**
- * Native ad-decision sites in `lib/arm64-v8a/libfancade.so` (arm64-v8a only —
- * the XAPK ships no other ABI for this library).
+ * Native ad-decision sites, applied to both shipped ABIs.
  *
- * Every anchor is 20 B and occurs exactly once; each replacement is the same
+ * Every anchor occurs exactly once per library and each replacement is the same
  * length, so the instruction stream around it is preserved byte for byte.
  */
 private val adSites: HexPatchBuilder.() -> Unit = {
-    // ad_rewarded_is_loaded @0x341bd8 -> mov w0, #1 ; ret  (UI offers the reward button)
-    "FD 7B BF A9 FD 03 00 91 78 27 0B 94 C8 21 02 B0 1F 00 00 72" asPatternTo
-        "20 00 80 52 C0 03 5F D6 FD 03 00 91 C8 21 02 B0 1F 00 00 72" inFile LIB
+    // ── arm64-v8a ────────────────────────────────────────────────────────────
+    // ad_rewarded_is_loaded @0x3359d0 -> mov w0, #1 ; ret
+    "FD 7B BF A9 FD 03 00 91 46 06 0B 94 88 21 02 90 1F 00 00 72" asPatternTo
+        "20 00 80 52 C0 03 5F D6 46 06 0B 94 88 21 02 90 1F 00 00 72" inFile LIB_ARM64
 
-    // app_gems_for_ad_available @0x34a3d0 -> mov w0, #1 ; ret  (no 24 h cooldown on gems-for-ad)
-    "FD 7B BF A9 FD 03 00 91 62 10 0B 94 E8 03 00 2A E0 03 1F 2A" asPatternTo
-        "20 00 80 52 C0 03 5F D6 62 10 0B 94 E8 03 00 2A E0 03 1F 2A" inFile LIB
+    // app_gems_for_ad_available @0x33e270 -> mov w0, #1 ; ret
+    "FD 7B BF A9 FD 03 00 91 0A EF 0A 94 E8 03 00 2A E0 03 1F 2A" asPatternTo
+        "20 00 80 52 C0 03 5F D6 0A EF 0A 94 E8 03 00 2A E0 03 1F 2A" inFile LIB_ARM64
 
-    // ad_rewarded_show @0x341c48: b.hi bail -> b 0x341c68 (set state 7 + call ad_rewarded_show_os)
-    "D3 21 02 B0 68 AE 47 B9 08 15 00 51 1F 05 00 71 68 07 00 54" asPatternTo
-        "D3 21 02 B0 68 AE 47 B9 08 15 00 51 1F 05 00 71 08 00 00 14" inFile LIB
+    // ad_rewarded_show @0x335a40: b.hi bail -> b 0x335a60 (set state 7 + call ad_rewarded_show_os)
+    "93 21 02 90 68 AE 46 B9 08 15 00 51 1F 05 00 71 68 07 00 54" asPatternTo
+        "93 21 02 90 68 AE 46 B9 08 15 00 51 1F 05 00 71 08 00 00 14" inFile LIB_ARM64
+
+    // ── armeabi-v7a (Thumb) ──────────────────────────────────────────────────
+    // ad_rewarded_is_loaded @0x23a088 -> movs r0, #1 ; bx lr
+    "80 B5 6F 46 56 F2 E0 E8 05 49 06 22" asPatternTo
+        "01 20 70 47 56 F2 E0 E8 05 49 06 22" inFile LIB_ARM32
+
+    // app_gems_for_ad_available @0x241b78 -> movs r0, #1 ; bx lr
+    "80 B5 6F 46 51 F2 10 E9 01 46 00 20" asPatternTo
+        "01 20 70 47 51 F2 10 E9 01 46 00 20" inFile LIB_ARM32
+
+    // ad_rewarded_show @0x23a0d2: bhi bail -> b 0x23a0e6 (set state 7 + call ad_rewarded_show_os)
+    "20 68 05 38 01 28 2C D8 56 F2 BC E8" asPatternTo
+        "20 68 05 38 01 28 08 E0 56 F2 BC E8" inFile LIB_ARM32
 }
 
 /**
@@ -183,9 +207,9 @@ private fun MutableClass.requireAdMethod(
  * Fancade — interstitial removal plus instant rewarded payouts.
  *
  * The two halves are one listing entry: `dependsOn(hexPatch(…))` runs the
- * native edits first (they only touch `lib/arm64-v8a/libfancade.so`), then the
- * DEX hooks run (they only touch `classes5.dex`). The artifacts are disjoint,
- * so their relative order is irrelevant, but the native gate patches must be
+ * native edits first (they only touch `lib/**/libfancade.so`), then the DEX
+ * hooks run (they only touch `classes5.dex`). The artifacts are disjoint, so
+ * their relative order is irrelevant, but the native gate patches must be
  * present for the DEX half to be reachable from the UI at all.
  */
 @Suppress("unused")
@@ -198,7 +222,12 @@ val fancadeNoAdsFreeRewardsPatch = bytecodePatch(
 ) {
     compatibleWith(COMPATIBILITY_FANCADE)
 
-    dependsOn(hexPatch(block = adSites))
+    dependsOn(
+        hexPatch(
+            ignoreMissingTargetFiles = true,
+            block = adSites
+        )
+    )
 
     execute {
         val fancade = mutableClassDefBy(FANCADE_CLASS)
@@ -253,7 +282,7 @@ val fancadeNoAdsFreeRewardsPatch = bytecodePatch(
         )
 
         // The injected body writes v0 (boolean) and v1:v2 (wide double). The
-        // frame is `.registers 4` in 1.15.24; a version that shrank it would
+        // frame is `.registers 4` in 1.15.26; a version that shrank it would
         // fail dex verification on device, so assert it here instead.
         val registerCount = rewardedShow.implementation?.registerCount ?: 0
         if (registerCount < 4) {

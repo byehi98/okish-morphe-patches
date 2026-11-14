@@ -8,95 +8,79 @@ import java.io.RandomAccessFile
 import kotlin.io.readBytes
 
 /**
- * Dead Target: Offline Games 3D 4.186.0 — Unlimited ALL in-game currency (armeabi-v7a).
+ * Dead Target: Offline Games 3D 4.186.0 — Unlimited ALL in-game currency
+ * (arm64-v8a + armeabi-v7a).
  *
  * ============================================================================
- * WHY THIS FILE CHANGED ARCHITECTURE (4.185.0 → 4.186.0)
+ * DUAL-ABI SUPPORT (4.186.0 ships in two shapes)
  * ============================================================================
- * The 4.185.0 patch set was written against an **arm64-v8a** XAPK
- * (base + `UnityDataAssetPack.apk` + `config.arm64_v8a.apk`, libil2cpp.so = 85,096,080
- * bytes). The 4.186.0 XAPK published for `com.vng.g6.a.zombie` (versionCode 586009263) is
- * **armeabi-v7a only** — the split set is base + `UnityDataAssetPack.apk` +
- * `config.armeabi_v7a.apk`, and libil2cpp.so is 76,435,716 bytes of 32-bit **A32/ARM**
- * code (not Thumb — every function here starts with `push {…, lr}` as an ARM word).
+ * APKPure publishes this version as an **armeabi-v7a-only** XAPK (base +
+ * `UnityDataAssetPack.apk` + `config.armeabi_v7a.apk`, libil2cpp.so = 76,435,716 bytes of
+ * 32-bit **A32/ARM**), while other re-split mirrors (e.g. `apkcube`, and what `apkeep`
+ * currently downloads) include **both** config splits, so the merged APK also contains
+ * `lib/arm64-v8a/libil2cpp.so` (85,202,576 bytes of **AArch64**).
  *
- * That is not a cosmetic difference: the old patch failed at execution with
- * `get("lib/arm64-v8a/libil2cpp.so")` → `FileNotFoundException`, and even with the path
- * fixed, not one AArch64 anchor can match an ARM32 library. So all five sites below were
- * re-derived from a fresh Il2CppDumper run against the 4.186.0 armv7 library.
+ * The old code hard-coded `get("lib/armeabi-v7a/libil2cpp.so", true)` and read it without
+ * checking `exists()`, which was the `FileNotFoundException` seen in CI on arm64-only
+ * merged APKs. The patch now probes each ABI, patches every library that is actually
+ * present, and aborts with a clear message only when neither exists.
  *
- * **RVA == FILE OFFSET** in this ELF (Il2CppDumper prints `RVA:`/`Offset:`/`VA:` identical
- * for every method), so the addresses below can be used directly as file offsets. There is
- * no +0x4000 delta trap here; that trap was an arm64-segment artefact of 4.185.0.
+ * Addressing: for armeabi-v7a `RVA == FILE OFFSET`; for arm64-v8a
+ * `file offset = VA - 0x4000` (exec LOAD segment delta). Anchors are matched by content.
  *
  * ============================================================================
- * SITES — five DSystem getters, byte-verified against the shipped libil2cpp.so
+ * SITES — five DSystem getters re-derived for both architectures
  * ============================================================================
- * All five currencies are `DSystem` instance getters, so the value comes back in the
- * `r0` (and `r1` for the 64-bit ones) per the ARM AAPCS. Forcing the GETTER — and only the
- * getter — is the whole trick: every affordability check and every UI read in the game goes
- * through these properties, so they all pass, while `set_*` methods still run normally on
- * spend, so purchases, shops and the save file keep working.
+ * All five currencies are `DSystem` instance getters, so the value comes back in
+ * `r0` (and `r1` for the 64-bit ones) on ARM32, or `x0` (zero-extended for the 32-bit
+ * values) on AArch64. Forcing the GETTER — and only the getter — is the whole trick: every
+ * affordability check and every UI read in the game goes through these properties, so they
+ * all pass, while `set_*` methods still run normally on spend, so purchases, shops and the
+ * save file keep working.
  *
- *  | Currency    | Method                          | RVA = offset | Return | Stub bytes |
- *  |-------------|---------------------------------|--------------|--------|-----------:|
- *  | Cash        | DProject.DSystem.get_gameMoney  | 0x013296D8   | int64  | 16 |
- *  | Gold        | DProject.DSystem.get_payMoney   | 0x01332B44   | int64  | 16 |
- *  | Diamonds    | DProject.DSystem.get_Diamond    | 0x01333A50   | int64  | 16 |
- *  | Tapjoy pts  | DProject.DSystem.get_tapjoyMoney| 0x013329C8   | int32  | 12 |
- *  | Mascot coin | DProject.DSystem.get_mascotCoin | 0x01335540   | int32  | 12 |
- *
- * Every entry is verified as a real function prologue by disassembly, e.g.
- *   cash   0x013296D8: push {r4,r5,r6,r7,r8,r9,r10,r11,lr} / sub sp,sp,#28 / …
- *                     ldr r4,[r6,#0xF0]   ← ProtectedLong holder
- *   tapjoy 0x013329C8: push {r4,lr} / ldr r4,[r0,#0xF0] / cmp / ldr r0,[r4,#0x48]
- *   mascot 0x01335540: push {r4,r5,r11,lr} / ldr r5,[r0,#0xF0] / … / ldr r0,[r5,#0xD4]
- * (`[r0,#0xF0]` is the UserData/ProtectedLong holder in the 32-bit field layout; the int32
- * slots moved from arm64's 0x80/0x150 to 0x48/0xD4.)
+ *  | Currency    | Method                          | arm32 RVA    | arm64 RVA    |
+ *  |-------------|---------------------------------|--------------|--------------|
+ *  | Cash        | DProject.DSystem.get_gameMoney  | 0x013296D8   | 0x021AB024   |
+ *  | Gold        | DProject.DSystem.get_payMoney   | 0x01332B44   | 0x021B1A08   |
+ *  | Diamonds    | DProject.DSystem.get_Diamond    | 0x01333A50   | 0x021B2660   |
+ *  | Tapjoy pts  | DProject.DSystem.get_tapjoyMoney| 0x013329C8   | 0x021B1890   |
+ *  | Mascot coin | DProject.DSystem.get_mascotCoin | 0x01335540   | 0x021B3E58   |
  *
  * ============================================================================
  * REPLACEMENT STUB — both return 999,999,999 (0x3B9AC9FF)
  * ============================================================================
- *  int64 (cash, gold, diamonds) — 16 bytes:
+ *  ARM32 int64 (cash, gold, diamonds) — 16 bytes:
  *      FF 09 0C E3   movw r0, #0xC9FF
  *      9A 0B 43 E3   movt r0, #0x3B9A      → r0 = 0x3B9AC9FF
  *      00 10 A0 E3   mov  r1, #0           → high word 0
  *      1E FF 2F E1   bx   lr
- *  int32 (tapjoy, mascot) — 12 bytes:
+ *  ARM32 int32 (tapjoy, mascot) — 12 bytes:
  *      FF 09 0C E3 / 9A 0B 43 E3 / 1E FF 2F E1
- *
- * Encodings produced with `llvm-mc -triple=armv7-linux-gnueabi -show-encoding`, not
- * hand-assembled. 999,999,999 = 0x3B9AC9FF fits a signed int32, so the int32 getters stay
- * valid.
+ *  ARM64 (all five) — 12 bytes; `movz`/`movk` into w0 zero-extends x0, which is correct
+ *  for both the int64 getters and the int32 ones:
+ *      E0 3F 99 52   movz w0, #0xC9FF
+ *      40 73 A7 72   movk w0, #0x3B9A, lsl #16
+ *      C0 03 5F D6   ret
  *
  * Overwriting the prologue is safe: the stub returns immediately and **never touches the
  * stack or a callee-saved register**, so the discarded `push`/`sub sp` is simply never
- * executed — no unbalanced SP, no clobbered r4–r11.
+ * executed — no unbalanced SP, no clobbered r4–r11 / x19–x30.
  *
  * ============================================================================
- * ANCHOR UNIQUENESS — 36/48-byte windows, exactly one hit each
+ * ANCHOR UNIQUENESS
  * ============================================================================
- * The first 12 bytes of the prologues are not unique (the game has thousands of
- * `push {…, lr}` sites), so each entry carries a 36-byte window — 48 bytes for gold and
- * diamonds, whose prologues are byte-identical to each other — and every window was
- * verified to occur **exactly once** in the 76 MB library. A missing or ambiguous anchor
+ * Short prologues repeat across IL2CPP, so each site uses the smallest window (16–24 bytes)
+ * verified to occur **exactly once** in its own library. A missing or ambiguous anchor
  * throws [PatchException] with full context instead of writing into the wrong function.
  *
  * ============================================================================
- * DELIVERY — how the patched .so lands in the XAPK split pipeline
+ * DELIVERY
  * ============================================================================
- * `PatchEngine` runs `ApkMerger.merge()` FIRST, so base + `UnityDataAssetPack.apk` +
- * `config.armeabi_v7a.apk` become ONE merged APK before any patch executes; the config
- * split is what carries `lib/armeabi-v7a/libil2cpp.so`. A `rawResourcePatch` anywhere in
- * the patch set forces `ResourceMode.RAW_ONLY`, so `get(path, true)` resolves the
- * raw-extracted `lib/armeabi-v7a/libil2cpp.so`. Every write here is **same-length in
- * place** (16-over-16, 12-over-12), so `detectFileChanges()` catches each on
- * `lastModified` → `ApkUtils.applyTo` overlays them into the rebuilt APK →
- * `signWithLegacyFallback`.
- *
- * Static file patch (chosen) vs runtime companion `.so`: the `.text` is plaintext on disk,
- * there is no `.so` integrity check in the chain, and the whole bundle is re-signed as one
- * unit — so a static byte edit needs no NDK, no companion `.so` and no `mprotect` dance.
+ * `PatchEngine` merges the XAPK/APKS splits into one APK first, then a `rawResourcePatch`
+ * anywhere in the set forces `ResourceMode.RAW_ONLY`, so `get(path, true)` resolves the
+ * raw-extracted library. Every write here is **same-length in place**, so
+ * `detectFileChanges()` catches each on `lastModified` → `ApkUtils.applyTo` overlays them
+ * into the rebuilt, re-signed APK.
  *
  * ============================================================================
  * SCOPE — deliberately narrow
@@ -105,7 +89,7 @@ import kotlin.io.readBytes
  *   int64 currencies *and* by every other ProtectedLong use in the game.
  * * No `set_*` method is patched (spend must keep working).
  * * No ads / IAP / gun-unlock behaviour here — separate concerns, separate files.
- * * No arm64 branch: 4.186.0 ships armeabi-v7a only.
+ * * Both shipped architectures are covered.
  */
 @Suppress("unused")
 val unlimitedCurrencyPatch = rawResourcePatch(
@@ -116,7 +100,27 @@ val unlimitedCurrencyPatch = rawResourcePatch(
     compatibleWith(COMPATIBILITY_DEAD_TARGET)
 
     execute {
-        applyAnchors(get("lib/armeabi-v7a/libil2cpp.so", true), ARM32_ANCHORS)
+        var patched = 0
+        for ((abi, anchors) in listOf(
+            "arm64-v8a" to ARM64_ANCHORS,
+            "armeabi-v7a" to ARM32_ANCHORS,
+        )) {
+            val lib = get("lib/$abi/libil2cpp.so", true)
+            if (!lib.exists()) {
+                println("Dead Target unlimited currency: lib/$abi/libil2cpp.so absent — skipping ABI")
+                continue
+            }
+            applyAnchors(lib, anchors, abi)
+            patched++
+        }
+        if (patched == 0) {
+            throw PatchException(
+                "Dead Target unlimited currency: neither lib/arm64-v8a nor " +
+                    "lib/armeabi-v7a libil2cpp.so is present — unsupported app version or " +
+                    "split layout?",
+            )
+        }
+        println("Dead Target unlimited currency: applied to $patched ABI(s)")
     }
 }
 
@@ -212,6 +216,55 @@ private val ARM32_ANCHORS = listOf(
 )
 
 /**
+ * `movz w0,#0xC9FF ; movk w0,#0x3B9A, lsl #16 ; ret` → x0 = 999,999,999.
+ *
+ * Writing `w0` zero-extends into `x0`, so the same 12-byte stub is correct for the three
+ * int64 getters and the two int32 getters; no separate `mov x1,#0` is needed.
+ */
+private const val STUB_ARM64 = "E03F99524073A772C0035FD6"
+
+/**
+ * The five getters on arm64-v8a. VAs come from Il2CppDumper; `file offset = VA - 0x4000`.
+ */
+private val ARM64_ANCHORS = listOf(
+    Anchor(
+        label = "DSystem.get_gameMoney -> 999,999,999 (cash, int64)",
+        va = 0x021AB024,
+        fileOffset = 0x021A7024,
+        anchorHex = "FF8301D1FE1300F9F85F03A9F65704A9F44F05A9147D01D0",
+        replacementHex = STUB_ARM64,
+    ),
+    Anchor(
+        label = "DSystem.get_payMoney -> 999,999,999 (gold, int64)",
+        va = 0x021B1A08,
+        fileOffset = 0x021ADA08,
+        anchorHex = "FF4301D1FE0B00F9F85F02A9F65703A9F44F04A9F47C0190",
+        replacementHex = STUB_ARM64,
+    ),
+    Anchor(
+        label = "DSystem.get_Diamond -> 999,999,999 (diamonds, int64)",
+        va = 0x021B2660,
+        fileOffset = 0x021AE660,
+        anchorHex = "FF4301D1FE0B00F9F85F02A9F65703A9F44F04A9D47C01F0",
+        replacementHex = STUB_ARM64,
+    ),
+    Anchor(
+        label = "DSystem.get_tapjoyMoney -> 999,999,999 (tapjoy points, int32)",
+        va = 0x021B1890,
+        fileOffset = 0x021AD890,
+        anchorHex = "FE0F1FF808D040F9880000B4008140B9",
+        replacementHex = STUB_ARM64,
+    ),
+    Anchor(
+        label = "DSystem.get_mascotCoin -> 999,999,999 (mascot coin, int32)",
+        va = 0x021B3E58,
+        fileOffset = 0x021AFE58,
+        anchorHex = "FE0F1EF8F44F01A908D040F9A80000B4005141B9",
+        replacementHex = STUB_ARM64,
+    ),
+)
+
+/**
  * Applies every [Anchor] to [lib], guarded by a unique-anchor search.
  *
  * Two-phase so a bad build fails with **zero** bytes written:
@@ -225,8 +278,11 @@ private val ARM32_ANCHORS = listOf(
  * if an anchor is missing or ambiguous, or if the bytes on disk are not what we expect —
  * i.e. a new game build / different ABI variant.
  */
-private fun applyAnchors(lib: File, anchors: List<Anchor>) {
-    println("Dead Target unlimited currency: patching ${lib.name} (${lib.length()} bytes)")
+private fun applyAnchors(lib: File, anchors: List<Anchor>, abi: String) {
+    println(
+        "Dead Target unlimited currency: patching lib/$abi/libil2cpp.so " +
+            "(${lib.length()} bytes)",
+    )
     val bytes = lib.readBytes()
 
     // Phase 1 — resolve every anchor, or abort before touching anything.

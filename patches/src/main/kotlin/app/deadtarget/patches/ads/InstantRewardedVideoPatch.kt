@@ -8,25 +8,28 @@ import java.io.RandomAccessFile
 import kotlin.io.readBytes
 
 /**
- * Dead Target: Offline Games 3D 4.186.0 — Instant rewarded video (armeabi-v7a).
+ * Dead Target: Offline Games 3D 4.186.0 — Instant rewarded video
+ * (arm64-v8a + armeabi-v7a).
  *
  * One site, one goal: **the reward is granted instantly, with no ad watched.** The "watch an
  * ad for a reward" popup is left completely alone — the game's own logic decides when it
  * appears, so it appears on its normal cadence and then goes away.
  *
  * ============================================================================
- * ARCHITECTURE CHANGE (4.185.0 → 4.186.0)
+ * DUAL-ABI SUPPORT
  * ============================================================================
- * The previous revision patched an **arm64-v8a** library. 4.186.0 (versionCode 586009263)
- * ships the **armeabi-v7a** split only, so this site was re-derived from an Il2CppDumper run
- * against the 76,435,716-byte 32-bit **A32/ARM** `lib/armeabi-v7a/libil2cpp.so`.
- * **RVA == file offset** in this ELF, so no +0x4000 correction applies.
+ * 4.186.0 ships either as an **armeabi-v7a-only** XAPK (APKPure) or, on re-split mirrors
+ * such as `apkcube` / current `apkeep` downloads, with **both** `config.arm64_v8a.apk` and
+ * `config.armeabi_v7a.apk`. The previous revision hard-coded
+ * `get("lib/armeabi-v7a/libil2cpp.so", true)` and read it unconditionally, so an arm64-only
+ * merged APK aborted with `FileNotFoundException` before any patching happened. Both
+ * libraries are now probed; each present ABI is patched, absent ones are skipped, and only
+ * "neither exists" is an error.
  *
- * `AdsController` (MonoBehaviour) still owns the whole rewarded flow:
- *   * `ShowRewardedVideoAds(SEGMENT_ID)` — RVA 0x01C111A4
- *   * `OnCompleteShow(bool isNeedSendLog = true)` — RVA 0x01C11704
- * `_crtSegmentID` sits at **0x24** in the 32-bit field layout (0x48 was the arm64 offset);
- * the original body proves it with `str r4,[r5,#0x24]` at 0x01C1120C.
+ * `AdsController` (MonoBehaviour) owns the whole rewarded flow on both:
+ *   * `ShowRewardedVideoAds(int32 segmentId)` — arm32 RVA 0x01C111A4 / arm64 VA 0x0286E5A4
+ *   * `OnCompleteShow(bool isNeedSendLog)`     — arm32 RVA 0x01C11704 / arm64 VA 0x0286E9BC
+ * `_crtSegmentID` sits at **0x24** in the 32-bit field layout and **0x48** on arm64.
  *
  * ============================================================================
  * WHY ONLY THE TAIL IS REWRITTEN (revision history kept from the 4.185.0 patch)
@@ -39,45 +42,46 @@ import kotlin.io.readBytes
  * untouched and only the ad request is skipped.
  *
  * ============================================================================
- * THE EDIT
+ * THE EDIT — entry stubs
  * ============================================================================
- * Original entry (0x01C111A4):
- *   push {r4,r5,r6,r7,r8,lr} / sub sp,sp,#16 / … / bl <CanShowVideoAds> / …
- *   … `mov r0,r5 ; mov r1,r4 ; bl 0x01C0F414` (availability) / beq <return>
- *   … `str r4,[r5,#0x24]` (store _crtSegmentID) / … / bl <start ad> / … / bl <OnCompleteShow>
- *
- * Replacement — 12 bytes over the first 12:
+ * ARM32 (12 bytes over the first 12):
  *   24 10 80 E5   str r1, [r0, #0x24]      ← store segmentId into _crtSegmentID
  *   00 10 A0 E3   mov r1, #0               ← isNeedSendLog = false
  *   54 01 00 EA   b  0x01C11704            ← tail-jump into OnCompleteShow
  *
- * `b` displacement check: instruction at 0x01C111AC, PC = 0x01C111B4, target 0x01C11704,
- * delta 0x550, imm24 = 0x154 → word 0xEA000154. No ad is requested, no mediation call is
- * made, and no availability gate is touched. `OnCompleteShow` then runs the game's full
- * completion path — including `UpdateVideoAdsStatus` → `IncreaseAdsWatchedCounter` /
- * `UpdateAdsWatchedInterval` / `ResetPlayingBattleCounter` — so the cooldown bookkeeping
- * still advances and the popup does not loop.
+ * ARM64 (12 bytes over the first 12):
+ *   01 48 00 B9   str w1, [x0, #0x48]      ← store segmentId into _crtSegmentID
+ *   01 00 80 52   mov w1, #0               ← isNeedSendLog = false
+ *   04 01 00 14   b  0x0286E9BC            ← tail-jump into OnCompleteShow
+ *   (the `b` is at entry+8, hence its displacement 0x410/4 = 0x104)
+ *
+ * No ad is requested, no mediation call is made, and no availability gate is touched.
+ * `OnCompleteShow` then runs the game's full completion path — including
+ * `UpdateVideoAdsStatus` → `IncreaseAdsWatchedCounter` / `UpdateAdsWatchedInterval` /
+ * `ResetPlayingBattleCounter` — so the cooldown bookkeeping still advances and the popup
+ * does not loop.
  *
  * Overwriting the prologue is safe: the stub never touches the stack or a callee-saved
  * register, so the discarded `push`/`sub sp` is simply never executed. `OnCompleteShow`
  * ignores its third `MethodInfo*` argument (non-generic instance method), so the missing
- * `r2` is harmless — the same assumption the arm64 revision shipped with.
+ * `r2`/`x2` is harmless — the same assumption the previous revisions shipped with.
  *
  * ============================================================================
  * DELIVERY
  * ============================================================================
- * `PatchEngine` merges the XAPK splits into one APK first, then a `rawResourcePatch`
- * anywhere in the set forces `ResourceMode.RAW_ONLY`, so
- * `get("lib/armeabi-v7a/libil2cpp.so", true)` resolves the raw-extracted library. The write
- * is same-length in place (12-over-12), so `detectFileChanges()` picks it up via
- * `lastModified` and `ApkUtils.applyTo` overlays it into the rebuilt, re-signed APK.
+ * `PatchEngine` merges the split bundle into one APK first, then a `rawResourcePatch`
+ * anywhere in the set forces `ResourceMode.RAW_ONLY`, so `get(path, true)` resolves the
+ * raw-extracted library. The write is same-length in place (12-over-12), so
+ * `detectFileChanges()` picks it up via `lastModified` and `ApkUtils.applyTo` overlays it
+ * into the rebuilt, re-signed APK.
  *
  * ============================================================================
  * ANCHOR
  * ============================================================================
- * The 12-byte prologue alone is hopelessly ambiguous (thousands of `push {…, lr}` sites), so
- * the anchor is a 36-byte window verified to occur **exactly once** in the 76 MB library.
- * A missing or ambiguous anchor aborts the patch before a single byte is written.
+ * A bare prologue is hopelessly ambiguous (thousands of `push {…, lr}` / `sub sp, sp, #…`
+ * sites), so each anchor is the smallest window (20 bytes here) verified to occur **exactly
+ * once** in its library. A missing or ambiguous anchor aborts the patch before a single
+ * byte is written.
  *
  * Deliberately excluded: `MediationManager.IsAdsAvailable` is shared across every
  * `AD_TYPE`, so it cannot be stubbed true without dragging interstitials in too.
@@ -92,7 +96,27 @@ val instantRewardedVideoPatch = rawResourcePatch(
     compatibleWith(COMPATIBILITY_DEAD_TARGET)
 
     execute {
-        applyAnchors(get("lib/armeabi-v7a/libil2cpp.so", true), ARM32_ANCHORS)
+        var patched = 0
+        for ((abi, anchors) in listOf(
+            "arm64-v8a" to ARM64_ANCHORS,
+            "armeabi-v7a" to ARM32_ANCHORS,
+        )) {
+            val lib = get("lib/$abi/libil2cpp.so", true)
+            if (!lib.exists()) {
+                println("Dead Target instant rewarded video: lib/$abi/libil2cpp.so absent — skipping ABI")
+                continue
+            }
+            applyAnchors(lib, anchors, abi)
+            patched++
+        }
+        if (patched == 0) {
+            throw PatchException(
+                "Dead Target instant rewarded video: neither lib/arm64-v8a nor " +
+                    "lib/armeabi-v7a libil2cpp.so is present — unsupported app version or " +
+                    "split layout?",
+            )
+        }
+        println("Dead Target instant rewarded video: applied to $patched ABI(s)")
     }
 }
 
@@ -122,6 +146,12 @@ private class Anchor(
  */
 private const val TAIL_REWARD = "241080E50010A0E3540100EA"
 
+/**
+ * `str w1,[x0,#0x48] ; mov w1,#0 ; b 0x0286E9BC` — arm64 equivalent of [TAIL_REWARD].
+ * The `b` sits at entry+8, displacement (0x0286E9BC − 0x0286E5AC) / 4 = 0x104.
+ */
+private const val TAIL_REWARD_64 = "014800B90100805204010014"
+
 private val ARM32_ANCHORS = listOf(
     Anchor(
         label = "AdsController.ShowRewardedVideoAds -> set _crtSegmentID, branch to OnCompleteShow",
@@ -136,6 +166,20 @@ private val ARM32_ANCHORS = listOf(
 )
 
 /**
+ * The same site on arm64-v8a. VA 0x0286E5A4, file offset 0x0286A5A4 (VA − 0x4000); the
+ * 20-byte window occurs exactly once in the 85,202,576-byte library.
+ */
+private val ARM64_ANCHORS = listOf(
+    Anchor(
+        label = "AdsController.ShowRewardedVideoAds -> set _crtSegmentID, branch to OnCompleteShow",
+        va = 0x0286E5A4,
+        fileOffset = 0x0286A5A4,
+        anchorHex = "FF4301D1FE1300F9F65703A9F44F04A9154701F0",
+        replacementHex = TAIL_REWARD_64,
+    ),
+)
+
+/**
  * Applies every [Anchor] to [lib], guarded by a unique-anchor search.
  *
  * Two-phase so a bad build fails with **zero** bytes written:
@@ -144,8 +188,11 @@ private val ARM32_ANCHORS = listOf(
  *  2. each resolved offset is re-read through a [RandomAccessFile], compared against the
  *     original bytes, and only then overwritten.
  */
-private fun applyAnchors(lib: File, anchors: List<Anchor>) {
-    println("Dead Target instant rewarded video: patching ${lib.name} (${lib.length()} bytes)")
+private fun applyAnchors(lib: File, anchors: List<Anchor>, abi: String) {
+    println(
+        "Dead Target instant rewarded video: patching lib/$abi/libil2cpp.so " +
+            "(${lib.length()} bytes)",
+    )
     val bytes = lib.readBytes()
 
     // Phase 1 — resolve every anchor, or abort before touching anything.

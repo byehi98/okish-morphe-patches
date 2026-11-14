@@ -8,10 +8,14 @@ object Constants {
     val COMPATIBILITY_MISSILES = Compatibility(
         name = "Missiles",
         packageName = "pl.macaque.Missiles",
-        apkFileType = ApkFileType.XAPK,
+        // 1.43 ships as a split .apks bundle (APKCube): base.apk plus
+        // split_config.arm64_v8a.apk and split_config.armeabi_v7a.apk.
+        // morphe-cli takes the .apks directly and merges the splits, so both
+        // ABIs are carried through to the patched output.
+        apkFileType = ApkFileType.APKS,
         appIconColor = 0x2196F3,
         targets = listOf(
-            AppTarget(version = "1.42")
+            AppTarget(version = "1.43")
         )
     )
 }

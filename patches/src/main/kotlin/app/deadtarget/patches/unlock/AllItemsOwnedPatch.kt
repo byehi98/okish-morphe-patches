@@ -8,23 +8,44 @@ import java.io.RandomAccessFile
 import kotlin.io.readBytes
 
 /**
- * Dead Target: Offline Games 3D 4.186.0 — All items owned (armeabi-v7a).
+ * Dead Target: Offline Games 3D 4.186.0 — All items owned (arm64-v8a + armeabi-v7a).
  *
  * Every gun, gun skin, glove and drone shows as unlocked and can be equipped. The save file
- * is not changed. This is a pure static edit of `lib/armeabi-v7a/libil2cpp.so`.
+ * is not changed. This is a pure static edit of every `lib/<abi>/libil2cpp.so` the bundle
+ * ships.
  *
  * ============================================================================
- * ARCHITECTURE CHANGE (4.185.0 → 4.186.0)
+ * DUAL-ABI SUPPORT (why this file has two anchor tables)
  * ============================================================================
- * 4.185.0 shipped an **arm64-v8a** XAPK; 4.186.0 (versionCode 586009263) ships the
- * **armeabi-v7a** split only (`base` + `UnityDataAssetPack.apk` + `config.armeabi_v7a.apk`),
- * so libil2cpp.so is 76,435,716 bytes of **A32/ARM** code. None of the old AArch64 anchors
- * could ever match, and the old code would have died on
- * `get("lib/arm64-v8a/libil2cpp.so")` anyway. All fourteen sites were re-derived from an
- * Il2CppDumper run against the new library.
+ * 4.186.0 (versionCode 586009263) is published in two shapes:
+ *   * APKPure / config splits — the **armeabi-v7a** split only (`base` +
+ *     `UnityDataAssetPack.apk` + `config.armeabi_v7a.apk`), libil2cpp.so = 76,435,716 B of
+ *     **A32/ARM** code.
+ *   * Other mirrors / re-split bundles (e.g. `apkcube`, and what `apkeep` downloads today)
+ *     — **both** `config.arm64_v8a.apk` and `config.armeabi_v7a.apk`, so the merged APK
+ *     contains `lib/arm64-v8a/libil2cpp.so` (85,202,576 B of **AArch64**) *and* the 32-bit
+ *     library.
  *
- * **RVA == FILE OFFSET** in this ELF (`RVA:`/`Offset:`/`VA:` identical for every method), so
- * no +0x4000 correction is applied — that was an arm64-segment artefact.
+ * The previous revision hard-coded `get("lib/armeabi-v7a/libil2cpp.so", true)` and then
+ * unconditionally `readBytes()`. On an arm64-only merged APK that path does not exist, so
+ * the patch died with `FileNotFoundException: .../lib/armeabi-v7a/libil2cpp.so`. Both ABI
+ * paths are now probed while the *other* architectures of the same release are left
+ * untouched:
+ *   * `get(path, true)` returns a `File` even for a missing entry, so `exists()` gates the
+ *     read — a single-ABI APK patches its one library and never touches the absent path;
+ *   * the merged APK of the compiling download is patched for **every** ABI it contains,
+ *     so the game works on arm64 devices and arm32 devices alike;
+ *   * if neither path exists the patch aborts with an explicit error instead of an ENOENT.
+ *
+ * ============================================================================
+ * ADDRESSING
+ * ============================================================================
+ * * armeabi-v7a: `RVA == FILE OFFSET` (`RVA:`/`Offset:`/`VA:` identical for every method).
+ * * arm64-v8a: the executable LOAD segment starts at file offset 0x1C1DFB4 for virtual
+ *   address 0x1C21FB4, so `file offset = VA - 0x4000` (the +0x4000 delta documented for
+ *   4.185.0). The anchors below are matched by content, so the delta is only provenance.
+ *
+ * All fourteen sites were re-derived from Il2CppDumper runs against both shipped libraries.
  *
  * ============================================================================
  * THE FOURTEEN SITES AND WHAT EACH ONE FIXES
@@ -96,7 +117,7 @@ import kotlin.io.readBytes
  *   (`./UnlimitedCurrencyPatch.kt`).
  * * No `DSystem.EnableGod` / `EnablePhoenix` / `showcheat` — those need a runtime companion
  *   `.so` for the cheat methods and are deliberately out of scope.
- * * No arm64 branch: 4.186.0 is armeabi-v7a only.
+ * * Both shipped architectures are covered; there is no "arm64 missing" blind spot any more.
  *
  * Discovery: a top-level `val … = rawResourcePatch(…)` IS a public static Patch-valued
  * field, which is what `PatchLoader` scans, so list-patches shows exactly one
@@ -112,7 +133,30 @@ val allItemsOwnedPatch = rawResourcePatch(
     compatibleWith(COMPATIBILITY_DEAD_TARGET)
 
     execute {
-        applyItemAnchors(get("lib/armeabi-v7a/libil2cpp.so", true), ARM32_ITEM_ANCHORS)
+        // Probe every ABI the merged bundle actually ships (alphabetical order keeps logs
+        // deterministic). exists() gates readBytes(): get() hands back a File even when the
+        // entry is absent, which is exactly how the old code crashed on arm64-only APKs.
+        var patched = 0
+        for ((abi, anchors) in listOf(
+            "arm64-v8a" to ARM64_ITEM_ANCHORS,
+            "armeabi-v7a" to ARM32_ITEM_ANCHORS,
+        )) {
+            val lib = get("lib/$abi/libil2cpp.so", true)
+            if (!lib.exists()) {
+                println("Dead Target all items owned: lib/$abi/libil2cpp.so absent — skipping ABI")
+                continue
+            }
+            applyItemAnchors(lib, anchors, abi)
+            patched++
+        }
+        if (patched == 0) {
+            throw PatchException(
+                "Dead Target all items owned: neither lib/arm64-v8a/libil2cpp.so nor " +
+                    "lib/armeabi-v7a/libil2cpp.so is present — unsupported app version or " +
+                    "split layout?",
+            )
+        }
+        println("Dead Target all items owned: applied to $patched ABI(s)")
     }
 }
 
@@ -168,8 +212,12 @@ private const val BOOL_TRUE_W = "0100A0E3"
  * `b #+0x44` — site 7 only. Replaces the `bne +0x44` in `DSystem.FixedWrongEquipWeapon`
  * with an unconditional branch to the same target (0x0137F754), so an equipped slot is kept
  * even when the gun id is absent from `inventory`.
+ *
+ * Byte order matters: A32 stores the instruction word little-endian, so `b +0x44`
+ * (word 0xEA000011) is written `11 00 00 EA`. The original constant, `EA 00 00 11`, decoded
+ * to `andeq r0, r0, sl, ror #1` — a harmless no-op that left the slot to be repaired away.
  */
-private const val BRANCH_KEEP_SLOT = "EA000011"
+private const val BRANCH_KEEP_SLOT = "110000EA"
 
 /**
  * ARM `nop` hint (E3 20 F0 00) — sites 8 and 9. Replaces the `beq` "not owned → return
@@ -177,6 +225,156 @@ private const val BRANCH_KEEP_SLOT = "EA000011"
  * path already sitting at the next instruction.
  */
 private const val NOP_FALLTHROUGH = "00F020E3"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AArch64 encodings (arm64-v8a). Little-endian instruction words:
+//   mov w0, #1        = 52 80 00 20
+//   mov w0, #0        = 52 80 00 00
+//   ret               = D6 5F 03 C0
+//   nop               = D5 03 20 1F
+// The branch values are computed for the individual call sites below.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** `mov w0,#1 ; ret` — arm64 function-entry stub (8 bytes). */
+private const val BOOL_TRUE_64 = "20008052C0035FD6"
+
+/** `mov w0,#0 ; ret` — arm64 inverted-predicate entry stub (8 bytes). */
+private const val BOOL_FALSE_64 = "00008052C0035FD6"
+
+/** `mov w0,#1` alone, no `ret` — arm64 mid-body `bl` replacement (4 bytes). */
+private const val BOOL_TRUE_W_64 = "20008052"
+
+/**
+ * `b 0x021EE0A4` from 0x021EE07C — site 7 on arm64. The original is
+ * `tbnz w0,#0,0x021EE0A4` ("owned → keep the equipped slot"); the unconditional branch
+ * keeps that slot for un-owned ids too.
+ */
+private const val BRANCH_KEEP_SLOT_64 = "0A000014"
+
+/** AArch64 `nop` — arm64 sites 8 and 9. */
+private const val NOP_FALLTHROUGH_64 = "1F2003D5"
+
+/**
+ * The fourteen arm64-v8a sites (AArch64). Addresses are the Il2CppDumper VAs;
+ * `fileOffset = VA - 0x4000`. Every window was verified to occur exactly once in the
+ * 85,202,576-byte library.
+ */
+private val ARM64_ITEM_ANCHORS = listOf(
+    // Site 1: gun tile icon. 0x021F6BE0.
+    ItemAnchor(
+        label = "DSystem.IsGunUnlock -> true (gun tile icon)",
+        va = 0x021F6BE0,
+        fileOffset = 0x021F2BE0,
+        anchorHex = "FE57BEA9F44F01A9D57A0190A8664139",
+        replacementHex = BOOL_TRUE_64,
+    ),
+    // Site 2: gloves by picName. 0x021E4A84.
+    ItemAnchor(
+        label = "DSystem.IsOwnGlove(string) -> true (gloves: hand-skin picName check)",
+        va = 0x021E4A84,
+        fileOffset = 0x021E0A84,
+        anchorHex = "FE0F1DF8F65701A9F44F02A9567B01D0",
+        replacementHex = BOOL_TRUE_64,
+    ),
+    // Site 3: gun skins. 0x021F1324.
+    ItemAnchor(
+        label = "DSystem.CheckHaveGun -> true (gun skins)",
+        va = 0x021F1324,
+        fileOffset = 0x021ED324,
+        anchorHex = "FE57BEA9F44F01A9F57A01B0A8864139",
+        replacementHex = BOOL_TRUE_64,
+    ),
+    // Site 4: DroneItemCtrl.Refresh, `bl Dictionary<int,int>.ContainsKey` @0x02656838.
+    ItemAnchor(
+        label = "DroneItemCtrl.Refresh inline droneInventory.ContainsKey -> true (drone tile)",
+        va = 0x02656838,
+        fileOffset = 0x02652838,
+        anchorHex = "ED464294682240F9080800B401000012",
+        replacementHex = BOOL_TRUE_W_64,
+    ),
+    // Site 5: GloveItemCtrl.Refresh, `bl List<int>.Contains` @0x02672AC8.
+    ItemAnchor(
+        label = "GloveItemCtrl.Refresh inline listHandSkin.Contains -> true (glove tile icon)",
+        va = 0x02672AC8,
+        fileOffset = 0x0266EAC8,
+        anchorHex = "C26356940200001420008052682640F9",
+        replacementHex = BOOL_TRUE_W_64,
+    ),
+    // Site 6: WeaponShopView.IsOwnedItem entry. 0x020C23D8.
+    ItemAnchor(
+        label = "WeaponShopView.IsOwnedItem -> true (gun shop button: Equip/Upgrade not Buy)",
+        va = 0x020C23D8,
+        fileOffset = 0x020BE3D8,
+        anchorHex = "FE57BEA9F44F01A9558401F0A87E5F39",
+        replacementHex = BOOL_TRUE_64,
+    ),
+    // Site 7: FixedWrongEquipWeapon, `tbnz w0,#0` @0x021EE07C.
+    ItemAnchor(
+        label = "DSystem.FixedWrongEquipWeapon -> always keep the equipped gun slot",
+        va = 0x021EE07C,
+        fileOffset = 0x021EA07C,
+        anchorHex = "4001003768D240F9880900B4008940F9",
+        replacementHex = BRANCH_KEEP_SLOT_64,
+    ),
+    // Site 8: GetOwnedGunConfigById, `tbz w0,#0` @0x021EE520.
+    ItemAnchor(
+        label = "DSystem.GetOwnedGunConfigById -> do not return null for an un-owned gun",
+        va = 0x021EE520,
+        fileOffset = 0x021EA520,
+        anchorHex = "C0060036685F01D008C941F9000140F9",
+        replacementHex = NOP_FALLTHROUGH_64,
+    ),
+    // Site 9: GetCurEquipedGunBattle, inventory `tbz w0,#0` @0x021EE854.
+    // The earlier ContainsKey calls at 0x021EE6AC / 0x021EE6F0 / 0x021EE760 operate on
+    // userData.equipedItems and must NOT be touched (that migration block ends in Add()).
+    ItemAnchor(
+        label = "DSystem.GetCurEquipedGunBattle -> do not return null for an un-owned gun",
+        va = 0x021EE854,
+        fileOffset = 0x021EA854,
+        anchorHex = "A0060036685F01D008C941F9931240B9",
+        replacementHex = NOP_FALLTHROUGH_64,
+    ),
+    // Site 10: RaidbossSelectionView.CheckItemLocked entry — predicate is inverted.
+    ItemAnchor(
+        label = "RaidbossSelectionView.CheckItemLocked -> false (raid-boss items never locked)",
+        va = 0x0208543C,
+        fileOffset = 0x0208143C,
+        anchorHex = "FE57BEA9F44F01A954860190B56A01F0",
+        replacementHex = BOOL_FALSE_64,
+    ),
+    // Site 11: GlovesView.RefreshButtons, `bl List<int>.Contains` @0x02022EE0.
+    ItemAnchor(
+        label = "GlovesView.RefreshButtons inline listHandSkin.Contains -> true (gloves shop equip)",
+        va = 0x02022EE0,
+        fileOffset = 0x0201EEE0,
+        anchorHex = "BCA26F94C0070036951240B902000014",
+        replacementHex = BOOL_TRUE_W_64,
+    ),
+    // Site 12: ControlGloveSkin.RefreshButtons, same call @0x0242E2B4.
+    ItemAnchor(
+        label = "ControlGloveSkin.RefreshButtons inline listHandSkin.Contains -> true (battle gloves equip)",
+        va = 0x0242E2B4,
+        fileOffset = 0x0242A2B4,
+        anchorHex = "C7755F94A0070036951240B902000014",
+        replacementHex = BOOL_TRUE_W_64,
+    ),
+    // Site 13: DroneShopView.SetupButtonEquip, `bl ContainsKey` @0x0201FD7C.
+    ItemAnchor(
+        label = "DroneShopView.SetupButtonEquip inline droneInventory.ContainsKey -> true (drone equip button)",
+        va = 0x0201FD7C,
+        fileOffset = 0x0201BD7C,
+        anchorHex = "9C215B94A80240F9F503002AE00308AA",
+        replacementHex = BOOL_TRUE_W_64,
+    ),
+    // Site 14: DroneShopView.SetupButtonUnlock, `bl ContainsKey` @0x0201FEBC (cosmetic).
+    ItemAnchor(
+        label = "DroneShopView.SetupButtonUnlock inline droneInventory.ContainsKey -> true (drone caption, label only)",
+        va = 0x0201FEBC,
+        fileOffset = 0x0201BEBC,
+        anchorHex = "4C215B94685240F9281700B4A0000036",
+        replacementHex = BOOL_TRUE_W_64,
+    ),
+)
 
 /**
  * The fourteen sites. Every anchor window was verified to occur exactly once in the shipped
@@ -406,8 +604,11 @@ private val ARM32_ITEM_ANCHORS = listOf(
  * sites, 4-over-4 at the nine mid-function sites, 76 bytes in total — so the patcher's
  * `lastModified`-keyed change diff picks it up.
  */
-private fun applyItemAnchors(lib: File, anchors: List<ItemAnchor>) {
-    println("Dead Target all items owned: patching ${lib.name} (${lib.length()} bytes)")
+private fun applyItemAnchors(lib: File, anchors: List<ItemAnchor>, abi: String) {
+    println(
+        "Dead Target all items owned: patching lib/$abi/libil2cpp.so " +
+            "(${lib.length()} bytes)",
+    )
     val bytes = lib.readBytes()
 
     // Phase 1 — resolve every anchor, or abort before touching anything.

@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.49.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.49.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;140 patches total
+> **[v1.50.0-dev.14](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.14)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;152 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -242,7 +242,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.0.48 |
+| 1.0.49 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -319,7 +319,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Head Soccer&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<summary>📦 Head Soccer&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -331,6 +331,7 @@ Direct URL:
 |----------|----------------|-----------|
 | [Free Ad Rewards](#free-ad-rewards) | Every "watch ad" reward is granted instantly — no ad appears, no "failed to load advertisement" popup, and nothing to wait for. |  |
 | [Free Store](#free-store) | Everything in the shop is free. Tap an item and you get it right away — points, characters and presents — with no Google Play payment screen and nothing charged. |  |
+| [Unlock Collab Characters](#unlock-collab-characters) | Characters that normally want Head Boxing, Boom Tank Showdown or Head Basketball installed are unlocked from the start — no other game, no Play Store, nothing to download. |  |
 
 </details>
 
@@ -349,6 +350,23 @@ Direct URL:
 | [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
 | [Remove Ads](#remove-ads) | Stops the full-screen interstitial adverts Jetpack Joyride shows between runs. The game's own "no ad available" path is replayed, so the run continues immediately instead of freezing or waiting on a skipped advert. |  |
 | [Unlock Events](#unlock-events) | Unlocks every event (seasonal worlds, event missions and their pop-ups) by disabling the game's internal "IAP cheat" flag check. When a free-IAP patch forges a purchase the game's receipt validator marks the account as a cheater and locks all cheater-restricted events behind an 'Event Restricted' pop-up; this patch makes that check always answer 'not a cheat', so the events open normally. |  |
+
+</details>
+
+<details>
+<summary>📦 Sonic Dash Run&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 10.7.0 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | The "watch a video" buttons give you the reward straight away. Tap one and the rings, red star rings, gems or unlock are yours — no video and no waiting. |  |
+| [Free Store Purchases](#free-store-purchases) | Everything sold for real money is free. Tap a ring pack, a gem pack, a red star ring bundle or a character offer and it is granted straight away — no payment screen and no charge. |  |
+| [Remove Ads](#remove-ads) | Stops banners, full-screen interstitials and ad pop-ups from appearing. Runs and menus carry on as normal — the ads just never show up. |  |
 
 </details>
 
@@ -377,7 +395,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.15.24 |
+| 1.15.26 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -399,6 +417,23 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Free IAP](#free-iap) | Everything in the shop is free. Tap "Buy" on any item — remove ads, coin packs, or anything else — and you get it right away. No Google Play payment window opens and you are never charged. If something goes wrong you will just see a "purchase failed" message; the game keeps working as normal. |  |
+
+</details>
+
+<details>
+<summary>📦 Magic Sort&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 0.0.3480 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free IAP](#free-iap) | Every in-app purchase completes instantly — coin packs, bundles and the no-ads offer — with no Google Play payment sheet. |  |
+| [Instant Rewarded Ads](#instant-rewarded-ads) | Every watch-ad offer grants its reward instantly with no video. |  |
+| [Remove Ads](#remove-ads) | All ads are permanently removed — banners, interstitials and app-open ads never load, and the store treats the no-ads product as owned. |  |
 
 </details>
 
@@ -452,6 +487,21 @@ Direct URL:
 | [Free Store](#free-store) | Everything in the shop is granted instantly and free — double coins, more gifts and the any-purchase perks — with no Google Play payment screen, no account and nothing charged. |  |
 | [Instant Rewards](#instant-rewards) | Rewarded videos give their reward instantly — no ad ever plays. Free revive, double coins, free items, etc. all work without watching anything. |  |
 | [Remove Ads](#remove-ads) | Forced ads are gone for good — interstitials never load or show, even offline and regardless of server settings. Rewarded videos you choose to watch still work. |  |
+
+</details>
+
+<details>
+<summary>📦 Smash Bandits Racing&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.10.05.6 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Store Purchases](#free-store-purchases) | Everything in the shop is free. Tap a Bandit Chips pack, a Smash Bucks pack, a starter bundle or Remove Ads and the content is granted immediately — no Play purchase sheet, no charge.<br><br>⚠ Requires the game assets (OBB). This APK does not contain the ~238 MB asset bundle, so the game stays on the loading screen until it is installed: extract main.1100506.com.hutchgames.smashbandits.obb from the original APKM/XAPK and copy it to /sdcard/Android/obb/com.hutchgames.smashbandits/ (internal storage, not the SD card). |  |
 
 </details>
 
@@ -537,7 +587,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.73.2 |
+| 1.73.3 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -666,7 +716,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.42 |
+| 1.43 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -817,7 +867,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Swift Backup&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
+<summary>📦 Swift Backup&nbsp;&nbsp;•&nbsp;&nbsp;6 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -827,6 +877,8 @@ Direct URL:
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
+| [Swift Backup Cloud Backup Without Sign-In](#swift-backup-cloud-backup-without-sign-in) | Lets an anonymous account connect file-based cloud providers (SMB, WebDAV, SFTP, FTP, S3, Dropbox, OneDrive, Box, Mega, Filen, Drime, Yandex, pCloud, Mail.ru) and run cloud backups/restores without signing in with Google. |  |
+| [Swift Backup Local Account Backup](#swift-backup-local-account-backup) | Extends Export/Import settings with labels, configs, schedules, the cloud backup catalog and UI preferences so the local account survives a reinstall. |  |
 | [Swift Backup Local Cloud Metadata](#swift-backup-local-cloud-metadata) | Makes cloud backups work by keeping their metadata on the device and the connected cloud instead of the Swift Backup server. |  |
 | [Swift Backup Premium Unlock](#swift-backup-premium-unlock) | Unlocks all Premium features. |  |
 | [Swift Backup Tamper Protection](#swift-backup-tamper-protection) | Stops the app from closing itself on patched installs. |  |
@@ -885,7 +937,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 2.11 |
+| 2.20 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -915,6 +967,22 @@ Direct URL:
 </details>
 
 <details>
+<summary>📦 CSR Racing&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 5.1.5 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Unlimited Cash](#unlimited-cash) | Cash reads as 2,147,483,647 everywhere and cash purchases never deduct it. The game's OBB data file (462.6 MiB main.20251202.com.naturalmotion.csrracing.obb) must still be installed for the game to boot. |  |
+| [Unlimited Gold](#unlimited-gold) | Gold reads as 268,435,455 everywhere and gold purchases never deduct it. The game's OBB data file (462.6 MiB main.20251202.com.naturalmotion.csrracing.obb) must still be installed for the game to boot. |  |
+
+</details>
+
+<details>
 <summary>📦 Vector&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -936,7 +1004,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 3.46.0 |
+| 3.47.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

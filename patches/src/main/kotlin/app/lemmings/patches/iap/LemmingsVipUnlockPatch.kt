@@ -17,11 +17,15 @@ import app.morphe.patcher.patch.rawResourcePatch
  * banners, popups, resurrect, store, reward wheels, energy bar, XP system,
  * pinball save, referral, MakerHub, instruction unlocks).
  *
- * **Scope for 9.5.1: arm64-v8a only.** The 9.5.1 APKPure XAPK ships base +
- * `config.arm64_v8a` only (versionCode 7952). APKPure publishes a separate
- * armeabi-v7a variant, but it was not obtained, so no 9.5.1 armv7 offsets
- * could be derived — the 9.5.0 armv7 addresses are stale and are deliberately
- * NOT applied (the loop warns instead of writing to a drifted lib).
+ * **Scope for 9.5.1: arm64-v8a + armeabi-v7a.** The 9.5.1 XAPK ships base +
+ * `config.arm64_v8a` + `config.armeabi_v7a` splits (versionCode 7952), and
+ * both native splits are patched. armv7 sites were re-derived from the
+ * `config.armeabi_v7a` split (libil2cpp.so md5
+ * 41d619ee37b1d371d9ef976695a06074, VA == file offset) with the 9.5.0
+ * anchors, which are byte-identical in 9.5.1 and keep their +0x70 adjacency:
+ * PRIMARY **0xE42C40**, BACKUP **0xE42CB0** (9.5.0 was 0xE32260 / 0xE322D0).
+ * PRIMARY still tail-calls BACKUP at the top, and the body still reads
+ * `this+0x20` (local save) and `this+0x24` (Nebula override).
  *
  * Rebase method: capstone-disassembled both the 9.5.0 arm64 lib
  * (md5 502bd49e80824697bf376a2f0e4c8bb1) and the 9.5.1 arm64 lib
@@ -111,7 +115,7 @@ val lemmingsVipUnlockPatch = rawResourcePatch(
         if (patchedAbis == 0) {
             throw PatchException(
                 "Lemmings VIP unlock: no libil2cpp.so found in any supported ABI split " +
-                    "(arm64-v8a) — unexpected split layout?",
+                    "(arm64-v8a, armeabi-v7a) — unexpected split layout?",
             )
         }
     }
@@ -147,30 +151,28 @@ private class LemmingsVipAbi(
         )
 
         /**
-         * 9.5.0 armeabi-v7a (md5 e1fe5b5b8a45c02704dbb5aca6a22116, VA == file
-         * offset). ARM state (A32), not Thumb. Guard words are all
-         * position-independent (pushes/movs only).
-         *
-         * NOT applied for 9.5.1: no 9.5.1 armv7 lib was obtained, so these
-         * offsets are stale. Kept for reference only — see [all].
+         * 9.5.1 armeabi-v7a (md5 41d619ee37b1d371d9ef976695a06074, VA == file
+         * offset). ARM state (A32), not Thumb. Both 9.5.0 anchors are
+         * byte-identical in 9.5.1 and keep their +0x70 adjacency; PRIMARY
+         * still begins `bl BACKUP`, so only the absolute offsets moved.
          */
-        val ARM32_9_5_0 = LemmingsVipAbi(
+        val ARM32 = LemmingsVipAbi(
             id = "armeabi-v7a",
-            versionNote = "9.5.0 armeabi-v7a (ARM state) — stale, not applied on 9.5.1",
-            primaryOffset = 0xE32260L,
+            versionNote = "9.5.1 armeabi-v7a (VA == file offset)",
+            primaryOffset = 0xE42C40L,
             primaryOrig = "F0482DE90240A0E10150A0E10060A0E1",
             primaryLabel = "Subscriptions::IsSubscriptionActive (PRIMARY)",
-            backupOffset = 0xE322D0L,
+            backupOffset = 0xE42CB0L,
             backupOrig = "10402DE908D04DE2",
             backupLabel = "Subscriptions::HasActiveVipTrial (BACKUP)",
             trueStub = "0100A0E31EFF2FE1", // mov r0,#1 ; bx lr
         )
 
-        /** 9.5.1 APKPure XAPK ships `config.arm64_v8a` only. */
-        val all = listOf(ARM64)
+        /** Both 9.5.1 ABI splits are supported. */
+        val all = listOf(ARM64, ARM32)
 
-        /** ABIs whose 9.5.1 offsets are not derived yet — skipped with a warning. */
-        val unsupported = listOf("armeabi-v7a")
+        /** ABIs whose 9.5.1 offsets are not derived yet — none. */
+        val unsupported = emptyList<String>()
     }
 }
 
