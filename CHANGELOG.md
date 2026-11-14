@@ -1,3 +1,10 @@
+## [1.50.0-dev.13](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.12...v1.50.0-dev.13) (2026-11-14)
+
+### 🚀 Updated App Support
+
+* **fancade:** update target to v1.15.26 and add armeabi-v7a support for ([c08e070](https://github.com/byehi98/okish-morphe-patches/commit/c08e070ae78144fc21dd3802a975977825766367))
+* **vitamahjong:** update target to v3.47.0 and adapt patches ([1eb89ae](https://github.com/byehi98/okish-morphe-patches/commit/1eb89aeec2e6f8572d9da47c2dc87af3c63ccdbb))
+
 ## [1.50.0-dev.12](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.11...v1.50.0-dev.12) (2026-11-14)
 
 ### 🚀 Updated App Support
