@@ -80,7 +80,7 @@ private val RESTORE_BODY = """
 
 /**
  * Vita Mahjong — Restore Purchases
- * (`com.vitastudio.mahjong` 3.44.1 / versionCode 1927, XAPK).
+ * (`com.vitastudio.mahjong` 3.47.0 / versionCode 1951, XAPK).
  *
  * ## What is forced
  *

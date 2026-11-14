@@ -8,23 +8,23 @@ import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
 // ============================================================================
-// Vita Mahjong 3.44.1 (versionCode 1927) — MEeVii ad SDK + Learnings bridge.
+// Vita Mahjong 3.47.0 — MEeVii ad SDK + Learnings bridge.
 //
-//   analysis/vita_3441/work/s6 = classes6.dex (MEeVii SDK, R8-obfuscated)
-//   analysis/vita_3441/work/s8 = classes8.dex (Learnings Unity bridge, readable)
+//   analysis/vita/…/classes6.dex = MEeVii SDK, R8-obfuscated
+//   analysis/vita/…/classes8.dex = Learnings Unity bridge, readable
 //
-// `Lvd/a`, `Lsd/a`, `Lqd/a` and `Lkd/n` are R8-obfuscated MEeVii descriptors.
+// `Lvd/a`, `Lsd/a`, `Lqd/a` and `Lkd/o` are R8-obfuscated MEeVii descriptors.
 // Their short names are therefore version-pinned to *this* SDK build, which is
 // why every fingerprint below is anchored on structure — the ordered call
 // sequence or an exact diagnostic string — and not on the name alone. The name
 // / descriptor is only the last, cheapest discriminator.
 //
-//   s6/vd/a.smali:192   rewarded     show()Lyd/i;
-//   s6/sd/a.smali:166   interstitial show()Lyd/i;
-//   s6/kd/n.smali:1901  o(String,String,String)Z   isReady
-//   s6/kd/n.smali:2027  p(String)Z                 isValid
-//   s8/com/learnings/unity/unikit/module/AdModuleBridge.smali:1835
-//                       showBanner(String,int,int,String,boolean,String)V
+//   classes6/vd/a.smali   rewarded     show()Lyd/i;
+//   classes6/sd/a.smali   interstitial show()Lyd/i;
+//   classes6/kd/o.smali   o(String,String,String,Lkd/e;)Z   isReady
+//   classes6/kd/o.smali   p(String)Z                         isValid
+//   classes8/com/learnings/unity/unikit/module/AdModuleBridge.smali
+//                         showBanner(String,int,int,String,boolean,String)V
 // ============================================================================
 
 /**
@@ -33,16 +33,21 @@ import com.android.tools.smali.dexlib2.AccessFlags
  * Shipped body (`.registers 5`, `p0 = v4`) calls, in this exact order:
  *
  * ```
- * p()V → h()Lyd/i; → d(Lyd/i;)V → k(Lyd/i;)V → q(CosmosAdapter,Lyd/i;)Lyd/i;
+ * q()V → i()Lyd/i; → e(Lyd/i;)V → l(Lyd/i;)V → r(CosmosAdapter,Lyd/i;)Lyd/i;
  * ```
  *
- * The five-call sequence is the stable structural marker. `p`, `h`, `d` and `k`
- * are declared on the `Lqd/a` base; `q` is the abstract template hook each
+ * The five-call sequence is the stable structural marker. `q`, `i`, `e` and `l`
+ * are declared on the `Lqd/a` base; `r` is the abstract template hook each
  * concrete format overrides, so it is resolved on `Lvd/a` itself. Both facts
  * were read off the shipped smali and are encoded in the filters below.
  *
+ * `accessFlags` is deliberately omitted: the obfuscated helper names on
+ * `Lqd/a` are reshuffled between SDK builds (3.44.1 `p/h/d/k/q` →
+ * 3.47.0 `q/i/e/l/r`), but the ordered call chain and the concrete `r()`
+ * override are stable.
+ *
  * `.catch`: the method owns one `.catchall {:try_start_1a .. :try_end_21}
- * :catchall_22` around `k()` + `q()`. The new implementation is built as a
+ * :catchall_22` around `l()` + `r()`. The new implementation is built as a
  * fresh `MutableMethodImplementation`, so that handler is dropped together with
  * the body it belonged to (see `VitaMahjongAdsPatches.kt`).
  */
@@ -53,11 +58,11 @@ object RewardedShowFingerprint : Fingerprint(
     accessFlags = listOf(AccessFlags.PUBLIC),
     parameters = listOf(),
     filters = listOf(
-        methodCall(definingClass = "Lqd/a;", name = "p"),
-        methodCall(definingClass = "Lqd/a;", name = "h"),
-        methodCall(definingClass = "Lqd/a;", name = "d"),
-        methodCall(definingClass = "Lqd/a;", name = "k"),
-        methodCall(definingClass = "Lvd/a;", name = "q"),
+        methodCall(definingClass = "Lqd/a;", name = "q"),
+        methodCall(definingClass = "Lqd/a;", name = "i"),
+        methodCall(definingClass = "Lqd/a;", name = "e"),
+        methodCall(definingClass = "Lqd/a;", name = "l"),
+        methodCall(definingClass = "Lvd/a;", name = "r"),
     )
 )
 
@@ -65,13 +70,13 @@ object RewardedShowFingerprint : Fingerprint(
  * `Lsd/a.show()Lyd/i;` — interstitial display (`classes6`).
  *
  * Byte-for-byte the same shape as [RewardedShowFingerprint] apart from the
- * implementation class that owns the final `q(...)` override:
+ * implementation class that owns the final `r(...)` override:
  *
  * ```
- * p()V → h()Lyd/i; → d(Lyd/i;)V → k(Lyd/i;)V → Lsd/a.q(...)Lyd/i;
+ * q()V → i()Lyd/i; → e(Lyd/i;)V → l(Lyd/i;)V → Lsd/a.r(...)Lyd/i;
  * ```
  *
- * Same single `.catchall` around `k()` + `q()`, same `.registers 5`.
+ * Same single `.catchall` around `l()` + `r()`, same `.registers 5`.
  */
 object InterstitialShowFingerprint : Fingerprint(
     definingClass = "Lsd/a;",
@@ -80,11 +85,11 @@ object InterstitialShowFingerprint : Fingerprint(
     accessFlags = listOf(AccessFlags.PUBLIC),
     parameters = listOf(),
     filters = listOf(
-        methodCall(definingClass = "Lqd/a;", name = "p"),
-        methodCall(definingClass = "Lqd/a;", name = "h"),
-        methodCall(definingClass = "Lqd/a;", name = "d"),
-        methodCall(definingClass = "Lqd/a;", name = "k"),
-        methodCall(definingClass = "Lsd/a;", name = "q"),
+        methodCall(definingClass = "Lqd/a;", name = "q"),
+        methodCall(definingClass = "Lqd/a;", name = "i"),
+        methodCall(definingClass = "Lqd/a;", name = "e"),
+        methodCall(definingClass = "Lqd/a;", name = "l"),
+        methodCall(definingClass = "Lsd/a;", name = "r"),
     )
 )
 
@@ -124,20 +129,22 @@ object ShowBannerFingerprint : Fingerprint(
 )
 
 /**
- * `Lkd/n.o(String,String,String)Z` — MEeVii `isReady` (`classes6`).
+ * MEeVii `isReady` gate — 3.47.0 moved it to `Lkd/o.o(String,String,String,Lkd/e;)Z`
+ * (`classes6`), but the anchors are unchanged in spirit:
  *
- * Package-private (`accessFlags = 0`), so the name alone is not usable as an
- * anchor. It is uniquely identified by its own diagnostic string followed by
- * the `Lmd/b;->isReady()` call:
+ * Package-private, so the name alone is not usable as an anchor. It is uniquely
+ * identified by its own diagnostic string followed by the mixer lookup
+ * `Lmd/b;->a(Lkd/e;)Lyd/i;` (3.44.1 used `Lmd/b;->isReady()`; the SDK build
+ * renamed that helper to `a`):
  *
  * ```
  * const-string p3, "isReady error not find config for placementId  : "
  * ...
- * invoke-virtual {p1}, Lmd/b;->isReady()Lyd/i;
+ * invoke-virtual {p1, p4}, Lmd/b;->a(Lkd/e;)Lyd/i;
  * ```
  *
  * Two spaces before the colon — verbatim, byte-for-byte, from
- * `kd/n.smali:1917`.
+ * `kd/o.smali`.
  */
 object AdReadyFingerprint : Fingerprint(
     returnType = "Z",
@@ -145,15 +152,16 @@ object AdReadyFingerprint : Fingerprint(
         "Ljava/lang/String;",
         "Ljava/lang/String;",
         "Ljava/lang/String;",
+        "Lkd/e;",
     ),
     filters = listOf(
         string("isReady error not find config for placementId  : "),
-        methodCall(definingClass = "Lmd/b;", name = "isReady"),
+        methodCall(definingClass = "Lmd/b;", name = "a"),
     )
 )
 
 /**
- * `Lkd/n.p(String)Z` — MEeVii `isValid` (`classes6`).
+ * MEeVii `isValid` gate — `Lkd/o.p(String)Z` (`classes6`).
  *
  * Package-private, uniquely identified by:
  *
