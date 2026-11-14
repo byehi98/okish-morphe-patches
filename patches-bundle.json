@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-13T04:14:03",
-  "description": "## [1.50.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.10...v1.50.0-dev.11) (2026-11-13)\n\n### 🚀 Updated App Support\n\n* **trafficrider:** update target to v2.20 and adapt patches for billing ([01adfe7](https://github.com/byehi98/okish-morphe-patches/commit/01adfe7315d813f89bc3a2890013e0e063203bcf))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.50.0-dev.11/patches-1.50.0-dev.11.mpp",
+  "created_at": "2026-11-14T02:24:41",
+  "description": "## [1.50.0-dev.12](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.11...v1.50.0-dev.12) (2026-11-14)\n\n### 🚀 Updated App Support\n\n* **hillclimb:** update target to v1.73.3 ([3264a3a](https://github.com/byehi98/okish-morphe-patches/commit/3264a3aabe8800d9fbbe4d9db071a868a46159ee))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.50.0-dev.12/patches-1.50.0-dev.12.mpp",
   "signature_download_url": "",
-  "version": "1.50.0-dev.11"
+  "version": "1.50.0-dev.12"
 }

@@ -1,3 +1,9 @@
+## [1.50.0-dev.12](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.11...v1.50.0-dev.12) (2026-11-14)
+
+### 🚀 Updated App Support
+
+* **hillclimb:** update target to v1.73.3 ([3264a3a](https://github.com/byehi98/okish-morphe-patches/commit/3264a3aabe8800d9fbbe4d9db071a868a46159ee))
+
 ## [1.50.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.10...v1.50.0-dev.11) (2026-11-13)
 
 ### 🚀 Updated App Support
