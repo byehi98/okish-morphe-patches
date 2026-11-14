@@ -1,3 +1,9 @@
+## [1.50.0-dev.14](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.13...v1.50.0-dev.14) (2026-11-14)
+
+### ✨ New Features
+
+* **smashbandits:** add patches for smashbandits ([81f4105](https://github.com/byehi98/okish-morphe-patches/commit/81f4105f25136b428b185cebc4d453cd7171f00e))
+
 ## [1.50.0-dev.13](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0-dev.12...v1.50.0-dev.13) (2026-11-14)
 
 ### 🚀 Updated App Support

@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.50.0-dev.13](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.13)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;151 patches total
+> **[v1.50.0-dev.14](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.50.0-dev.14)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;152 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -487,6 +487,21 @@ Direct URL:
 | [Free Store](#free-store) | Everything in the shop is granted instantly and free — double coins, more gifts and the any-purchase perks — with no Google Play payment screen, no account and nothing charged. |  |
 | [Instant Rewards](#instant-rewards) | Rewarded videos give their reward instantly — no ad ever plays. Free revive, double coins, free items, etc. all work without watching anything. |  |
 | [Remove Ads](#remove-ads) | Forced ads are gone for good — interstitials never load or show, even offline and regardless of server settings. Rewarded videos you choose to watch still work. |  |
+
+</details>
+
+<details>
+<summary>📦 Smash Bandits Racing&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.10.05.6 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Store Purchases](#free-store-purchases) | Everything in the shop is free. Tap a Bandit Chips pack, a Smash Bucks pack, a starter bundle or Remove Ads and the content is granted immediately — no Play purchase sheet, no charge.<br><br>⚠ Requires the game assets (OBB). This APK does not contain the ~238 MB asset bundle, so the game stays on the loading screen until it is installed: extract main.1100506.com.hutchgames.smashbandits.obb from the original APKM/XAPK and copy it to /sdcard/Android/obb/com.hutchgames.smashbandits/ (internal storage, not the SD card). |  |
 
 </details>
 
