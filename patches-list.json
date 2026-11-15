@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.51.0-dev.1",
+  "version": "1.51.0-dev.2",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -226,6 +226,32 @@
           "targets": [
             {
               "version": "3.1.2",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Bypass PairIP license check",
+      "description": "Disables the PairIP licence check (Play licensing service, signed-response validation, paywall/error dialog and the delayed System.exit) so the re-signed app launches instead of closing itself. Required for every other Ophelia's Paradise patch.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.artingames.opheliasparadise",
+          "name": "Ophelia's Paradise",
+          "description": null,
+          "apkFileType": "APKS",
+          "appIconColor": "#2B1B3A",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "26.11.12",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -3893,6 +3919,35 @@
           "targets": [
             {
               "version": "1.104.2",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Unlock full version",
+      "description": "Makes PremiumUpgrade.HasPremiumUpgrade() always return true, unlocking the full version: no lives/energy system, unlocked character and gem selection, and no out-of-lives ad popup. The check is a local PlayerPrefs flag with no server-side validation, so the entitlement persists.",
+      "default": true,
+      "dependencies": [
+        "BytecodePatch",
+        "RawResourcePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.artingames.opheliasparadise",
+          "name": "Ophelia's Paradise",
+          "description": null,
+          "apkFileType": "APKS",
+          "appIconColor": "#2B1B3A",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "26.11.12",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,

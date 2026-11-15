@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.51.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.51.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;152 patches total
+> **[v1.51.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.51.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;154 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -117,6 +117,22 @@ Direct URL:
 | [Big Hunter PairIP License Bypass](#big-hunter-pairip-license-bypass) | Disables the PairIP license check (installer verification + Google Play licensing service validation + paywall/exit dialog). Required for patched APKs — the original check fails on any non-Play signature and force-closes the app. |  |
 | [Big Hunter Remove Ads](#big-hunter-remove-ads) | Interstitial ads are never shown (show() short-circuits via the ad-not-ready path on all three network bridges: AdMob, AppLovin, Unity Ads). |  |
 | [Big Hunter Rewards Without Ads](#big-hunter-rewards-without-ads) | Rewarded video requests grant the reward immediately via the game's own native rewardCallback() without loading or showing any ad (AdMob, AppLovin, Unity Ads). |  |
+
+</details>
+
+<details>
+<summary>📦 Ophelia's Paradise&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 26.11.12 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Bypass PairIP license check](#bypass-pairip-license-check) | Disables the PairIP licence check (Play licensing service, signed-response validation, paywall/error dialog and the delayed System.exit) so the re-signed app launches instead of closing itself. Required for every other Ophelia's Paradise patch. |  |
+| [Unlock full version](#unlock-full-version) | Makes PremiumUpgrade.HasPremiumUpgrade() always return true, unlocking the full version: no lives/energy system, unlocked character and gem selection, and no out-of-lives ad popup. The check is a local PlayerPrefs flag with no server-side validation, so the entitlement persists. |  |
 
 </details>
 

@@ -1,3 +1,9 @@
+## [1.51.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.0-dev.1...v1.51.0-dev.2) (2026-11-15)
+
+### ✨ New Features
+
+* **opheliasparadise:** add PairIP bypass and full version unlock ([352edb2](https://github.com/byehi98/okish-morphe-patches/commit/352edb2b4836e48b37d0a38836d3b740fd8be9e9))
+
 ## [1.51.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.1-dev.1...v1.51.0-dev.1) (2026-11-15)
 
 ### ✨ New Features
