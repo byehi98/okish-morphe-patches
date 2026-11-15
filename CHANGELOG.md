@@ -1,3 +1,13 @@
+## [1.51.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.1-dev.1...v1.51.0-dev.1) (2026-11-15)
+
+### ✨ New Features
+
+* **aliensdrivemecrazy:** add native site patching engine for libil2cpp ([117dacc](https://github.com/byehi98/okish-morphe-patches/commit/117daccbe3e3df721e215a2300493913f426ddf8))
+
+### 🚀 Updated App Support
+
+* **aliensdrivemecrazy:** update target to v3.2.11 and add armeabi-v7a ([3fa2e6a](https://github.com/byehi98/okish-morphe-patches/commit/3fa2e6a61c5863406e4662a2e520328db6b6603d))
+
 ## [1.50.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0...v1.50.1-dev.1) (2026-11-15)
 
 ### 🚀 Updated App Support
