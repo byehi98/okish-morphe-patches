@@ -1,94 +1,88 @@
 package app.aliensdrivemecrazy.patches.money
 
-import app.morphe.patcher.patch.PatchException
-import app.morphe.patcher.patch.rawResourcePatch
+import app.aliensdrivemecrazy.patches.shared.AbiSites
 import app.aliensdrivemecrazy.patches.shared.Constants.COMPATIBILITY_ADMC
-import kotlin.io.readBytes
-import kotlin.io.writeBytes
+import app.aliensdrivemecrazy.patches.shared.NativeSite
+import app.aliensdrivemecrazy.patches.shared.applyNativeSites
+import app.morphe.patcher.patch.rawResourcePatch
 
 /**
- * Aliens Drive Me Crazy — Unlimited Coins (native il2cpp, 3.2.10-only)
+ * Aliens Drive Me Crazy 3.2.11 — Unlimited coins (native il2cpp, both ABIs)
  *
- * The game is Unity IL2CPP: all coin logic lives in libil2cpp.so, the DEX layer
- * is only SDK glue.
+ * The game is Unity IL2CPP: all coin logic lives in `libil2cpp.so`, the DEX layer is only
+ * SDK glue.
  *
- *   lib/arm64-v8a/libil2cpp.so @ file offset 0x016FDB88 (VA 0x1701B88)
- *     inside Org.Awake — the call whose result is stored to [x19, #0x28]
- *     = Org.TotalCoins (field offset 0x28):
+ * `Org.Awake` loads the saved coin total and stores it into `Org.TotalCoins`:
  *
- *       bc be 04 94   bl  Load.LoadInt      (VA 0x1831678, PlayerPrefs int loader)
- *         →
- *       00 00 b6 12   mov w0, #0x4FFFFFFF   (= 1,342,177,279 coins)
+ *   arm64-v8a  @ file 0x16FE0B8 (VA 0x1701FB8, `Org.Awake` VA 0x1701F00):
+ *       bc be 04 94   bl  Load.LoadInt          (VA 0x1831C44, PlayerPrefs int loader)
+ *       68 03 40 f9   ldr x8, [x27]
+ *       60 2a 00 b9   str w0, [x19, #0x28]      <- Org.TotalCoins (field 0x28)
  *
- * Every coin save-read therefore returns ~1.34 billion.
+ *   armeabi-v7a @ file 0xC02A4C (VA 0xC02A4C, `Org.Awake` VA 0xC028C0):
+ *       8f 4c 06 eb   bl  Load.LoadInt          (VA 0xD95C74)
+ *       a4 16 9f e5   ldr r1, [pc, #0x6a4]
+ *       01 10 9f e7   ldr r1, [pc, r1]
+ *       18 00 84 e5   str r0, [r4, #0x18]       <- Org.TotalCoins (field 0x18 on A32)
  *
- * Matching is anchor-based (shadowfight/vector patch pattern): the 12-byte
- * sequence [bl Load.LoadInt][ldr x8,[x27]][str w0,[x19,#0x28]] occurs exactly
- * once in the whole 3.2.10 56 MB library (versionCode 50), which makes the
- * match self-verifying — if Neko (Rebel Twins) ships a new build, the anchor
- * moves and the patch fails loudly instead of corrupting anything.
- * 3.2.10 anchor (1 hit, byte-verified):
- *   BCBE0494 680340F9 602A00B9 @ file 0x16FDB88
- *     (Org.Awake VA 0x17019D0 + 0x1B8;
- *     bl word 9404BEBC -> Load.LoadInt VA 0x1831678, verified).
- * Tail: ldr x8,[x27]; str w0,[x19,#0x28] with Org.TotalCoins still
- * field 0x28 in dump.cs.
- * ⚠️ Il2CppDumper reports VIRTUAL addresses; the executable LOAD segment maps
- * file 0x137FF00 → VA 0x1383F00 (delta +0x4000). Always recompute file offsets
- * from script.json VAs via the program headers when retargeting versions.
+ * Patch: replace the `bl Load.LoadInt` with a constant load, so every coin save-read
+ * returns 1,342,177,279 (`0x4FFFFFFF`):
+ *
+ *   arm64: mov w0, #0x4fffffff   -> `00 00 b6 12` (a single word: MOVN w0,#0xB000,lsl 16)
+ *   arm32: mvn r0, #0xb0000000   -> `b0 04 e0 e3` (a single word)
+ *
+ * Only the `bl` word is rewritten; the following `ldr`/`str` (and the `x8`/`r1` staging
+ * the *next* LoadInt call depends on) stay untouched.
+ *
+ * ### Why the field offset differs per ABI
+ *
+ * IL2CPP lays out class fields separately for each architecture: in the 3.2.11
+ * `Il2CppDumper` output `Org.TotalCoins` is `0x28` on arm64-v8a but `0x18` on armeabi-v7a.
+ * The anchors below are the actual stored code paths, so both agree with their own layout.
+ *
+ * ### 3.2.11 retarget
+ *
+ * `Org.Awake` moved from file 0x16FDB88 (3.2.10) to 0x16FE0B8 (`bl` site) and the IL2CPP
+ * executable LOAD segment still maps `file = RVA - 0x4000` on arm64 (arm32 `file = RVA`).
+ * Both anchors occur exactly once in their library, which makes the match self-verifying —
+ * if Rebel Twins ships a new build the anchor moves and the patch fails loudly instead of
+ * corrupting the library.
  */
 @Suppress("unused")
 val admcUnlimitedCoinsPatch = rawResourcePatch(
     name = "Unlimited coins",
-    description = "Coin save reads always return ~1.34 billion coins (native libil2cpp.so patch on Org.TotalCoins).",
+    description = "Coin save reads always return ~1.34 billion coins (native libil2cpp.so patch on Org.TotalCoins for both arm64-v8a and armeabi-v7a).",
     default = true
 ) {
     compatibleWith(COMPATIBILITY_ADMC)
 
     execute {
-        val soFile = get("lib/arm64-v8a/libil2cpp.so", true)
-        val bytes = soFile.readBytes()
-
-        // 3.2.10-only anchor: bl #Load.LoadInt ; ldr x8,[x27] ;
-        // str w0,[x19,#0x28] (Org.TotalCoins store) @ file 0x16FDB88.
-        // Replacement: mov w0, #0x4FFFFFFF.
-        val pattern = hex("BCBE0494 680340F9 602A00B9")
-        // Replacement for the first word: mov w0, #0x4FFFFFFF  (1,342,177,279)
-        val replacement = hex("0000B612")
-
-        println("ADMC Unlimited Coins: libil2cpp.so size=" + bytes.size + " bytes")
-        val idx = indexOfPattern(bytes, pattern)
-        if (idx < 0) {
-            throw PatchException(
-                "ADMC Unlimited Coins: Org.TotalCoins anchor not found in libil2cpp.so (size=" +
-                        bytes.size + " bytes) — unsupported game version?"
-            )
-        }
-
-        replacement.copyInto(bytes, idx, 0, replacement.size)
-        soFile.writeBytes(bytes)
-        println("ADMC Unlimited Coins (3.2.10): bl Load.LoadInt -> mov w0,#0x4FFFFFFF at file offset 0x" + idx.toString(16))
+        applyNativeSites(
+            patchName = "ADMC Unlimited coins (3.2.11)",
+            abiSites = listOf(
+                AbiSites(
+                    abi = "arm64-v8a",
+                    sites = listOf(
+                        // [bl Load.LoadInt][ldr x8,[x27]][str w0,[x19,#0x28]] @ file 0x16FE0B8
+                        NativeSite(
+                            label = "Org.Awake -> Org.TotalCoins (field 0x28)",
+                            verifyHex = "E3BE0494680340F9602A00B9",
+                            replacementHex = "0000B612680340F9602A00B9",
+                        ),
+                    ),
+                ),
+                AbiSites(
+                    abi = "armeabi-v7a",
+                    sites = listOf(
+                        // [bl Load.LoadInt] @ file 0xC02A4C, storing to [r4,#0x18]
+                        NativeSite(
+                            label = "Org.Awake -> Org.TotalCoins (field 0x18)",
+                            verifyHex = "884C06EBA4169FE5",
+                            replacementHex = "B004E0E3A4169FE5",
+                        ),
+                    ),
+                ),
+            ),
+        )
     }
-}
-
-/** Parses a big-endian hex string (spaces optional) into a byte array. */
-private fun hex(s: String): ByteArray =
-    s.replace(" ", "").chunked(2).map { it.toInt(16).toByte() }.toByteArray()
-
-private fun indexOfPattern(haystack: ByteArray, needle: ByteArray): Int {
-    if (needle.isEmpty()) return 0
-    val last = haystack.size - needle.size
-    var i = 0
-    while (i <= last) {
-        var match = true
-        for (j in needle.indices) {
-            if (haystack[i + j] != needle[j]) {
-                match = false
-                break
-            }
-        }
-        if (match) return i
-        i++
-    }
-    return -1
 }
