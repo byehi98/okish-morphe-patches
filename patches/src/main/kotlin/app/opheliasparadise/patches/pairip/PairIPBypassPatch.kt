@@ -30,6 +30,10 @@ import app.opheliasparadise.patches.shared.Constants.COMPATIBILITY_OPHELIAS_PARA
  * scratch register except `LicenseContentProvider.onCreate` (which already carries
  * the boolean result in `v0`).
  *
+ * Verified against 26.11.15 (9003): all seven fingerprints still match unchanged; the
+ * only SDK drift is `processResponse` becoming `public` and the new trial classes,
+ * both of which are already covered (see Fingerprints.kt).
+ *
  * `default = true` — the app cannot run past the licence gate without it.
  */
 @Suppress("unused")

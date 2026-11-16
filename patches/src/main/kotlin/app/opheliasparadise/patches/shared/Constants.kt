@@ -12,7 +12,7 @@ object Constants {
         apkFileType = ApkFileType.APKS,
         appIconColor = 0x2B1B3A, // twilight purple from the title art
         targets = listOf(
-            AppTarget(version = "26.11.12")
+            AppTarget(version = "26.11.15")
         )
     )
 }

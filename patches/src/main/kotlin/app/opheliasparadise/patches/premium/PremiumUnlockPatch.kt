@@ -24,7 +24,7 @@ import app.opheliasparadise.patches.shared.Constants.COMPATIBILITY_OPHELIAS_PARA
  *   MainMenuButtons.Play+0x3c                          — skips the "out of lives" ad popup
  *
  * Site (arm64, on-disk offset = vaddr - 0x4000):
- *   vaddr 0x29B1E1C → file 0x29ADE1C, function start
+ *   vaddr 0x29B1F24 → file 0x29ADF24, function start   (26.11.15 — was 0x29B1E1C / 0x29ADE1C)
  *
  * Verify window (16 bytes, unique in libil2cpp.so):
  *   FE 0F 1E F8 F4 4F 01 A9 13 A6 01 B0 D4 88 01 90
@@ -58,7 +58,7 @@ val premiumUnlockPatch = rawResourcePatch(
     dependsOn(pairipBypassPatch)
 
     dependsOn(hexPatch(block = {
-        // PremiumUpgrade.HasPremiumUpgrade() @ vaddr 0x29B1E1C (file 0x29ADE1C)
+        // PremiumUpgrade.HasPremiumUpgrade() @ vaddr 0x29B1F24 (file 0x29ADF24)
         "FE 0F 1E F8 F4 4F 01 A9 13 A6 01 B0 D4 88 01 90" asPatternTo
             "20 00 80 52 C0 03 5F D6 1F 20 03 D5 1F 20 03 D5" inFile
             "lib/arm64-v8a/libil2cpp.so"

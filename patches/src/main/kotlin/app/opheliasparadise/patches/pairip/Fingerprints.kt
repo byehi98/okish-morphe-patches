@@ -8,7 +8,7 @@ import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 
 /**
- * PairIP license-check chokepoints for Ophelia's Paradise 26.11.12 (versionCode 9002).
+ * PairIP license-check chokepoints for Ophelia's Paradise 26.11.15 (versionCode 9003).
  *
  * All PairIP code lives in `classes2.dex` (38 KB) and is the plain Java flavor:
  * no `com.pairip.SignatureCheck`, no `VMRunner`, no `libpairipcore.so`, no
@@ -28,6 +28,13 @@ import com.android.tools.smali.dexlib2.Opcode
  *
  * Names are library names (`.source "LicenseClient.java"`), not obfuscated, so the
  * definingClass/name pairs are stable.
+ *
+ * 26.11.15 (SDK bump, same plain Java flavor) added a trial layer on top:
+ * `TrialClient.stopTrial / checkTrialStatus`, `TrialStatus`, and a graceful-shutdown
+ * path (`LicenseClient.gracefulShutdownEnabled` → `closeAllTasks`). None of it is
+ * reachable once T1/T2 are neutered — `licenseCheckState` stays `CHECK_REQUIRED`, so
+ * `TrialClient.checkTrialStatus` returns `UNKNOWN`/`NOT_UNDER_TRIAL` and no shutdown
+ * task is ever scheduled. `exitAction` (`LicenseClient$1`) is unchanged.
  */
 
 /**
@@ -91,8 +98,11 @@ object PairipInitializeLicenseCheckFingerprint : Fingerprint(
 )
 
 /**
- * T3 — signed-response callback: `private processResponse(ILandroid/os/Bundle;)V`
+ * T3 — signed-response callback: `processResponse(ILandroid/os/Bundle;)V`
  * (`LicenseClient.smali:1720`, `.registers 5`).
+ *
+ * 26.11.15 note: the SDK bump promoted this from `private` to `public`, which is why
+ * this fingerprint deliberately carries no accessFlags/parameters.
  *
  * No accessFlags/parameters so the fingerprint stays tolerant of R8 flag drift; the
  * name is unique (`-$$Nest$mprocessResponse` and `lambda$processResponse$0` differ).
