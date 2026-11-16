@@ -8,32 +8,36 @@ import kotlin.io.readBytes
 import kotlin.io.writeBytes
 
 /**
- * Swamp Attack 2 v1.3.10 · **Instant Rewarded Ads (static native patch)**.
+ * Swamp Attack 2 v1.5.0 · **Instant Rewarded Ads (static native patch)**.
  *
  * Unity IL2CPP title: the rewarded flow lives 100 % in `libil2cpp.so`
  * (see notes/ads.md §1/§3, targets N1/N2/N7). With the old runtime engine
- * gone, `VideoAdManager.ShowVideoClip` (arm64 RVA `0x1D4570C`) falls through
- * to a REAL mediation load (`AdMediation.ShowRewardedAd` → Metica →
- * `UnityBridge.showRewarded`) that fails with no fill / blocked SDK, so
- * "watch ad for X" offers show a warning icon and the reward is unobtainable.
+ * gone, `VideoAdManager.ShowVideoClip` falls through to a REAL mediation load
+ * (`AdMediation.ShowRewardedAd` → Metica → `UnityBridge.showRewarded`) that
+ * fails with no fill / blocked SDK, so "watch ad for X" offers show a warning
+ * icon and the reward is unobtainable.
  *
  * This patch statically forces the app's OWN "ads disabled" getters to
  * return true — the exact semantics the old engine provided at runtime:
  *
- * * `PlayerData.get_AreVideoAdsDisabled()` (arm64 RVA `0x1CDBFCC`,
- *   arm32 RVA `0xEA8068`) → `ShowVideoClip` takes its in-engine
+ * * `PlayerData.get_AreVideoAdsDisabled()` (1.5.0: arm64 RVA `0x22CEF90`,
+ *   arm32 RVA `0x11ADF7C`) → `ShowVideoClip` takes its in-engine
  *   ads-disabled branch: `RewardedVideoCompleted(completed=true,
  *   skipped=true)` → the stored `Action` fires natively → the reward lands
  *   INSTANTLY with no mediation, no Java, no SDK wait (cannot hang).
  *   `GetAvailabilityStatus` then reports Available (pacing/caps still
  *   honored), so offer buttons stay alive.
- * * `PlayerData.get_AreInterstitialsDisabled()` (arm64 RVA `0x1CDBF9C`,
- *   arm32 RVA `0xEA8030`) → `TryShowInterstitial` early-returns; no forced
- *   interstitial is ever requested (belt-and-braces with the Java
- *   `../ads/AdRemovalPatch`, which stays the display-layer block).
+ * * `PlayerData.get_AreInterstitialsDisabled()` (1.5.0: arm64 RVA
+ *   `0x22CEF60`, arm32 RVA `0x11ADF44`) → `TryShowInterstitial`
+ *   early-returns; no forced interstitial is ever requested (belt-and-braces
+ *   with the Java `../ads/AdRemovalPatch`, which stays the display-layer
+ *   block).
  *
- * Disassembly-verified (arm64 `ShowVideoClip`: `bl 0x1CDBFCC; tbz w0,#0`
- * → disabled path `mov w1,#1; mov w3,#1; bl RewardedVideoCompleted`).
+ * Disassembly-verified on the 1.5.0 libs (metadata v39): both getters keep
+ * the `ldr x8,[x0,#0x18]; ldr x0,[x8,#0xC8]; bl <AdsData getter>;
+ * bic w0, #1, w0` shape (arm64) / `ldr r4,[r0,#0xC]; ldr r4,[r4,#0x90];
+ * bl <AdsData getter>; eor r0, r0, #1` (arm32), so returning constant 1
+ * preserves the original "disabled" semantics.
  *
  * Each site's first 8 bytes are overwritten with a return-true stub, so the
  * original body never runs:
@@ -46,9 +50,9 @@ import kotlin.io.writeBytes
  * no `sp` imbalance, no link-register leak (`ret` / `bx lr` returns to the
  * untouched caller).
  *
- * arm64 file offset = RVA − 0x4000 (R-E LOAD off 0x1910680 = vaddr
- * 0x1914680, verified from the ELF program headers of the 1.3.10 XAPK's own
- * config.arm64_v8a.apk split — see notes/gates-1.3.10.md). arm32 file offset = RVA (single R-E LOAD at
+ * arm64 file offset = RVA − 0x4000 (R-E LOAD off 0x1E5F850 = vaddr
+ * 0x1E63850, verified from the ELF program headers of the 1.5.0 XAPK's own
+ * config.arm64_v8a.apk split). arm32 file offset = RVA (single R-E LOAD at
  * off 0 / vaddr 0). Both getters share identical first-16-byte prologues
  * per ABI — that is fine because each site is written at its PINNED offset
  * and gated on its exact expected bytes; a mismatch SKIPS that site
@@ -119,29 +123,29 @@ private const val REWARD_STUB_ARM32 = "0100A0E31EFF2FE1"
 private val ARM64_REWARD_SITES = listOf(
     RewardGate(
         label = "player.AreInterstitialsDisabled -> true (no forced interstitials)",
-        rva = 0x228DC8C,
-        fileOffset = 0x2289C8C,
-        expectWords = arrayOf("F81F0FFE", "F9400C08", "B4000128", "F9406100"),
+        rva = 0x22CEF60,
+        fileOffset = 0x22CAF60,
+        expectWords = arrayOf("F81F0FFE", "F9400C08", "B4000128", "F9406500"),
     ),
     RewardGate(
         label = "player.AreVideoAdsDisabled -> true (instant rewarded)",
-        rva = 0x228DCBC,
-        fileOffset = 0x2289CBC,
-        expectWords = arrayOf("F81F0FFE", "F9400C08", "B4000128", "F9406100"),
+        rva = 0x22CEF90,
+        fileOffset = 0x22CAF90,
+        expectWords = arrayOf("F81F0FFE", "F9400C08", "B4000128", "F9406500"),
     ),
 )
 
 private val ARM32_REWARD_SITES = listOf(
     RewardGate(
         label = "player.AreInterstitialsDisabled -> true (no forced interstitials)",
-        rva = 0x1181524,
-        fileOffset = 0x1181524,
+        rva = 0x11ADF44,
+        fileOffset = 0x11ADF44,
         expectWords = arrayOf("E92D4010", "E590400C", "E3540000", "1A000000"),
     ),
     RewardGate(
         label = "player.AreVideoAdsDisabled -> true (instant rewarded)",
-        rva = 0x118155C,
-        fileOffset = 0x118155C,
+        rva = 0x11ADF7C,
+        fileOffset = 0x11ADF7C,
         expectWords = arrayOf("E92D4010", "E590400C", "E3540000", "1A000000"),
     ),
 )
