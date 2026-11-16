@@ -25,35 +25,43 @@ private const val BILLING_RESULT_BUILDER = "Lcom/android/billingclient/api/Billi
 private const val BFP_PRODUCT_DETAILS_PARAMS = "Lcom/android/billingclient/api/BillingFlowParams\$ProductDetailsParams;"
 private const val QUERY_PRODUCT = "Lcom/android/billingclient/api/QueryProductDetailsParams\$Product;"
 
-// ── NATIVE anchors (Crossy Road 7.13.0 → 7.14.2) ──────────────────────────
+// ── NATIVE anchors (Crossy Road 7.13.0 → 7.15.0) ─────────────────────────
 // Every ABI the package ships carries its own libil2cpp.so and therefore its
 // own copy of UniversalStoreManager.PurchaseRequest, so all of them are
 // probed and patched. Each match is self-verifying (uniqueness + structure).
+//
+// Verified against 7.15.0 "2arch" bundle (base + split_config.arm64_v8a +
+// split_config.armeabi_v7a) — both ABIs matched exactly once and the NOP was
+// byte-confirmed in the output APK:
+//   arm64-v8a  @ 0x2572C10 (file) — b.ne 0x54000381 → nop 0xD503201F
+//   armeabi-v7a@ 0x13BB80C (file) — bne  0x1A00001C → mov r0,r0 0xE1A00000
 
-// ARM32 — lib/armeabi-v7a/libil2cpp.so, file offset 0x1390C00 (7.14.2;
-//   was 0x1346AB4 in 7.13.0). The 3-word anchor is position-independent, so
-//   it survives rebuilds and is byte-verified to occur EXACTLY ONCE:
+// ARM32 — lib/armeabi-v7a/libil2cpp.so (7.15.0 = 74,445,108 bytes;
+//   7.14.2 = 74,245,292; was 0x1346AB4 in 7.13.0). The 3-word anchor is
+//   position-independent, so it survives rebuilds and is byte-verified to
+//   occur EXACTLY ONCE:
 //   cmp r0,#1 (0xE3500001) ; bne→billing (0x1A00001C) ; mov r0,r6 (0xE1A00006)
 private val ARM32_ANCHOR = hex("010050E3 1C00001A 0600A0E1")
 // mov r0,r0  (0xE1A00000) — replaces only the `bne`, forcing the fall-through.
 private val ARM32_NOP = hex("0000A0E1")
 
-// ARM64 — lib/arm64-v8a/libil2cpp.so, file offset 0x2543440 (7.14.2;
-//   was 0x24C8D00 in 7.13.0). The 7.13.0 anchor embedded the PC-relative
+// ARM64 — lib/arm64-v8a/libil2cpp.so (7.15.0 = 89,017,568 bytes; 7.14.2 =
+//   88,794,176). The 7.13.0 anchor embedded the PC-relative
 //   `bl GetConfiguredPurchaseType` word, whose encoding MOVES on every
 //   rebuild; arm64-only packages (the Morphe app's "optimize for device
 //   architecture" mode ships ONLY arm64-v8a) then fail with "anchor not
 //   found". The anchor is now STRUCTURAL — IL2CPP codegen for this branch
-//   is stable across 7.13.0 → 7.14.2 and keeps register x24, so we match
+//   is stable across 7.13.0 → 7.15.0 and keeps register x24, so we match
 //   five words, position-independent:
 //
-//   0x2543440   mov     x24, x0                              (0xAA0003F8)
-//   0x2543444   bl      Character.GetConfiguredPurchaseType  (→ 0x2494214)
-//   0x2543448   cmp     w0, #1                               (0x7100041F)
-//   0x254344C   b.ne    0x25434BC     ← NOP this ( PaidIAP → billing path )
-//   0x2543450   mov     x0, x24        (0xAA1803E0) — local-grant path
-//               0x2543458  bl  0x2490588 (SetBonusCoins)
-//               0x2543464  bl  0x2543640 (HandleProductPurchase → grant)
+//   7.15.0 window start 0x2572C04 (7.14.2: 0x2543440):
+//   0x2572C04   mov     x24, x0                              (0xAA0003F8)
+//   0x2572C08   bl      Character.GetConfiguredPurchaseType  (→ PC-relative)
+//   0x2572C0C   cmp     w0, #1                               (0x7100041F)
+//   0x2572C10   b.ne    +0x70 (0x54000381)  ← NOP this ( PaidIAP → billing path )
+//   0x2572C14   mov     x0, x24        (0xAA1803E0) — local-grant path
+//               0x2572C1C  bl  0x2490588 (SetBonusCoins)
+//               0x2572C28  bl  … (HandleProductPurchase → grant)
 //
 // The `bl` word is matched by OPCODE ONLY (bits 31..26 == 0b100101) — its
 // imm26 payload changes per build and is ignored. b.ne is decoded from its
@@ -286,7 +294,11 @@ val crossyRoadFreeStorePatch = bytecodePatch(
                             )
                         }
                     }
-                    if (result == null) skipped += abi else patched += "$abi@0x$result"
+                    if (result == null) {
+                        skipped += abi
+                    } else {
+                        patched += "$abi@0x" + Integer.toHexString(result)
+                    }
                 }
 
                 if (present.isEmpty()) {
