@@ -8,7 +8,7 @@ import kotlin.io.readBytes
 import kotlin.io.writeBytes
 
 /**
- * Swamp Attack 2 v1.3.10 · **Unlimited Currency (static native patch)**.
+ * Swamp Attack 2 v1.5.0 · **Unlimited Currency (static native patch)**.
  *
  * Unity IL2CPP title: game logic lives 100 % in `libil2cpp.so`, there is no
  * game DEX code (see notes/premium-bypass.md §3, targets C1–C8). This patch
@@ -51,10 +51,11 @@ import kotlin.io.writeBytes
  * DISPLAY PIN — GetResourceAmount -> 99999999 (1 site per ABI)
  * ============================================================================
  * Target: `PlayerData.PlayerProfile.GetResourceAmount(GenericResource)`
- * (dump.cs TypeDef 837 in 1.3.10; script.json `PlayerData.PlayerProfile$$GetResourceAmount`).
- * The method is a 16-byte fast-path forwarder: load `inventory` (`[x0,#0x128]`
- * arm64 / `[r0,#0xC0]` arm32), null-check, zero the 3rd arg, tail-branch to
- * `ResourcePack.GetAmount` (arm64 RVA `0x1D2383C` in 1.3.10 —
+ * (script.json `PlayerData.PlayerProfile$$GetResourceAmount`; 1.5.0 arm64
+ * RVA `0x22DAF00`, arm32 RVA `0x11BCC08`).
+ * The method is a 16-byte fast-path forwarder: load `inventory` (`[x0,#0x140]`
+ * arm64 / `[r0,#0xD0]` arm32), null-check, zero the 3rd arg, tail-branch to
+ * `ResourcePack.GetAmount` (arm64 RVA `0x231BBC0` in 1.5.0 —
  * confirmed via script.json, NOT via GetResourceAmount itself). Overwriting
  * the prologue with a constant-return stub is therefore safe by the same
  * argument as the spend gates (immediate return, no stack touched; the
@@ -70,14 +71,14 @@ import kotlin.io.writeBytes
  *       =  FF 00 0E E3  F5 05 40 E3  1E FF 2F E1  00 00 A0 E1
  *
  * Gate widths are deliberately WIDE (32 bytes / 8 words, all verified
- * byte-exact against the issue XAPK's own splits):
- * * arm64 needs only 16 (word 4 `1400F49B` already differs from every
+ * byte-exact against the 1.5.0 XAPK's own splits):
+ * * arm64 needs only 16 (word 4 `1401132D` already differs from every
  *   `CanAfford` prologue), but 32 pins the forwarder + the null-path head.
  * * arm32 NEEDS >16: the first 16 bytes of `GetResourceAmount` are
  *   byte-identical to `CanAfford(ResourcePack)` and
- *   `CanAfford(InventoryItem)` (`E92D4830 E59050C0 E1A04001 E3550000` —
- *   same compiler prologue shape). Word 6 disambiguates (`EBF983D3` vs
- *   `EBF983F6`/`EBF983EB`), so the 32-byte gate can never mis-hit a spend
+ *   `CanAfford(InventoryItem)` (`E92D4830 E59050D0 E1A04001 E3550000` —
+ *   same compiler prologue shape). Word 6 disambiguates (`EBF85F5D` vs
+ *   `EBF85F80`/`EBF85F75`), so the 32-byte gate can never mis-hit a spend
  *   gate even though the pinned offsets already differ.
  *
  * ----------------------------------------------------------------------------
@@ -125,12 +126,12 @@ import kotlin.io.writeBytes
  * ============================================================================
  * SITES — RVAs from dump.cs + script.json, gate words from the shipping libs
  * ============================================================================
- * arm64 file offset = RVA − 0x4000 (R-E LOAD off 0x1910680 = vaddr 0x1914680,
- * verified from the ELF program headers of the 1.3.10 XAPK's own
- * config.arm64_v8a.apk split — see notes/gates-1.3.10.md). arm32 file offset = RVA (single R-E LOAD at
- * off 0 / vaddr 0). All 12 first-16-byte gate words were verified byte-exact
- * against the issue XAPK's own splits (which are sha256-identical to
- * analysis/.../native/libil2cpp.so and .../il2cpp32/libil2cpp.so).
+ * arm64 file offset = RVA − 0x4000 (R-E LOAD off 0x1E5F850 = vaddr 0x1E63850,
+ * verified from the ELF program headers of the 1.5.0 XAPK's own
+ * config.arm64_v8a.apk split). arm32 file offset = RVA (single R-E LOAD at
+ * off 0 / vaddr 0). All 12 first-16-byte gate words (plus the arm32 32-byte
+ * display gate) were verified byte-exact against the 1.5.0 XAPK's own
+ * config.arm64_v8a.apk / config.armeabi_v7a.apk splits.
  *
  * Each site is gated on its exact 16 expected bytes at the pinned offset: a
  * mismatch SKIPS that site (logged, never written blind). A new game build
@@ -247,38 +248,38 @@ private const val PIN_ARM32 = "FF000EE3F50540E31EFF2FE10000A0E1"
 private val ARM64_SITES = listOf(
     SpendGate(
         label = "profile.CanAfford(ResourcePack) -> true",
-        rva = 0x22AC604,
-        fileOffset = 0x22A8604,
-        expectWords = arrayOf("F9409C00", "B4000060", "AA1F03E2", "1400BDD7"),
+        rva = 0x22DAEB8,
+        fileOffset = 0x22D6EB8,
+        expectWords = arrayOf("F940A000", "B4000060", "AA1F03E2", "140112AC"),
     ),
     SpendGate(
         label = "profile.CanAfford(InventoryItem) -> true",
-        rva = 0x22AC61C,
-        fileOffset = 0x22A861C,
-        expectWords = arrayOf("F9409C00", "B4000060", "AA1F03E2", "1400C148"),
+        rva = 0x22DAED0,
+        fileOffset = 0x22D6ED0,
+        expectWords = arrayOf("F940A000", "B4000060", "AA1F03E2", "1401161D"),
     ),
     SpendGate(
         label = "profile.CanAfford(GenericResource,int) -> true",
-        rva = 0x22AC634,
-        fileOffset = 0x22A8634,
-        expectWords = arrayOf("F9409C00", "B4000060", "AA1F03E3", "1400C0F6"),
+        rva = 0x22DAEE8,
+        fileOffset = 0x22D6EE8,
+        expectWords = arrayOf("F940A000", "B4000060", "AA1F03E3", "140115CB"),
     ),
     SpendGate(
         label = "profile.TryTakeResource(string,GenericResource,int,bool) -> true",
-        rva = 0x22ACD3C,
-        fileOffset = 0x22A8D3C,
+        rva = 0x22DB5F0,
+        fileOffset = 0x22D75F0,
         expectWords = arrayOf("F81C0FFE", "A9015FF8", "A90257F6", "A9034FF4"),
     ),
     SpendGate(
         label = "profile.TryTakeResource(string,InventoryItem,bool) -> true",
-        rva = 0x22AD028,
-        fileOffset = 0x22A9028,
+        rva = 0x22DB8DC,
+        fileOffset = 0x22D78DC,
         expectWords = arrayOf("B40000E2", "F9400C48", "B9401049", "12000064"),
     ),
     SpendGate(
         label = "profile.TryTakeResources(string,ResourcePack) -> true",
-        rva = 0x22AD04C,
-        fileOffset = 0x22A904C,
+        rva = 0x22DB900,
+        fileOffset = 0x22D7900,
         expectWords = arrayOf("D10283FF", "F90023FE", "A9056FFC", "A90667FA"),
     ),
 )
@@ -286,38 +287,38 @@ private val ARM64_SITES = listOf(
 private val ARM32_SITES = listOf(
     SpendGate(
         label = "profile.CanAfford(ResourcePack) -> true",
-        rva = 0x11A883C,
-        fileOffset = 0x11A883C,
-        expectWords = arrayOf("E92D4830", "E59050C8", "E1A04001", "E3550000"),
+        rva = 0x11BCB7C,
+        fileOffset = 0x11BCB7C,
+        expectWords = arrayOf("E92D4830", "E59050D0", "E1A04001", "E3550000"),
     ),
     SpendGate(
         label = "profile.CanAfford(InventoryItem) -> true",
-        rva = 0x11A8868,
-        fileOffset = 0x11A8868,
-        expectWords = arrayOf("E92D4830", "E59050C8", "E1A04001", "E3550000"),
+        rva = 0x11BCBA8,
+        fileOffset = 0x11BCBA8,
+        expectWords = arrayOf("E92D4830", "E59050D0", "E1A04001", "E3550000"),
     ),
     SpendGate(
         label = "profile.CanAfford(GenericResource,int) -> true",
-        rva = 0x11A8894,
-        fileOffset = 0x11A8894,
-        expectWords = arrayOf("E92D4070", "E59060C8", "E1A04002", "E1A05001"),
+        rva = 0x11BCBD4,
+        fileOffset = 0x11BCBD4,
+        expectWords = arrayOf("E92D4070", "E59060D0", "E1A04002", "E1A05001"),
     ),
     SpendGate(
         label = "profile.TryTakeResource(string,GenericResource,int,bool) -> true",
-        rva = 0x11A9124,
-        fileOffset = 0x11A9124,
+        rva = 0x11BD464,
+        fileOffset = 0x11BD464,
         expectWords = arrayOf("E92D4BF0", "E24DD008", "E59F5178", "E1A07000"),
     ),
     SpendGate(
         label = "profile.TryTakeResource(string,InventoryItem,bool) -> true",
-        rva = 0x11A94AC,
-        fileOffset = 0x11A94AC,
+        rva = 0x11BD7EC,
+        fileOffset = 0x11BD7EC,
         expectWords = arrayOf("E92D4BF0", "E24DD008", "E1A05003", "E1A07002"),
     ),
     SpendGate(
         label = "profile.TryTakeResources(string,ResourcePack) -> true",
-        rva = 0x11A94F4,
-        fileOffset = 0x11A94F4,
+        rva = 0x11BD834,
+        fileOffset = 0x11BD834,
         expectWords = arrayOf("E92D4FF0", "E24DD02C", "E59F4254", "E1A0A000"),
     ),
 )
@@ -333,11 +334,11 @@ private val ARM32_SITES = listOf(
 private val ARM64_DISPLAY = listOf(
     SpendGate(
         label = "profile.GetResourceAmount(*) -> 99999999 (wallet/display)",
-        rva = 0x22AC64C,
-        fileOffset = 0x22A864C,
+        rva = 0x22DAF00,
+        fileOffset = 0x22D6F00,
         expectWords = arrayOf(
-            "F9409C00", "B4000060", "AA1F03E2", "1400BE58",
-            "F81F0FFE", "97F8C8D6", "D101C3FF", "F9001BFE",
+            "F940A000", "B4000060", "AA1F03E2", "1401132D",
+            "F81F0FFE", "97F8C8C1", "D101C3FF", "F9001BFE",
         ),
         stubHex = PIN_ARM64,
     ),
@@ -346,11 +347,11 @@ private val ARM64_DISPLAY = listOf(
 private val ARM32_DISPLAY = listOf(
     SpendGate(
         label = "profile.GetResourceAmount(*) -> 99999999 (wallet/display)",
-        rva = 0x11A88C8,
-        fileOffset = 0x11A88C8,
+        rva = 0x11BCC08,
+        fileOffset = 0x11BCC08,
         expectWords = arrayOf(
-            "E92D4830", "E59050C8", "E1A04001", "E3550000",
-            "1A000000", "EBF85FA9", "E1A00005", "E1A01004",
+            "E92D4830", "E59050D0", "E1A04001", "E3550000",
+            "1A000000", "EBF85F5D", "E1A00005", "E1A01004",
         ),
         stubHex = PIN_ARM32,
     ),
