@@ -1,3 +1,10 @@
+## [1.51.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.0-dev.2...v1.51.0-dev.3) (2026-11-16)
+
+### 🚀 Updated App Support
+
+* **opheliasparadise:** update target to v26.11.15 ([a87d628](https://github.com/byehi98/okish-morphe-patches/commit/a87d628da86f8209202966d88d20aa720a5d69d8))
+* **swampattack2:** update target to v1.5.0 ([769685d](https://github.com/byehi98/okish-morphe-patches/commit/769685d03829b38539ab62f064352157e70b23f5))
+
 ## [1.51.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.0-dev.1...v1.51.0-dev.2) (2026-11-15)
 
 ### ✨ New Features
