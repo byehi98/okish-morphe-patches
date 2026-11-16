@@ -1,3 +1,18 @@
+## [1.51.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0...v1.51.0) (2026-11-16)
+
+### ✨ New Features
+
+* **aliensdrivemecrazy:** add native site patching engine for libil2cpp ([117dacc](https://github.com/byehi98/okish-morphe-patches/commit/117daccbe3e3df721e215a2300493913f426ddf8))
+* **opheliasparadise:** add PairIP bypass and full version unlock ([352edb2](https://github.com/byehi98/okish-morphe-patches/commit/352edb2b4836e48b37d0a38836d3b740fd8be9e9))
+
+### 🚀 Updated App Support
+
+* **aliensdrivemecrazy:** update target to v3.2.11 and add armeabi-v7a ([3fa2e6a](https://github.com/byehi98/okish-morphe-patches/commit/3fa2e6a61c5863406e4662a2e520328db6b6603d))
+* **crossyroad:** update target to v7.15.0 ([ca043b7](https://github.com/byehi98/okish-morphe-patches/commit/ca043b7ae2d2b0b30da47490718e56972ce5095a))
+* **opheliasparadise:** update target to v26.11.15 ([a87d628](https://github.com/byehi98/okish-morphe-patches/commit/a87d628da86f8209202966d88d20aa720a5d69d8))
+* **shootyskies:** update shootyskies target to v3.441.100105 ([1243f90](https://github.com/byehi98/okish-morphe-patches/commit/1243f90949238c1c1dcfecfe88afc083c7894ff7))
+* **swampattack2:** update target to v1.5.0 ([769685d](https://github.com/byehi98/okish-morphe-patches/commit/769685d03829b38539ab62f064352157e70b23f5))
+
 ## [1.51.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.0-dev.3...v1.51.0-dev.4) (2026-11-16)
 
 ### 🚀 Updated App Support
