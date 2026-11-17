@@ -28,7 +28,7 @@ private const val ZZAB = "Lcom/android/billingclient/api/zzab;"
 private const val ZZCB = "Lcom/google/android/gms/internal/play_billing/zzcb;"
 
 /**
- * Fruit Ninja Free 3.97.9 (versionCode 88485200, Unity 2022.3.62f2 IL2CPP,
+ * Fruit Ninja Free 3.98.3 (versionCode 89975500, Unity IL2CPP,
  * Google Play Billing 8.3.0) — **Fruit Ninja Free IAP**.
  *
  * A single entry that makes the store free end-to-end: tap any item (remove-ads,
@@ -162,7 +162,7 @@ private const val ZZCB = "Lcom/google/android/gms/internal/play_billing/zzcb;"
  *
  * zz* names (`zzf`, `zzab.zzf`, `zzk`, `zzj`, `zza`) are Google's own
  * R8-minified names in the published billing-8.3.0 AAR — stable for this APK
- * version (compatibility is locked to 3.97.9/88485200); re-derive if the
+ * version (compatibility is locked to 3.98.3/89975500); re-derive if the
  * billing lib version ever changes. `SkuDetails.getSku` is public API (not
  * obfuscated). `Purchase` ctor arg 2 is the signature — `""` is
  * correct (Unity IAP does not verify Google signatures client-side on
