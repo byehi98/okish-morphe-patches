@@ -8,10 +8,10 @@ object Constants {
     val COMPATIBILITY_HILLCLIMB = Compatibility(
         name = "Hill Climb Racing",
         packageName = "com.fingersoft.hillclimb",
-        apkFileType = ApkFileType.XAPK,
+        apkFileType = ApkFileType.APK,
         appIconColor = 0x2E7D32,
         targets = listOf(
-            AppTarget(version = "1.73.3")
+            AppTarget(version = "1.74.0")
         )
     )
 }
