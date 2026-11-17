@@ -1,3 +1,9 @@
+## [1.51.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.2...v1.51.1-dev.3) (2026-11-17)
+
+### 🚀 Updated App Support
+
+* **magicsort:** update target to v0.0.3497 ([41dff16](https://github.com/byehi98/okish-morphe-patches/commit/41dff16256d96efc61e84d37220e51c676f290c5))
+
 ## [1.51.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.1...v1.51.1-dev.2) (2026-11-17)
 
 ### 🚀 Updated App Support
