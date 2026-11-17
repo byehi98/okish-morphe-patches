@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.51.1-dev.3",
+  "version": "1.51.1-dev.4",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -921,7 +921,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.14.11",
+              "version": "1.14.12",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -1507,12 +1507,12 @@
           "packageName": "com.fingersoft.hillclimb",
           "name": "Hill Climb Racing",
           "description": null,
-          "apkFileType": "XAPK",
+          "apkFileType": "APK",
           "appIconColor": "#2E7D32",
           "signatures": null,
           "targets": [
             {
-              "version": "1.73.3",
+              "version": "1.74.0",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -1533,12 +1533,12 @@
           "packageName": "com.fingersoft.hillclimb",
           "name": "Hill Climb Racing",
           "description": null,
-          "apkFileType": "XAPK",
+          "apkFileType": "APK",
           "appIconColor": "#2E7D32",
           "signatures": null,
           "targets": [
             {
-              "version": "1.73.3",
+              "version": "1.74.0",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -1559,12 +1559,12 @@
           "packageName": "com.fingersoft.hillclimb",
           "name": "Hill Climb Racing",
           "description": null,
-          "apkFileType": "XAPK",
+          "apkFileType": "APK",
           "appIconColor": "#2E7D32",
           "signatures": null,
           "targets": [
             {
-              "version": "1.73.3",
+              "version": "1.74.0",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -2125,7 +2125,7 @@
     },
     {
       "name": "Native IAP Patch",
-      "description": "Fixes the native purchase result so every store purchase (gold packs, skins, remove ads) is granted on device — without depending on the Java bridge handshake.",
+      "description": "Fixes the native purchase result on both ABIs (arm64-v8a + armeabi-v7a) so every store purchase (gold packs, skins, remove ads) is granted on device — without depending on the Java bridge handshake.",
       "default": true,
       "dependencies": [
         "RawResourcePatch"
@@ -2140,7 +2140,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.14.11",
+              "version": "1.14.12",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -2928,7 +2928,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.14.11",
+              "version": "1.14.12",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -3843,7 +3843,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.14.11",
+              "version": "1.14.12",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -3869,7 +3869,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.14.11",
+              "version": "1.14.12",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,

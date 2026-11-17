@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.51.1-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.51.1-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;154 patches total
+> **[v1.51.1-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.51.1-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;154 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -392,13 +392,13 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.14.11 |
+| 1.14.12 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Free IAP](#free-iap) | Every store item — gold packs, skins and remove ads — is granted the moment you tap Buy. No Google Play payment sheet ever opens and nothing is charged. |  |
-| [Native IAP Patch](#native-iap-patch) | Fixes the native purchase result so every store purchase (gold packs, skins, remove ads) is granted on device — without depending on the Java bridge handshake. |  |
+| [Native IAP Patch](#native-iap-patch) | Fixes the native purchase result on both ABIs (arm64-v8a + armeabi-v7a) so every store purchase (gold packs, skins, remove ads) is granted on device — without depending on the Java bridge handshake. |  |
 | [Remove ads](#remove-ads) | Removes all ads. Reward videos now give you the prize instantly — no watching needed. |  |
 | [Unlimited money (restore save)](#unlimited-money-restore-save) | Loads the unlimited money save into the game the first time you open it. |  |
 | [Unlimited money (save bundle)](#unlimited-money-save-bundle) | Packs the special save file (unlimited coins & gems, everything unlocked) inside the app. |  |
@@ -603,7 +603,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.73.3 |
+| 1.74.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

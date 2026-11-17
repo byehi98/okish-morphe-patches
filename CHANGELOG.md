@@ -1,3 +1,10 @@
+## [1.51.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.3...v1.51.1-dev.4) (2026-11-17)
+
+### 🚀 Updated App Support
+
+* **dantheaman:** update target to v1.14.12 ([d2a96b7](https://github.com/byehi98/okish-morphe-patches/commit/d2a96b77b1dc56311e94cbf0e0f6273aa32fd549))
+* **hillclimb:** update target to v1.74.0 ([73869af](https://github.com/byehi98/okish-morphe-patches/commit/73869aff40b6ea3ec6057b8a33bfcb897de47427))
+
 ## [1.51.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.2...v1.51.1-dev.3) (2026-11-17)
 
 ### 🚀 Updated App Support
