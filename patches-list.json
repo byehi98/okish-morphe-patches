@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.51.1-dev.1",
+  "version": "1.51.1-dev.2",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -972,13 +972,16 @@
           "packageName": "com.halfbrick.fruitninjafree",
           "name": "Fruit Ninja (Free)",
           "description": null,
-          "apkFileType": "XAPK",
+          "apkFileType": "APKM",
           "appIconColor": "#C36B3E",
           "signatures": null,
           "targets": [
             {
-              "version": "3.97.9",
-              "versionCodes": {},
+              "version": "3.98.3",
+              "versionCodes": {
+                "ARM64_V8A": 89975500,
+                "ARMEABI_V7A": 89975500
+              },
               "isExperimental": false,
               "minSdk": null,
               "description": null
