@@ -1,3 +1,10 @@
+## [1.51.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.0...v1.51.1-dev.1) (2026-11-17)
+
+### 🚀 Updated App Support
+
+* **swampattack2:** update target to v1.5.1 ([242be48](https://github.com/byehi98/okish-morphe-patches/commit/242be4893f94772b19b2076e21e6d6286bf86e67))
+* **trafficrider:** update target to v2.21 ([4a296a6](https://github.com/byehi98/okish-morphe-patches/commit/4a296a6c649d1b1e8251fc719a2246336407ac31))
+
 ## [1.51.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.50.0...v1.51.0) (2026-11-16)
 
 ### ✨ New Features
