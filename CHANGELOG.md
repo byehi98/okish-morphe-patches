@@ -1,3 +1,9 @@
+## [1.51.1-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.4...v1.51.1-dev.5) (2026-11-18)
+
+### 🚀 Updated App Support
+
+* **docscanner:** update target to v6.9.14 and added additional patches. ([0f6d48f](https://github.com/byehi98/okish-morphe-patches/commit/0f6d48faef8803bca40620e5f5acb6e1b703b3b4))
+
 ## [1.51.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.3...v1.51.1-dev.4) (2026-11-17)
 
 ### 🚀 Updated App Support

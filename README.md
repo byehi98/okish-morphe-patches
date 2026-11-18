@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.51.1-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.51.1-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;154 patches total
+> **[v1.51.1-dev.5](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.51.1-dev.5)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;156 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -188,16 +188,18 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Document Scanner&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<summary>📦 Document Scanner&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 6.9.9 |
+| 6.9.14 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
+| [Doc Scanner Allow Clone](#doc-scanner-allow-clone) | Lets the app run under a changed package name. Doc Scanner compares its own package name with the original at start-up and crashes itself when they differ. Credits: Loki. |  |
+| [Doc Scanner Declutter](#doc-scanner-declutter) | Removes the home screen's server-driven promo and cross-promotion banners. Credits: Loki. |  |
 | [Doc Scanner Premium](#doc-scanner-premium) | Unlocks all premium features, removes ads, and enables pro themes. |  |
 
 </details>
