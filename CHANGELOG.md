@@ -1,3 +1,9 @@
+## [1.51.1-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.5...v1.51.1-dev.6) (2026-11-18)
+
+### 🐛 Bug Fixes
+
+* **docscanner:** remove allow clone and declutter patches ([0306a98](https://github.com/byehi98/okish-morphe-patches/commit/0306a98165cf96950c3b4f091543a6a44f5c217b))
+
 ## [1.51.1-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.4...v1.51.1-dev.5) (2026-11-18)
 
 ### 🚀 Updated App Support

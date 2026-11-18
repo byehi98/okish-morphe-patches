@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.51.1-dev.5",
+  "version": "1.51.1-dev.6",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -436,58 +436,6 @@
           "targets": [
             {
               "version": "2.3.4",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Doc Scanner Allow Clone",
-      "description": "Lets the app run under a changed package name. Doc Scanner compares its own package name with the original at start-up and crashes itself when they differ. Credits: Loki.",
-      "default": true,
-      "dependencies": [],
-      "compatiblePackages": [
-        {
-          "packageName": "com.cv.docscanner",
-          "name": "Document Scanner",
-          "description": null,
-          "apkFileType": "XAPK",
-          "appIconColor": "#2196F3",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "6.9.14",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Doc Scanner Declutter",
-      "description": "Removes the home screen's server-driven promo and cross-promotion banners. Credits: Loki.",
-      "default": true,
-      "dependencies": [],
-      "compatiblePackages": [
-        {
-          "packageName": "com.cv.docscanner",
-          "name": "Document Scanner",
-          "description": null,
-          "apkFileType": "XAPK",
-          "appIconColor": "#2196F3",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "6.9.14",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
