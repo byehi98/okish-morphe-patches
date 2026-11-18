@@ -1,3 +1,9 @@
+## [1.52.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.8...v1.52.0-dev.1) (2026-11-18)
+
+### ✨ New Features
+
+* **appusage:** add patches for v6.19 ([2bb484e](https://github.com/byehi98/okish-morphe-patches/commit/2bb484ec498459dc7aadc6e8307d9e7232b921cb))
+
 ## [1.51.1-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.7...v1.51.1-dev.8) (2026-11-18)
 
 ### 🚀 Updated App Support

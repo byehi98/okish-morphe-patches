@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.51.1-dev.8](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.51.1-dev.8)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;154 patches total
+> **[v1.52.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.52.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;157 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -117,6 +117,23 @@ Direct URL:
 | [Big Hunter PairIP License Bypass](#big-hunter-pairip-license-bypass) | Disables the PairIP license check (installer verification + Google Play licensing service validation + paywall/exit dialog). Required for patched APKs — the original check fails on any non-Play signature and force-closes the app. |  |
 | [Big Hunter Remove Ads](#big-hunter-remove-ads) | Interstitial ads are never shown (show() short-circuits via the ad-not-ready path on all three network bridges: AdMob, AppLovin, Unity Ads). |  |
 | [Big Hunter Rewards Without Ads](#big-hunter-rewards-without-ads) | Rewarded video requests grant the reward immediately via the game's own native rewardCallback() without loading or showing any ad (AdMob, AppLovin, Unity Ads). |  |
+
+</details>
+
+<details>
+<summary>📦 App Usage&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 6.19 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Bypass PairIP license check](#bypass-pairip-license-check) | Disables PairIP (com.pairip.licensecheck) verification: no install-source check, no Play licensing bind, no paywall/error dialog and no delayed process exit. Required for sideloaded or re-signed APKs, which PairIP would otherwise close after 30 seconds. |  |
+| [Spoof original signature](#spoof-original-signature) | Makes the app see the original developer certificate instead of the one used to re-sign the APK. Stops the ~2 second anti-tamper process kill (Process.killProcess + System.exit) scheduled from icr.onCreate/onDestroy, prevents the PRO flag from being reset to the free version, and restores the trusted paths used by widgets, export/backup and history queries. |  |
+| [Unlock premium](#unlock-premium) | Unlocks the PRO entitlement: isPro returns true, the free-build/paywall gate returns false, the "Upgrade to PRO" dialog is disabled and the free-version master flag is never set at startup (which also removes the PRO-only placeholders and limits in the widget configuration, usage history, export and backup windows). |  |
 
 </details>
 
