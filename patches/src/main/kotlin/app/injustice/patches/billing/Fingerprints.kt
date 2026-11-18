@@ -195,3 +195,137 @@ object BeginPurchaseFingerprint : Fingerprint(
         ),
     )
 )
+
+/**
+ * macrotransaction.epicgames.ue4.util.GooglePlayStoreHelper$2.onBillingSetupFinished(
+ * BillingResult)V — public (anonymous BillingClientStateListener).
+ *
+ * The Billing client connection gate. A re-signed APK is not the build registered in
+ * Play, so the client answers DEVELOPER_ERROR / BILLING_UNAVAILABLE. In that case this
+ * callback takes the failure branch: `bIsIapSetup` stays false and
+ * `val$InSetupFinishedListener.onHelperSetupFinished()` is never called, so the native
+ * store never receives `NativeCallback_MicroTransactionOnInit` — this is the state in
+ * which the game reports that it cannot connect to Google Play.
+ *
+ * Confirmed smali: classes5.dex
+ * macrotransaction/epicgames/ue4/util/GooglePlayStoreHelper$2.smali:96
+ * (.locals 3). The success branch's unique log line pins the method; the listener
+ * interface callback it invokes is the hook our bridge replaces.
+ */
+object BillingSetupStateListenerFingerprint : Fingerprint(
+    definingClass = "Lmacrotransaction/epicgames/ue4/util/GooglePlayStoreHelper\$2;",
+    name = "onBillingSetupFinished",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    parameters = listOf("Lcom/android/billingclient/api/BillingResult;"),
+    filters = listOf(
+        string("GooglePlayStoreHelper In-app billing supported for ")
+    )
+)
+
+/**
+ * macrotransaction.google.MicroTransactionAndroid.Init(Activity)V — public.
+ *
+ * Where the Java store backend is created. Native `UMicroTransactionAndroid::Init`
+ * (libInjusticeGAU.so 0x27cf948) sets field +0xc4 = 1 ("purchases blocked") and then
+ * calls Java `MicroTransaction.Init()`; the ONLY thing that clears +0xc4 is
+ * `NativeCallback_MicroTransactionOnInit`, which native dispatches when Java calls it.
+ * Upstream that call is queued by `HelperSetupFinishedListener.onHelperSetupFinished()`
+ * after a successful Play Billing connection — a callback that never arrives on devices
+ * where the billing service cannot bind, leaving the storefront with the
+ * "Cannot Connect To Google Play" banner and dead GET buttons.
+ *
+ * Hooking the entry of this method lets the bridge queue the app's own
+ * `SetupFinishedCommand` unconditionally, so OnInit is always delivered through
+ * `MicroTransactionAndroid.update()` on the game thread.
+ *
+ * Confirmed smali: classes5.dex macrotransaction/google/MicroTransactionAndroid.smali:222
+ * (.locals 12). The unique SKU literal from `skuNameTable` and the
+ * `GooglePlayStoreHelper.<init>` call pin the body.
+ */
+object StoreInitFingerprint : Fingerprint(
+    definingClass = "Lmacrotransaction/google/MicroTransactionAndroid;",
+    name = "Init",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    parameters = listOf("Landroid/app/Activity;"),
+    filters = listOf(
+        string("com.wb.injustice.brawler2013.powercredits_1"),
+        methodCall(
+            definingClass = "Lmacrotransaction/epicgames/ue4/util/GooglePlayStoreHelper;",
+            name = "<init>",
+        ),
+    )
+)
+
+/**
+ * macrotransaction.google.MicroTransactionAndroid.refreshProductList(String[])V — public.
+ *
+ * The storefront catalog request (`JavaCallback_MicroTransactionGetAvailableProducts` →
+ * `MicroTransaction.GetAvailableProducts` → `IMicroTransaction.refreshProductList`).
+ * Stock body lowercases each native SKU, maps it through `getSafeString`, then queries
+ * Play through `GooglePlayStoreHelper.queryInventoryAsync`. When that query fails,
+ * `GotInventoryListener` queues `ProductListCommand(skus, null)` and the command calls
+ * `NativeCallback_MicroTransactionOnGetAvailableProductsFailed`, which is what leaves
+ * the native store without any buyable items.
+ *
+ * Confirmed smali: classes5.dex macrotransaction/google/MicroTransactionAndroid.smali:2616
+ * (.locals 3). The method is uniquely identified by class + name + `([Ljava/lang/String;)V`
+ * signature; the post to `UE3JavaApp.GetHandler()` pins the body shape.
+ */
+object ProductListRefreshFingerprint : Fingerprint(
+    definingClass = "Lmacrotransaction/google/MicroTransactionAndroid;",
+    name = "refreshProductList",
+    returnType = "V",
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    parameters = listOf("[Ljava/lang/String;"),
+    filters = listOf(
+        methodCall(
+            definingClass = "Lcom/epicgames/virtuos/UnrealEngine3/UE3JavaApp;",
+            name = "GetHandler",
+        )
+    )
+)
+
+/**
+ * com.epicgames.virtuos.UnrealEngine3.UE3JavaApp.JavaCallback_IsNetConnected()Z — public.
+ *
+ * The Java end of the engine's network predicate:
+ *
+ *   UEngine::HasNetworkConnection()        (libInjusticeGAU.so 0x2392d4c)
+ *     -> CallJava_IsNetConnected()         (0x1977a68, JNI CallBooleanMethod)
+ *       -> UE3JavaApp.JavaCallback_IsNetConnected()
+ *
+ * This is the **first** check in UnrealScript `InjusticeIOSGame.HandlePurchase` (export
+ * 8027): the popup branch at script offset 0x20 calls `EX_FinalFunction`
+ * `HasNetworkConnection` (import 348), and when it returns false the handler runs
+ * `DisplayCouldNotConnect(Localize("PopupMessages", "CouldNotConnectToItunes",
+ * "InjusticeIOSGame"))` and returns before `BeginPurchase` is ever reached. That is the
+ * "Cannot Connect To Google Play" dialog seen on every GET tap.
+ *
+ * Confirmed smali: classes.dex
+ * com/epicgames/virtuos/UnrealEngine3/UE3JavaApp.smali:6779 (.locals 1):
+ *
+ *   iget-boolean v0, p0, ->isConnecting:Z
+ *   if-eqz v0, :cond_0
+ *   const/4 v0, 0x1
+ *   return v0
+ *   :cond_0
+ *   iget-boolean v0, p0, ->isConnected:Z
+ *   return v0
+ *
+ * `isConnected` is only set by the app's WB network checker; on a re-signed/emulated
+ * build it stays false even while the device is online, so every purchase is rejected
+ * by the script. The method name + signature are unique and the `IGET_BOOLEAN` filter
+ * pins the body shape.
+ */
+object NetConnectedFingerprint : Fingerprint(
+    definingClass = "Lcom/epicgames/virtuos/UnrealEngine3/UE3JavaApp;",
+    name = "JavaCallback_IsNetConnected",
+    returnType = "Z",
+    accessFlags = listOf(AccessFlags.PUBLIC),
+    parameters = listOf(),
+    filters = listOf(
+        opcode(Opcode.IGET_BOOLEAN)
+    )
+)
