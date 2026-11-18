@@ -1,3 +1,9 @@
+## [1.52.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.0-dev.1...v1.52.0-dev.2) (2026-11-18)
+
+### ✨ New Features
+
+* **injustice:** add native store unlock and IAP bypass patches ([bbeeae7](https://github.com/byehi98/okish-morphe-patches/commit/bbeeae709376bf93baeb9f9f41f75d862415cac6))
+
 ## [1.52.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.8...v1.52.0-dev.1) (2026-11-18)
 
 ### ✨ New Features

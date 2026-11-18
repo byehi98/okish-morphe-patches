@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.52.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.52.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;157 patches total
+> **[v1.52.0-dev.2](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.52.0-dev.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;158 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -662,7 +662,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Injustice: Gods Among Us&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<summary>📦 Injustice: Gods Among Us&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -674,6 +674,7 @@ Direct URL:
 |----------|----------------|-----------|
 | [Injustice Ads Removal](#injustice-ads-removal) | Get stamina without watching ad Video. |  |
 | [Injustice Billing Bypass](#injustice-billing-bypass) | Bypass billing get the items in store for free. |  |
+| [Injustice Native Store Unlock](#injustice-native-store-unlock) | Unlocks the native storefront without Google Play (patches libInjusticeGAU.so: store never enters the blocked state, purchase gates are skipped), so the free-item hooks can grant every pack. |  |
 
 </details>
 
