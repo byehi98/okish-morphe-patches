@@ -132,3 +132,4 @@ local.properties
 .direnv
 apk
 apk_unpacked
+/result
