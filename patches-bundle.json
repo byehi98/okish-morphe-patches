@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-18T05:04:15",
-  "description": "## [1.51.1-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.6...v1.51.1-dev.7) (2026-11-18)\n\n### 🚀 Updated App Support\n\n* **fruitninjafree:** update target to v3.98.4 (90061600) ([bb5ee3c](https://github.com/byehi98/okish-morphe-patches/commit/bb5ee3c712f797605511fc287009672dc21e0cb1))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.51.1-dev.7/patches-1.51.1-dev.7.mpp",
+  "created_at": "2026-11-18T05:16:24",
+  "description": "## [1.51.1-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.7...v1.51.1-dev.8) (2026-11-18)\n\n### 🚀 Updated App Support\n\n* **fancypants:** update target to v1.0.50 ([ba1f7a9](https://github.com/byehi98/okish-morphe-patches/commit/ba1f7a90299043bcbcd875538acbc9ccee43fa71))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.51.1-dev.8/patches-1.51.1-dev.8.mpp",
   "signature_download_url": "",
-  "version": "1.51.1-dev.7"
+  "version": "1.51.1-dev.8"
 }
