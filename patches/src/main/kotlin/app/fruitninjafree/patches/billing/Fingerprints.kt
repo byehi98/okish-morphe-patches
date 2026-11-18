@@ -4,12 +4,12 @@ import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.methodCall
 import com.android.tools.smali.dexlib2.AccessFlags
 
-// ── Google Play Billing 8.3.0 (source tag billing@@8.3.0) — Fruit Ninja Free 3.98.3 ─
+// ── Google Play Billing 8.3.0 (source tag billing@@8.3.0) — Fruit Ninja Free 3.98.4 ─
 //
 // The only target is the SDK's own public `BillingClientImpl.launchBillingFlow`
 // — never obfuscated, unique by (name, returnType, parameters) within the
 // class. Smali verified in
-// analysis/com.halfbrick.fruitninjafree/smali/classes2/com/android/billingclient/api/
+// analysis/fruit-ninja/... (classes2) com/android/billingclient/api/
 // BillingClientImpl.smali (method at line 10014, .registers 34, p0=v31, p1=v32,
 // p2=v33 — LARGE try/catch table, see the patch's helper-method KDoc).
 //
@@ -39,7 +39,7 @@ import com.android.tools.smali.dexlib2.AccessFlags
  *
  * ⚠️ The zz* names are Google's R8-minified names in the published
  * billing-8.3.0 AAR — stable for this APK version (compatibility is locked to
- * 3.98.3/89975500), re-derive if the billing lib version ever changes.
+ * 3.98.4/90061600), re-derive if the billing lib version ever changes.
  */
 object LaunchBillingFlowFingerprint : Fingerprint(
     returnType = "Lcom/android/billingclient/api/BillingResult;",

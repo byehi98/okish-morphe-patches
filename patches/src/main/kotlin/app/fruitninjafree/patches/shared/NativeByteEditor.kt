@@ -67,7 +67,7 @@ private const val SCAN_CHUNK = 1 shl 20
  * ============================================================================
  * WHAT THIS EDITS, AND WHY A `rawResourcePatch` IS THE ONLY WAY
  * ============================================================================
- * Fruit Ninja Free 3.98.3 (versionCode 89975500) uses the Unity **IL2CPP**
+ * Fruit Ninja Free 3.98.4 (versionCode 90061600) uses the Unity **IL2CPP**
  * scripting backend. The purchase pipeline —
  * `PurchaseManager.ValidateAndProcessIAP → ProcessGooglePlayIAP` → PlayFab
  * `ValidateGooglePlayPurchase` **server-side** receipt validation → grant — is
