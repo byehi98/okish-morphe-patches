@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.51.1-dev.6",
+  "version": "1.51.1-dev.7",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -977,10 +977,10 @@
           "signatures": null,
           "targets": [
             {
-              "version": "3.98.3",
+              "version": "3.98.4",
               "versionCodes": {
-                "ARM64_V8A": 89975500,
-                "ARMEABI_V7A": 89975500
+                "ARM64_V8A": 90061600,
+                "ARMEABI_V7A": 90061600
               },
               "isExperimental": false,
               "minSdk": null,

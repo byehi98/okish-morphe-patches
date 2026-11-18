@@ -1,3 +1,9 @@
+## [1.51.1-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.6...v1.51.1-dev.7) (2026-11-18)
+
+### 🚀 Updated App Support
+
+* **fruitninjafree:** update target to v3.98.4 (90061600) ([bb5ee3c](https://github.com/byehi98/okish-morphe-patches/commit/bb5ee3c712f797605511fc287009672dc21e0cb1))
+
 ## [1.51.1-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.1-dev.5...v1.51.1-dev.6) (2026-11-18)
 
 ### 🐛 Bug Fixes
