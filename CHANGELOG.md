@@ -1,3 +1,9 @@
+## [1.52.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.0-dev.2...v1.52.0-dev.3) (2026-11-19)
+
+### ✨ New Features
+
+* **crazygames:** add remove ads and pairip license check bypass patches ([46a7ee3](https://github.com/byehi98/okish-morphe-patches/commit/46a7ee350a1cc99a68f2045afb7c2889a7d57d97))
+
 ## [1.52.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.0-dev.1...v1.52.0-dev.2) (2026-11-18)
 
 ### ✨ New Features
