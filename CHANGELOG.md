@@ -1,3 +1,9 @@
+## [1.52.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.0-dev.3...v1.52.0-dev.4) (2026-11-19)
+
+### ✨ New Features
+
+* **crazygames:** add Google login via MicroG-RE patch ([bc06277](https://github.com/byehi98/okish-morphe-patches/commit/bc06277fb7ee03561340d1fe781e5705a8d67f74))
+
 ## [1.52.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.0-dev.2...v1.52.0-dev.3) (2026-11-19)
 
 ### ✨ New Features

@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.52.0-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.52.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;160 patches total
+> **[v1.52.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.52.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;161 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -138,7 +138,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 CrazyGames&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<summary>📦 CrazyGames&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -149,6 +149,7 @@ Direct URL:
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Bypass PairIP license check](#bypass-pairip-license-check) | Disables PairIP (com.pairip.licensecheck) verification: no install-source check, no Play licensing bind, no paywall and no delayed process exit. Required for sideloaded or re-signed APKs, which PairIP would otherwise close after 30 seconds with LicenseActivity plus System.exit(0). |  |
+| [Google login via MicroG-RE](#google-login-via-microg-re) | Redirects Google Play Services to MicroG-RE (app.revanced.android.gms), spoofs the original package + signing certificate for Google's OAuth check, and forces the legacy Google Sign-In flow, so "Continue with Google" works on a re-signed build. Requires MicroG-RE installed and signed in; the patched app must replace the Play install. Does not help with stock GMS; the email login needs no patch. |  |
 | [Remove ads and unlock ad rewards](#remove-ads-and-unlock-ad-rewards) | Suppresses every midroll and rewarded ad (native AdMob and Web ad providers) and answers the game's ad request locally, so rewards are granted without watching a video. No ad request ever reaches the portal or AdMob. |  |
 
 </details>
