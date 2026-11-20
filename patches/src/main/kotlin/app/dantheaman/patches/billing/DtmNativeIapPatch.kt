@@ -5,7 +5,7 @@ import app.morphe.patcher.patch.rawResourcePatch
 import app.morphe.patches.all.misc.hex.hexPatch
 
 /**
- * Dan the Man — native IAP grant (libmortargame.so, arm64-v8a + armeabi-v7a, 1.14.12).
+ * Dan the Man — native IAP grant (libmortargame.so, arm64-v8a + armeabi-v7a, 1.14.13).
  *
  * WHY: the store's real GRANT gate is `GameStoreService::Update` polling the
  * active purchase object with `ChankaNet::GetLastPurchaseResult` (wrapping
@@ -30,7 +30,13 @@ import app.morphe.patches.all.misc.hex.hexPatch
  *
  *   ABI          DoPurchase (symbol)  result var   patched instruction
  *   arm64-v8a    0x6935d4             0x1128208    `mov w8, #1` -> `mov w8, #0`
- *   armeabi-v7a  0x548854             0xC7C108     `movs r0, #1` -> `movs r0, #0`
+ *   armeabi-v7a  0x548855 (Thumb)     0xC7C108     `movs r0, #1` -> `movs r0, #0`
+ *
+ * 1.14.13 note: both functions kept their addresses/register allocation; the
+ * only arm64 change in the anchor was the rodata adrp target for the SKU
+ * string (`add x1, x1, #0x34f` -> `#0x7cf`, i.e. `21 3C 0D 91` ->
+ * `21 3C 1F 91`) plus the en/decode of that first adrp (`41 49 00 D0` ->
+ * `61 49 00 90`). The armv7 anchor is byte-identical to 1.14.12.
  *
  * Addresses above were resolved from the exported symbol table
  * (`_ZN11IAP_Support10DoPurchaseEPKc`) — the library is not stripped — and the
@@ -69,15 +75,17 @@ val dtmNativeIapPatch = rawResourcePatch(
     dependsOn(hexPatch(true, block = {
         // ── arm64-v8a: IAP_Support::DoPurchase @ 0x6935d4 ────────────────────
         // mov w8, #1  @ 0x6935fc  ->  mov w8, #0   (payload byte 12)
-        "41 49 00 D0 F3 03 00 AA B5 22 08 91 28 00 80 52" +
-            "21 3C 0D 91 E0 03 14 AA E2 03 1F AA A8 02 00 B9" +
+        // Anchor byte 0/16 track the 1.14.13 adrp+add for the SKU rodata ptr.
+        "61 49 00 90 F3 03 00 AA B5 22 08 91 28 00 80 52" +
+            "21 3C 1F 91 E0 03 14 AA E2 03 1F AA A8 02 00 B9" +
             "A0 60 FD 97 E0 03 13 AA BF 06 00 B9 51 5C FD 97" asPatternTo
-        "41 49 00 D0 F3 03 00 AA B5 22 08 91 08 00 80 52" +
-            "21 3C 0D 91 E0 03 14 AA E2 03 1F AA A8 02 00 B9" +
+        "61 49 00 90 F3 03 00 AA B5 22 08 91 08 00 80 52" +
+            "21 3C 1F 91 E0 03 14 AA E2 03 1F AA A8 02 00 B9" +
             "A0 60 FD 97 E0 03 13 AA BF 06 00 B9 51 5C FD 97" inFile LIB_ARM64
 
         // ── armeabi-v7a: IAP_Support::DoPurchase @ 0x548854 (Thumb-2) ────────
         // movs r0, #1  @ 0x548862  ->  movs r0, #0   (payload byte 6: 01 -> 00)
+        // Anchor is byte-identical to 1.14.12 (verified unique in 1.14.13).
         "10 4E 04 46 10 49 01 20 10 4D 7E 44 79 44 00 22" +
             "7D 44 30 60 05 F1 1C 00 4F F0 00 08 45 F7 62 E8" asPatternTo
         "10 4E 04 46 10 49 00 20 10 4D 7E 44 79 44 00 22" +
