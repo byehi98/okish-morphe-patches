@@ -1,3 +1,9 @@
+## [1.52.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.0-dev.4...v1.52.0-dev.5) (2026-11-20)
+
+### 🚀 Updated App Support
+
+* **pvzfree:** update target version to 3.19.0 ([83eed6c](https://github.com/byehi98/okish-morphe-patches/commit/83eed6c605593296891fd4f853efe24c6f3d8776))
+
 ## [1.52.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.0-dev.3...v1.52.0-dev.4) (2026-11-19)
 
 ### ✨ New Features
