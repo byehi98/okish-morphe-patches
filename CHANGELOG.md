@@ -1,3 +1,9 @@
+## [1.52.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.0-dev.5...v1.52.0-dev.6) (2026-11-20)
+
+### 🚀 Updated App Support
+
+* **vitamahjong:** update target version to 3.48.0 ([af8d5d6](https://github.com/byehi98/okish-morphe-patches/commit/af8d5d63d06c1a509d6a3d1c0e0f02b785bf422e))
+
 ## [1.52.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.0-dev.4...v1.52.0-dev.5) (2026-11-20)
 
 ### 🚀 Updated App Support
