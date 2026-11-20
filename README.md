@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.51.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.51.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;154 patches total
+> **[v1.52.0-dev.6](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.52.0-dev.6)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;161 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -121,6 +121,40 @@ Direct URL:
 </details>
 
 <details>
+<summary>📦 App Usage&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 6.19 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Bypass PairIP license check](#bypass-pairip-license-check) | Disables PairIP (com.pairip.licensecheck) verification: no install-source check, no Play licensing bind, no paywall/error dialog and no delayed process exit. Required for sideloaded or re-signed APKs, which PairIP would otherwise close after 30 seconds. |  |
+| [Spoof original signature](#spoof-original-signature) | Makes the app see the original developer certificate instead of the one used to re-sign the APK. Stops the ~2 second anti-tamper process kill (Process.killProcess + System.exit) scheduled from icr.onCreate/onDestroy, prevents the PRO flag from being reset to the free version, and restores the trusted paths used by widgets, export/backup and history queries. |  |
+| [Unlock premium](#unlock-premium) | Unlocks the PRO entitlement: isPro returns true, the free-build/paywall gate returns false, the "Upgrade to PRO" dialog is disabled and the free-version master flag is never set at startup (which also removes the PRO-only placeholders and limits in the widget configuration, usage history, export and backup windows). |  |
+
+</details>
+
+<details>
+<summary>📦 CrazyGames&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.7.13 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Bypass PairIP license check](#bypass-pairip-license-check) | Disables PairIP (com.pairip.licensecheck) verification: no install-source check, no Play licensing bind, no paywall and no delayed process exit. Required for sideloaded or re-signed APKs, which PairIP would otherwise close after 30 seconds with LicenseActivity plus System.exit(0). |  |
+| [Google login via MicroG-RE](#google-login-via-microg-re) | Redirects Google Play Services to MicroG-RE (app.revanced.android.gms), spoofs the original package + signing certificate for Google's OAuth check, and forces the legacy Google Sign-In flow, so "Continue with Google" works on a re-signed build. Requires MicroG-RE installed and signed in; the patched app must replace the Play install. Does not help with stock GMS; the email login needs no patch. |  |
+| [Remove ads and unlock ad rewards](#remove-ads-and-unlock-ad-rewards) | Suppresses every midroll and rewarded ad (native AdMob and Web ad providers) and answers the game's ad request locally, so rewards are granted without watching a video. No ad request ever reaches the portal or AdMob. |  |
+
+</details>
+
+<details>
 <summary>📦 Ophelia's Paradise&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
@@ -193,7 +227,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 6.9.9 |
+| 6.9.14 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -258,7 +292,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.0.49 |
+| 1.0.50 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -392,13 +426,13 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.14.11 |
+| 1.14.12 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Free IAP](#free-iap) | Every store item — gold packs, skins and remove ads — is granted the moment you tap Buy. No Google Play payment sheet ever opens and nothing is charged. |  |
-| [Native IAP Patch](#native-iap-patch) | Fixes the native purchase result so every store purchase (gold packs, skins, remove ads) is granted on device — without depending on the Java bridge handshake. |  |
+| [Native IAP Patch](#native-iap-patch) | Fixes the native purchase result on both ABIs (arm64-v8a + armeabi-v7a) so every store purchase (gold packs, skins, remove ads) is granted on device — without depending on the Java bridge handshake. |  |
 | [Remove ads](#remove-ads) | Removes all ads. Reward videos now give you the prize instantly — no watching needed. |  |
 | [Unlimited money (restore save)](#unlimited-money-restore-save) | Loads the unlimited money save into the game the first time you open it. |  |
 | [Unlimited money (save bundle)](#unlimited-money-save-bundle) | Packs the special save file (unlimited coins & gems, everything unlocked) inside the app. |  |
@@ -427,7 +461,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 3.97.9 |
+| 3.98.4 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -442,7 +476,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 0.0.3480 |
+| 0.0.3497 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -603,7 +637,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.73.3 |
+| 1.74.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -645,7 +679,7 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Injustice: Gods Among Us&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<summary>📦 Injustice: Gods Among Us&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -657,6 +691,7 @@ Direct URL:
 |----------|----------------|-----------|
 | [Injustice Ads Removal](#injustice-ads-removal) | Get stamina without watching ad Video. |  |
 | [Injustice Billing Bypass](#injustice-billing-bypass) | Bypass billing get the items in store for free. |  |
+| [Injustice Native Store Unlock](#injustice-native-store-unlock) | Unlocks the native storefront without Google Play (patches libInjusticeGAU.so: store never enters the blocked state, purchase gates are skipped), so the free-item hooks can grant every pack. |  |
 
 </details>
 
@@ -808,7 +843,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 3.18.0 |
+| 3.19.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -871,7 +906,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.5.0 |
+| 1.5.1 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -953,7 +988,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 2.20 |
+| 2.21 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -1020,7 +1055,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 3.47.0 |
+| 3.48.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

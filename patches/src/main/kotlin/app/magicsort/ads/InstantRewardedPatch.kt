@@ -7,7 +7,7 @@ import app.magicsort.shared.applyLibil2cppEdits
 import app.morphe.patcher.patch.rawResourcePatch
 
 /**
- * Magic Sort 0.0.3480 — **Instant Rewarded Ads** (static native patch, both ABIs).
+ * Magic Sort 0.0.3497 — **Instant Rewarded Ads** (static native patch, both ABIs).
  *
  * Rewarded ads are opt-in and are *not* gated by `HasNoAds`, which is why they keep
  * working after the Remove Ads patch. But under Remove Ads the ad SDK is never
@@ -116,67 +116,67 @@ val instantRewardedPatch = rawResourcePatch(
 }
 
 /**
- * `AdService.<ShowRewarded>d__40.MoveNext` @ `0x184DB68` (arm64-v8a, 0.0.3480):
- * `cbz w8,#0x184DBC4` → `b 0x184DD28` (the success tail that sets the
- * `Task<bool>` result to `true`; imm26 = (0x184DD28 − 0x184DB68)/4 = 0x70).
+ * `AdService.<ShowRewarded>d__40.MoveNext` @ `0x1856C20` (arm64-v8a, 0.0.3497):
+ * `cbz w8,#0x1856C7C` → `b 0x1856DE0` (the success tail that sets the
+ * `Task<bool>` result to `true`; imm26 = (0x1856DE0 − 0x1856C20)/4 = 0x70).
  *
- * Verify window (24 B, one hit in 95,838,880 B):
- * `e8 02 00 34` = `cbz w8,#0x184DBC4` (the instruction we replace),
+ * Verify window (24 B, one hit in 95,840,400 B):
+ * `e8 02 00 34` = `cbz w8,#0x1856C7C` (the instruction we replace),
  * `37 10 00 b4` = a `cbz x23` guard, `f4 0e 40 f9` = `ldr x20,[x23,#0x18]`,
  * `d4 0d 00 b4` = a `cbz x20` guard, then an `adrp`/`ldr` pair. The surrounding
  * words exist only to make the locator unique — only the first 4 bytes are written.
  */
 private val SHOW_REWARDED_SUCCESS_TAIL_ARM64 = NativeAnchor(
     label = "AdService.ShowRewarded -> branch to success tail (task completes true, no provider deref)",
-    rva = 0x184DB68,
-    fileOffset = 0x184DB68,
-    verifyHex = "e8020034371000b4f40e40f9d40d00b40af601f0880240f9",
+    rva = 0x1856C20,
+    fileOffset = 0x1856C20,
+    verifyHex = "e8020034371000b4f40e40f9d40d00b4caf501d0880240f9",
     replacementHex = "70000014",
 )
 
 /**
- * `AdService.<ShowRewarded>d__40.MoveNext` @ `0x1136798` (armeabi-v7a, 0.0.3480):
- * `cmp r1,#0 ; beq 0x1136808` → `mov r5,#1 ; b 0x11369D4`
- * (`00 00 51 E3` / `19 00 00 0A` → `01 00 50 E3` / `8C 00 00 EA`;
- * A32 `b` imm24 = (0x11369D4 − 0x1136798 − 8)/4 = 0x8C).
+ * `AdService.<ShowRewarded>d__40.MoveNext` @ `0x1136D78` (armeabi-v7a, 0.0.3497):
+ * `cmp r1,#0 ; beq 0x1136DE8` → `mov r5,#1 ; b 0x1136FB4`
+ * (`00 00 51 E3` / `19 00 00 0A` → `01 50 A0 E3` / `8C 00 00 EA`;
+ * A32 `b` imm24 = (0x1136FB4 − 0x1136D7C − 8)/4 = 0x8C).
  *
  * The 32-bit build has no single branch to the success tail (the tail is a shared
  * completion block that reads the result from `r5`), so the state compare itself is
  * replaced. `r4` (the state-machine `this`) is already live at this point
  * (`mov r4,r0` in the prologue) and the completion block sets `<>1__state = -2`,
- * advances `r4` to `<>t__builder` and calls `SetResult(builder, r5)` with `r5 = 1`.
+ * advances `r4` to `<>t.__builder` and calls `SetResult(builder, r5)` with `r5 = 1`.
  *
- * Verify window (24 B, one hit in 86,265,520 B): the state compare/branch, the
+ * Verify window (24 B, one hit in 86,299,048 B): the state compare/branch, the
  * `r7` null guard, its throw call, and the provider load `ldr r5,[r7,#0xc]`.
  */
 private val SHOW_REWARDED_SUCCESS_TAIL_V7A = NativeAnchor(
     label = "AdService.ShowRewarded -> completion block with result true (no provider deref)",
-    rva = 0x1136798,
-    fileOffset = 0x1136798,
-    verifyHex = "000051e31900000a000057e30000001a621de3eb0c5097e5",
-    replacementHex = "010050e38c0000ea",
+    rva = 0x1136D78,
+    fileOffset = 0x1136D78,
+    verifyHex = "000051e31900000a000057e30000001a5a1de3eb0c5097e5",
+    replacementHex = "0150a0e38c0000ea",
 )
 
 /**
- * `AdService.IsRewardedReady()` @ `0x184B840` → `true` (arm64-v8a, 0.0.3480).
+ * `AdService.IsRewardedReady()` @ `0x18548F8` → `true` (arm64-v8a, 0.0.3497).
  *
- * Verify window (24 B, one hit in 95,838,880 B):
+ * Verify window (24 B, one hit in 95,840,400 B):
  * `f4 0f 1e f8` = `str x20,[sp,#-0x20]!`, `f3 7b 01 a9` = `stp x19,x30,[sp,#0x10]`,
- * `14 19 02 b0` + `88 e2 51 39` = the `adrp`/`ldrb` config read,
+ * `d4 18 02 90` + `88 a2 69 39` = the `adrp`/`ldrb` config read,
  * `f3 03 00 aa` = `mov x19,x0`, `c8 00 00 37` = `tbnz w8,...`.
  */
 private val IS_REWARDED_READY_ARM64 = NativeAnchor(
     label = "AdService.IsRewardedReady -> true (no endless loading bar on watch-ad offers)",
-    rva = 0x184B840,
-    fileOffset = 0x184B840,
-    verifyHex = "f40f1ef8f37b01a9141902b088e25139f30300aac8000037",
+    rva = 0x18548F8,
+    fileOffset = 0x18548F8,
+    verifyHex = "f40f1ef8f37b01a9d418029088a26939f30300aac8000037",
     replacementHex = "20008052c0035fd6",
 )
 
 /**
- * `AdService.IsRewardedReady()` @ `0x1133C68` → `true` (armeabi-v7a, 0.0.3480).
+ * `AdService.IsRewardedReady()` @ `0x1134248` → `true` (armeabi-v7a, 0.0.3497).
  *
- * Verify window (48 B, one hit in 86,265,520 B — the 24 B prologue prefix is *not*
+ * Verify window (48 B, one hit in 86,299,048 B — the 24 B prologue prefix is *not*
  * unique in the 32-bit lib: it occurs 165 times, because `push {r4,r5,r11,lr}` +
  * `ldr rN,[pc,#…]` + `add rN,pc` is the standard IL2CPP metadata-init guard. The
  * window therefore extends over the null-path `bl` and the `ldrb`/`cmp`/`bne`
@@ -188,8 +188,8 @@ private val IS_REWARDED_READY_ARM64 = NativeAnchor(
  */
 private val IS_REWARDED_READY_V7A = NativeAnchor(
     label = "AdService.IsRewardedReady -> true (no endless loading bar on watch-ad offers)",
-    rva = 0x1133C68,
-    fileOffset = 0x1133C68,
-    verifyHex = "30482de9a4509fe50040a0e105508fe00000d5e5000050e30400001a90009fe500009fe7e227e3eb0100a0e30000c5e5",
+    rva = 0x1134248,
+    fileOffset = 0x1134248,
+    verifyHex = "30482de9a4509fe50040a0e105508fe00000d5e5000050e30400001a90009fe500009fe7da27e3eb0100a0e30000c5e5",
     replacementHex = "0100a0e31eff2fe1",
 )

@@ -67,14 +67,13 @@ private const val SCAN_CHUNK = 1 shl 20
  * ============================================================================
  * WHAT THIS EDITS, AND WHY A `rawResourcePatch` IS THE ONLY WAY
  * ============================================================================
- * Fruit Ninja Free 3.97.9 (versionCode 88485200) is Unity **2022.3.62f2** with
- * the **IL2CPP** scripting backend. The purchase pipeline —
+ * Fruit Ninja Free 3.98.4 (versionCode 90061600) uses the Unity **IL2CPP**
+ * scripting backend. The purchase pipeline —
  * `PurchaseManager.ValidateAndProcessIAP → ProcessGooglePlayIAP` → PlayFab
  * `ValidateGooglePlayPurchase` **server-side** receipt validation → grant — is
  * C# compiled to native ARM code inside `lib/<abi>/libil2cpp.so`
- * (arm64-v8a **71,750,584 B**, armeabi-v7a **61,685,188 B**, both shipped;
- * BuildID arm64 `8b779e1592f5d19309b9fb829b854492edea84ee`, v7a
- * `745ad03b812ce138222c11121c9f252118f10591`). The app's real
+ * (arm64-v8a **72,040,112 B**, armeabi-v7a **61,960,084 B**, both shipped in
+ * the APKMirror `.apkm`). The app's real
  * grant path runs `ValidateAndProcessIAP → ProcessGooglePlayIAP → PlayFab
  * ValidateGooglePlayPurchase` — a **server-side** check that verifies the Google
  * `purchaseToken` against the Play Developer API, so no Java-fabricated receipt
@@ -136,7 +135,7 @@ private const val SCAN_CHUNK = 1 shl 20
  * PER-ABI BYTE SITES — TWO SEPARATE BUILDS, NEVER CROSS-USED
  * ============================================================================
  * The APKM/XAPK ship two ABI splits (`requiredSplitTypes="base__abi,base__density"`;
- * recon.md). arm64-v8a (71,750,584 B) and armeabi-v7a (61,685,188 B) are
+ * recon.md). arm64-v8a (72,040,112 B) and armeabi-v7a (61,960,084 B) are
  * **separate native builds** — different method RVAs, different instruction
  * encodings (arm64 AArch64 vs v7a A32/ARM-state, NOT Thumb) and different RX
  * LOAD deltas (−0x4000 vs 0). Every anchor therefore carries its OWN file
@@ -199,10 +198,10 @@ private const val SCAN_CHUNK = 1 shl 20
  * moved/changed app build fails loudly with **zero bytes written**.
  *
  * Only small byte ranges are ever read and written; the uniqueness scan streams the
- * lib through a 1 MiB + overlap buffer instead of slurping 71 MB into the heap.
+ * lib through a 1 MiB + overlap buffer instead of slurping 70 MB into the heap.
  *
- * The shipped P2 anchors write to file offset `0x1CEA874` (RVA `0x1CEE874`) on
- * arm64-v8a and `0xF96C4C` (RVA = offset, delta 0) on armeabi-v7a — one edit
+ * The shipped P2 anchors write to file offset `0x1D02F84` (RVA `0x1D06F84`) on
+ * arm64-v8a and `0xFA57BC` (RVA = offset, delta 0) on armeabi-v7a — one edit
  * per ABI, so ordering is trivial. If more anchors are added, keep every
  * anchor's *write range* disjoint from every other's window so no anchor can
  * clobber another's result (resolve-then-write protects phase 1 from
@@ -242,7 +241,7 @@ private const val SCAN_CHUNK = 1 shl 20
  * ============================================================================
  * 1. **Never apply one ABI's anchor to the other ABI's lib.** The arm64 and v7a
  *    P2 sites share semantics but NOT bytes or offsets (arm64 file
- *    0x1CEA874 = RVA − 0x4000, AArch64 encoding; v7a file 0xF96C4C = RVA,
+ *    0x1D02F84 = RVA − 0x4000, AArch64 encoding; v7a file 0xFA57BC = RVA,
  *    A32 encoding). Cross-use fails the verify window and aborts with zero
  *    bytes written — keep it that way: never "adjust" an anchor's offset by
  *    hand instead of re-measuring against that ABI's shipped lib.

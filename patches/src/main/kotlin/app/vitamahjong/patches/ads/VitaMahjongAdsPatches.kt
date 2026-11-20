@@ -23,8 +23,8 @@ private const val PATCH_NAME = "Vita Mahjong Remove Ads"
  * | 1 | `vd/a.show()` | 5 regs, `p0 = v4` |
  * | 2 | `sd/a.show()` | 5 regs, `p0 = v4` |
  * | 3 | `AdModuleBridge.showBanner(…)V` | 13 regs (stock) |
- * | 4 | `kd/o.o(…)Z` | 8 regs (stock) |
- * | 5 | `kd/o.p(String)Z` | 5 regs (stock) |
+ * | 4 | `ne/o.o(…)Z` | 8 regs (stock) |
+ * | 5 | `ne/o.p(String)Z` | 5 regs (stock) |
  */
 private const val REWARDED_REGISTERS = 5
 private const val INTERSTITIAL_REGISTERS = 5
@@ -35,7 +35,7 @@ private const val INTERSTITIAL_REGISTERS = 5
  * `p0 = v4` (5-register frame, instance method, no parameters), so `v0` /
  * `v1` are free locals.
  *
- * The listener is read from the *protected* `Lqd/a;->c` field rather than via a
+ * The listener is read from the *protected* `Lte/a;->c` field rather than via a
  * getter. `show()` can legitimately run before `setADListener`, in which case
  * the field is `null` — real, not theoretical — so the guard stays.
  *
@@ -45,9 +45,9 @@ private const val INTERSTITIAL_REGISTERS = 5
  * credited and the C# layer would drop the payout.
  */
 private val REWARDED_BODY = """
-    iget-object v0, p0, Lqd/a;->c:Lcom/meevii/adsdk/common/IADListener;
+    iget-object v0, p0, Lte/a;->c:Lcom/meevii/adsdk/common/IADListener;
     if-eqz v0, :morphe_no_listener
-    invoke-virtual {p0}, Lqd/a;->h()Ljava/lang/String;
+    invoke-virtual {p0}, Lte/a;->h()Ljava/lang/String;
     move-result-object v1
     invoke-virtual {v0, v1}, Lcom/meevii/adsdk/common/IADListener;->onADWillShow(Ljava/lang/String;)V
     invoke-virtual {v0, v1}, Lcom/meevii/adsdk/common/IADListener;->onRewardedVideoCompleted(Ljava/lang/String;)V
@@ -65,9 +65,9 @@ private val REWARDED_BODY = """
  * listener contract.
  */
 private val INTERSTITIAL_BODY = """
-    iget-object v0, p0, Lqd/a;->c:Lcom/meevii/adsdk/common/IADListener;
+    iget-object v0, p0, Lte/a;->c:Lcom/meevii/adsdk/common/IADListener;
     if-eqz v0, :morphe_no_listener
-    invoke-virtual {p0}, Lqd/a;->h()Ljava/lang/String;
+    invoke-virtual {p0}, Lte/a;->h()Ljava/lang/String;
     move-result-object v1
     invoke-virtual {v0, v1}, Lcom/meevii/adsdk/common/IADListener;->onADWillShow(Ljava/lang/String;)V
     invoke-virtual {v0, v1}, Lcom/meevii/adsdk/common/IADListener;->onADClose(Ljava/lang/String;)V
@@ -169,18 +169,18 @@ private fun replaceWholeBody(
 
 /**
  * Vita Mahjong — Remove Ads
- * (`com.vitastudio.mahjong` 3.47.0, XAPK).
+ * (`com.vitastudio.mahjong` 3.48.0, XAPK).
  *
  * One toggle covering every ad surface, with **whole-method replacement** and
  * **no helper methods**:
  *
- * 1. **Rewarded** (`Lvd/a.show()Lyd/i;`) — emit the reward callbacks in stock
+ * 1. **Rewarded** (`Lye/a.show()Lbf/i;`) — emit the reward callbacks in stock
  *    order and return `null`; no video loads and none plays.
- * 2. **Interstitial** (`Lsd/a.show()Lyd/i;`) — emit `onADWillShow` +
+ * 2. **Interstitial** (`Lve/a.show()Lbf/i;`) — emit `onADWillShow` +
  *    `onADClose` and return `null`; no full-screen/app-open ad.
  * 3. **Banners** (`AdModuleBridge.showBanner(…)V`) — `return-void` at entry, so
  *    the banner Runnable is never even constructed.
- * 4. **Gates** (`Lkd/o.o(…)Z` = `isReady`, `Lkd/o.p(String)Z` = `isValid`) —
+ * 4. **Gates** (`Lne/o.o(…)Z` = `isReady`, `Lne/o.p(String)Z` = `isValid`) —
  *    forced `true` so the C# layer still enables ad-gated buttons when the
  *    placement config is missing or nothing was filled (now the normal state).
  *
@@ -195,7 +195,7 @@ private fun replaceWholeBody(
  *           → kd/g.o
  *             → kd/h.f, kd/h.g     (isReady / isValid — both forced true here)
  *               → md/c.show
- *                 → lld/a.show     (→ Lvd/a.show / Lsd/a.show — replaced here)
+ *                 → lld/a.show     (→ Lye/a.show / Lve/a.show — replaced here)
  * ```
  *
  * The show methods are the last Java frames before the MEeVii adapter actually
@@ -243,7 +243,7 @@ private fun replaceWholeBody(
  *    the SDK hand out a `null` session to callers that do not null-check, and
  *    leaves stale entries in the placement cache.
  *  * **Do not add helper methods** (`morpheReward`, `morpheInter`, …) — the
- *    whole point of this rewrite is that neither `Lvd/a;` nor `Lsd/a;` grows a
+ *    whole point of this rewrite is that neither `Lye/a;` nor `Lve/a;` grows a
  *    method, so no `.catch`/dead-code scaffolding is needed.
  *  * **Do not call the SDK's JNI/native ad player directly** — irrelevant here
  *    and unsafe: the native player assumes a loaded ad object.
@@ -259,18 +259,18 @@ val vitaMahjongRemoveAdsPatch = bytecodePatch(
     execute {
         // ── Fail loudly rather than ship an APK with a silently skipped hook ──
         RewardedShowFingerprint.matchAllOrNull()
-            .requireExactlyOne("Lvd/a;->show()Lyd/i;", PATCH_NAME)
+            .requireExactlyOne("Lye/a;->show()Lbf/i;", PATCH_NAME)
         InterstitialShowFingerprint.matchAllOrNull()
-            .requireExactlyOne("Lsd/a;->show()Lyd/i;", PATCH_NAME)
+            .requireExactlyOne("Lve/a;->show()Lbf/i;", PATCH_NAME)
         ShowBannerFingerprint.matchAllOrNull()
             .requireExactlyOne(
                 "AdModuleBridge.showBanner(String,int,int,String,boolean,String)V",
                 PATCH_NAME
             )
         AdReadyFingerprint.matchAllOrNull()
-            .requireExactlyOne("Lkd/o;->o(String,String,String,Lkd/e;)Z", PATCH_NAME)
+            .requireExactlyOne("Lne/o;->o(String,String,String,Lne/e;)Z", PATCH_NAME)
         AdValidFingerprint.matchAllOrNull()
-            .requireExactlyOne("Lkd/o;->p(String)Z", PATCH_NAME)
+            .requireExactlyOne("Lne/o;->p(String)Z", PATCH_NAME)
 
         // ══ 1. Rewarded: instant reward, no video ════════════════════════════
         replaceWholeBody(
@@ -296,7 +296,7 @@ val vitaMahjongRemoveAdsPatch = bytecodePatch(
         ShowBannerFingerprint.method.returnEarly()
 
         // ══ 4. Readiness/validity gates: always true ═════════════════════════
-        // o(...)Z has `.registers 7`, p(String)Z has `.registers 5`; both have
+        // o(...)Z has `.registers 8`, p(String)Z has `.registers 5`; both have
         // a spare local, so `returnEarly(true)` needs no frame change.
         AdReadyFingerprint.method.returnEarly(true)
         AdValidFingerprint.method.returnEarly(true)

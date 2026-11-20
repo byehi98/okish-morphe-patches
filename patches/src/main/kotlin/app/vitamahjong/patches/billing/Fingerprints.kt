@@ -8,7 +8,7 @@ import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
 // ============================================================================
-// Vita Mahjong 3.47.0 (versionCode 1951) — Learnings purchase bridge
+// Vita Mahjong 3.48.0 — Learnings purchase bridge
 // (`classes8.dex`).
 //
 // `com.learnings.unity.unikit.module.*` is called from Unity C# by exact
@@ -18,6 +18,7 @@ import com.android.tools.smali.dexlib2.AccessFlags
 //   classes8/com/learnings/unity/unikit/module/PurchaseModuleBridge.smali  queryAllPurchases()V
 //   classes8/com/learnings/unity/unikit/module/PurchaseModuleBridge$2.smali  onSuccess(List)
 //   classes8/com/learnings/unity/unikit/module/c0.smali                    run()V
+//   classes8/wc/e.smali                                                   PurchaseData (R8-renamed)
 // ============================================================================
 
 /**

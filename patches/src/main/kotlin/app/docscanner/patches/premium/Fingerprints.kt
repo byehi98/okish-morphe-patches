@@ -5,24 +5,24 @@ import app.morphe.patcher.methodCall
 import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.AccessFlags
 
-// ── Class anchor — product IDs in bm7's <clinit> ─────────────────────────────
-// Unchanged from the proven 6.8.18 patch. The two one-time SKU IDs are written
-// in defpackage.bm7's static constructor (classes2/bm7.smali:61 and :70) and
-// feed the Lbm7;->b (owned-SKU) list.
+// ── Premium gates (6.9.14) ────────────────────────────────────────────────────
+// The R8 class holding the premium logic moved from `bm7` (6.9.9, classes2) to
+// `n78` (6.9.14, classes3). The two gates are still `a()Z` and `b()Z`:
 //
-// On 6.9.9 these strings also occur in bb7 (classes4) and xm8 (classes2), but
-// Morphe scans DEX in order — bm7 is the first match (classes2, index 188;
-// xm8 at 8187; bb7 lives in the later classes4) — so both method fingerprints
-// below resolve inside bm7, which is exactly the class we want.
-private val premiumClassFingerprint = Fingerprint(
-    strings = listOf("com.cv.proversion", "com.cv.large_amount")
-)
+//   classes3/n78.smali:82   .method public static a()Z   ← subscription gate
+//   classes3/n78.smali:204  .method public static b()Z   ← master "any paid state" gate
+//
+// The old class anchor (a class containing the two one-time SKU strings) no
+// longer works: on 6.9.14 three classes (dc9, zl7, n78) contain
+// "com.cv.proversion" + "com.cv.large_amount", and Morphe resolves the class
+// anchor to the first one in DEX order (dc9), so the method filters then miss.
+// The fingerprints below therefore match methods directly, using markers that
+// are unique to the gates and do not depend on the current obfuscated names.
+
+private val gateAccessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC)
 
 /**
- * Target A — `bm7.b()` — the master premium gate (50 call sites).
- *
- * Confirmed smali: classes2/bm7.smali:204
- *   `.method public static b()Z` / `.registers 3`
+ * Target A — `n78.b()` — the master premium gate.
  *
  * Returns true if PRE_ACC_KEY OR IS_DONATED OR an owned one-time SKU
  * (com.cv.proversion / com.cv.large_amount) OR the a() subscription fallback.
@@ -30,21 +30,19 @@ private val premiumClassFingerprint = Fingerprint(
  * selection branches on this method, so forcing it true grants premium and
  * removes all ads as a side effect.
  *
- * MATCH STRATEGY — `string("IS_DONATED")` is read only inside b()
- * (bm7.smali:267, after the PRE_ACC_KEY check at :232). a() reads PRE_ACC_KEY
- * but never IS_DONATED, and <clinit> holds neither, so within the anchored
- * class the filter uniquely selects b() — no obfuscated name is referenced.
- * Single filter → instruction-order matching is trivially satisfied.
+ * MATCH STRATEGY — "IS_DONATED" is read only inside b(). The string also
+ * occurs in dc9 (inside `l(Lr09;)Z`, which has a parameter) and in zl7 (inside
+ * a constructor). Both are excluded by the empty parameter list + public
+ * static + boolean return filters, so b() is the only match in the whole app.
  *
  * Patch: `const/4 v0, 0x1; return v0` injected at index 0. Register safety:
  * static method with `.registers 3` → v0..v2 are locals, v0 fits the 4-bit
- * range of const/4. No try/catch and no monitor anywhere in bm7.smali, so an
+ * range of const/4. No try/catch and no monitor anywhere in the method, so an
  * index-0 injection cannot strand a handler or lock.
  */
 object IsPremiumFingerprint : Fingerprint(
-    classFingerprint = premiumClassFingerprint,
     returnType = "Z",
-    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
+    accessFlags = gateAccessFlags,
     parameters = listOf(),
     filters = listOf(
         string("IS_DONATED")
@@ -52,36 +50,31 @@ object IsPremiumFingerprint : Fingerprint(
 )
 
 /**
- * Target B — `bm7.a()` — the subscription / access gate.
- *
- * Confirmed smali: classes2/bm7.smali:82
- *   `.method public static a()Z` / `.registers 5`
+ * Target B — `n78.a()` — the subscription / access gate.
  *
  * Returns true if PRE_ACC_KEY OR any subscription SKU is owned (quarterly /
- * yearly, the Lbm7;->a list built in <clinit>). Direct callers: bb7 (2),
- * b()'s fallback at bm7.smali:360, and CustomThemeActivity (custom theme
- * unlock).
+ * yearly, the Ln78;->a list built in <clinit>). Direct callers: zl7 (2),
+ * b()'s fallback at n78.smali:360, and CustomThemeActivity (custom theme
+ * unlock), so it is patched in addition to b().
  *
- * MATCH STRATEGY — the SKU-ownership check `invoke-virtual {v4, v3},
- * Lpr9;->a(Ljava/lang/String;)Z` (bm7.smali:185) is the distinguishing call.
- * b() also contains an Lpr9;->a call (bm7.smali:340), but a() is declared
- * first in the class (line 82 vs 204) and baksmali preserves DEX order, so
- * the first match inside the anchored class is a(); b() is covered separately
- * by Target A above. Patching BOTH gates makes the result robust even if a
- * future update reorders or inlines the b() → a() delegation.
+ * MATCH STRATEGY — PRE_ACC_KEY is read by both a() and b(), but only those two
+ * methods in the whole app combine it with a call to the owned-SKU helper
+ * `Luia;->a(Ljava/lang/String;)Z` (6.9.9 name: `Lpr9;`). The filter list gives
+ * both methods; the patch code de-duplicates against Target A, which leaves
+ * a() as the only extra target. No obfuscated class name is referenced.
  *
  * Patch: `const/4 v0, 0x1; return v0` at index 0. Register safety: static
  * method with `.registers 5` → v0..v4 are locals, v0 is valid for const/4.
  * No try/catch / monitor in the method.
  */
 object IsSubscribedFingerprint : Fingerprint(
-    classFingerprint = premiumClassFingerprint,
     returnType = "Z",
-    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
+    accessFlags = gateAccessFlags,
     parameters = listOf(),
     filters = listOf(
+        string("PRE_ACC_KEY"),
         methodCall(
-            definingClass = "Lpr9;",
+            definingClass = "Luia;",
             name = "a",
             returnType = "Z"
         )

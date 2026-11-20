@@ -8,7 +8,7 @@ import kotlin.io.readBytes
 import kotlin.io.writeBytes
 
 /**
- * Swamp Attack 2 v1.5.0 · **Instant Rewarded Ads (static native patch)**.
+ * Swamp Attack 2 v1.5.1 · **Instant Rewarded Ads (static native patch)**.
  *
  * Unity IL2CPP title: the rewarded flow lives 100 % in `libil2cpp.so`
  * (see notes/ads.md §1/§3, targets N1/N2/N7). With the old runtime engine
@@ -20,20 +20,20 @@ import kotlin.io.writeBytes
  * This patch statically forces the app's OWN "ads disabled" getters to
  * return true — the exact semantics the old engine provided at runtime:
  *
- * * `PlayerData.get_AreVideoAdsDisabled()` (1.5.0: arm64 RVA `0x22CEF90`,
- *   arm32 RVA `0x11ADF7C`) → `ShowVideoClip` takes its in-engine
+ * * `PlayerData.get_AreVideoAdsDisabled()` (1.5.1: arm64 RVA `0x22C6C2C`,
+ *   arm32 RVA `0x11AAFFC`) → `ShowVideoClip` takes its in-engine
  *   ads-disabled branch: `RewardedVideoCompleted(completed=true,
  *   skipped=true)` → the stored `Action` fires natively → the reward lands
  *   INSTANTLY with no mediation, no Java, no SDK wait (cannot hang).
  *   `GetAvailabilityStatus` then reports Available (pacing/caps still
  *   honored), so offer buttons stay alive.
- * * `PlayerData.get_AreInterstitialsDisabled()` (1.5.0: arm64 RVA
- *   `0x22CEF60`, arm32 RVA `0x11ADF44`) → `TryShowInterstitial`
+ * * `PlayerData.get_AreInterstitialsDisabled()` (1.5.1: arm64 RVA
+ *   `0x22C6BFC`, arm32 RVA `0x11AAFC4`) → `TryShowInterstitial`
  *   early-returns; no forced interstitial is ever requested (belt-and-braces
  *   with the Java `../ads/AdRemovalPatch`, which stays the display-layer
  *   block).
  *
- * Disassembly-verified on the 1.5.0 libs (metadata v39): both getters keep
+ * Disassembly-verified on the 1.5.1 libs (metadata v39): both getters keep
  * the `ldr x8,[x0,#0x18]; ldr x0,[x8,#0xC8]; bl <AdsData getter>;
  * bic w0, #1, w0` shape (arm64) / `ldr r4,[r0,#0xC]; ldr r4,[r4,#0x90];
  * bl <AdsData getter>; eor r0, r0, #1` (arm32), so returning constant 1
@@ -50,8 +50,8 @@ import kotlin.io.writeBytes
  * no `sp` imbalance, no link-register leak (`ret` / `bx lr` returns to the
  * untouched caller).
  *
- * arm64 file offset = RVA − 0x4000 (R-E LOAD off 0x1E5F850 = vaddr
- * 0x1E63850, verified from the ELF program headers of the 1.5.0 XAPK's own
+ * arm64 file offset = RVA − 0x4000 (R-E LOAD off 0x1E57640 = vaddr
+ * 0x1E5B640, verified from the ELF program headers of the 1.5.1 XAPK's own
  * config.arm64_v8a.apk split). arm32 file offset = RVA (single R-E LOAD at
  * off 0 / vaddr 0). Both getters share identical first-16-byte prologues
  * per ABI — that is fine because each site is written at its PINNED offset
@@ -123,14 +123,14 @@ private const val REWARD_STUB_ARM32 = "0100A0E31EFF2FE1"
 private val ARM64_REWARD_SITES = listOf(
     RewardGate(
         label = "player.AreInterstitialsDisabled -> true (no forced interstitials)",
-        rva = 0x22CEF60,
-        fileOffset = 0x22CAF60,
+        rva = 0x22C6BFC,
+        fileOffset = 0x22C2BFC,
         expectWords = arrayOf("F81F0FFE", "F9400C08", "B4000128", "F9406500"),
     ),
     RewardGate(
         label = "player.AreVideoAdsDisabled -> true (instant rewarded)",
-        rva = 0x22CEF90,
-        fileOffset = 0x22CAF90,
+        rva = 0x22C6C2C,
+        fileOffset = 0x22C2C2C,
         expectWords = arrayOf("F81F0FFE", "F9400C08", "B4000128", "F9406500"),
     ),
 )
@@ -138,14 +138,14 @@ private val ARM64_REWARD_SITES = listOf(
 private val ARM32_REWARD_SITES = listOf(
     RewardGate(
         label = "player.AreInterstitialsDisabled -> true (no forced interstitials)",
-        rva = 0x11ADF44,
-        fileOffset = 0x11ADF44,
+        rva = 0x11AAFC4,
+        fileOffset = 0x11AAFC4,
         expectWords = arrayOf("E92D4010", "E590400C", "E3540000", "1A000000"),
     ),
     RewardGate(
         label = "player.AreVideoAdsDisabled -> true (instant rewarded)",
-        rva = 0x11ADF7C,
-        fileOffset = 0x11ADF7C,
+        rva = 0x11AAFFC,
+        fileOffset = 0x11AAFFC,
         expectWords = arrayOf("E92D4010", "E590400C", "E3540000", "1A000000"),
     ),
 )

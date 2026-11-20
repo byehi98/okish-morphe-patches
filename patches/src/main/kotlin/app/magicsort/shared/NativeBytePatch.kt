@@ -48,8 +48,8 @@ internal class NativeAnchor(
 /**
  * The per-ABI native edits for one patch, keyed by the split's ABI directory name.
  *
- * 0.0.3480 ships **two** `libil2cpp.so` builds (arm64-v8a 95,838,880 B and
- * armeabi-v7a 86,265,520 B) that share the IL2CPP metadata but are separate
+ * 0.0.3497 ships **two** `libil2cpp.so` builds (arm64-v8a 95,840,400 B and
+ * armeabi-v7a 86,299,048 B) that share the IL2CPP metadata but are separate
  * compilations: identical C# produces different instructions, different function
  * ordering and therefore different RVAs. Each ABI consequently needs its own
  * [NativeAnchor] list — there is no offset that is valid in both files.
@@ -82,7 +82,7 @@ private const val SCAN_CHUNK = 1 shl 20
  * Magic Sort is Unity **2021.3.57f2** with the **IL2CPP** scripting backend. Every
  * piece of game logic — the ad pipeline, the IAP grant funnel, the local
  * entitlement getters — is C# compiled to native code inside `lib/<abi>/libil2cpp.so`
- * (95,838,880 B arm64-v8a / 86,265,520 B armeabi-v7a on 0.0.3480). There is no
+ * (95,840,400 B arm64-v8a / 86,299,048 B armeabi-v7a on 0.0.3497). There is no
  * meaningful smali to fingerprint for those behaviours and no DEX-side hook that can
  * change what `InAppPurchaseHistoryService.HasNoAds()` *returns*.
  *
@@ -97,17 +97,17 @@ private const val SCAN_CHUNK = 1 shl 20
  * ============================================================================
  * RVA == FILE OFFSET IN THIS APP (do not "fix" this to rva - 0x4000)
  * ============================================================================
- * `readelf -lW libil2cpp.so` on both 0.0.3480 libs:
+ * `readelf -lW libil2cpp.so` on both 0.0.3497 libs:
  * ```
- * arm64-v8a:   LOAD  off 0x000000   vaddr 0x000000000   filesz 0x5408afc  R E
- *              LOAD  off 0x540a6d8  vaddr 0x000000540e6d8 filesz 0x75b2c0   RW  <-- delta -0x4000
- * armeabi-v7a: LOAD  off 0x000000   vaddr 0x00000000    filesz 0x4e92625  R E
- *              LOAD  off 0x4e965e0  vaddr 0x000004e9a5e0 filesz 0x3ae1a0  RW   <-- delta -0x4000
+ * arm64-v8a:   LOAD  off 0x000000   vaddr 0x000000000   filesz 0x5407a14  R E
+ *              LOAD  off 0x540a4b0  vaddr 0x000000540e4b0 filesz 0x75bad8   RW  <-- delta -0x4000
+ * armeabi-v7a: LOAD  off 0x000000   vaddr 0x00000000    filesz 0x4e9b655  R E
+ *              LOAD  off 0x4e9e4c8  vaddr 0x000004ea24c8 filesz 0x3ae5b0  RW   <-- delta -0x4000
  * ```
  * The **first** PT_LOAD — the one holding `.text`, `.plt` and `il2cpp` — has
  * `p_offset == p_vaddr == 0x0` on **both** ABIs (`p_align 0x4000`, and the
  * executable segment is the first one). Every anchor in this patch set is below
- * `0x5408afc`, so `fileOffset == rva` exactly. This is the opposite of Head
+ * `0x5407a14`, so `fileOffset == rva` exactly. This is the opposite of Head
  * Basketball, whose *executable* LOAD sits at `off 0x15048f4 / vaddr 0x15088f4`
  * (there the executable segment is the second header and every address is 0x4000
  * lower on disk). The second LOAD here does have a `-0x4000` delta, but nothing we
@@ -124,7 +124,7 @@ private const val SCAN_CHUNK = 1 shl 20
  * be widened to 40 B because its 24 B form occurs three times), and this engine
  * additionally requires that window to occur **exactly once in the entire `.so`** —
  * 0 hits means the offset is wrong, >1 means the window is ambiguous, and both abort
- * the patch. Uniqueness was measured against both shipped 0.0.3480 libs before these
+ * the patch. Uniqueness was measured against both shipped 0.0.3497 libs before these
  * anchors were written; all six occur once per ABI.
  *
  * Note that the verify/replacement split matters: the branch anchors verify 24 bytes
@@ -150,7 +150,7 @@ private const val SCAN_CHUNK = 1 shl 20
  * through a 1 MiB + overlap buffer instead of slurping ~90 MB into the heap.
  *
  * ============================================================================
- * ABI HANDLING (both libs present in the 0.0.3480 bundle)
+ * ABI HANDLING (both libs present in the 0.0.3497 bundle)
  * ============================================================================
  * The `.apks` bundle carries `split_config.arm64_v8a.apk` **and**
  * `split_config.armeabi_v7a.apk`, so the merged APK contains both `libil2cpp.so`
@@ -202,9 +202,9 @@ internal fun ResourcePatchContext.applyLibil2cppEdits(
         throw PatchException(
             "$patchName: none of the requested libil2cpp.so builds " +
                 "(${anchorSets.joinToString { it.libPath }}) are present in this APK — " +
-                "nothing was patched. Magic Sort 0.0.3480 ships arm64-v8a + armeabi-v7a; " +
-                "patch the Magic-Sort_0.0.3480_apkcube.apks split bundle (base + " +
-                "split_config.arm64_v8a + split_config.armeabi_v7a), not the lib-less " +
+                "nothing was patched. Magic Sort 0.0.3497 ships arm64-v8a + armeabi-v7a; " +
+                "patch the magic-sort-0-0-3497.xapk split bundle (base + " +
+                "config.arm64_v8a + config.armeabi_v7a), not the lib-less " +
                 "APKPure base-only APK.",
         )
     }
