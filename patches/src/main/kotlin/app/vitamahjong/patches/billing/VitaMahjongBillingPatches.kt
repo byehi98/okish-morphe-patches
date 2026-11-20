@@ -36,40 +36,46 @@ private const val RESTORE_RUN_REGISTERS = 6
  * purchases to the C# entitlement bookkeeping, and `purchaseTime` is wall-clock
  * `System.currentTimeMillis()` because the C# side compares it for expiry.
  *
+ * 3.48.0 R8-renamed `com.learnings.purchase.PurchaseData` to `Lwc/e;` and its
+ * setters to single letters. Mapping is fixed by the class's own getters /
+ * `toString()`: `j()` = productId, `m()` = token, `i()` = orderId,
+ * `h()` = innerOrderId, `k(J)` = purchaseTime. `PurchaseDataHelper` only reads
+ * these through the getters, so the JSON delivered to C# is identical to 3.47.0.
+ *
  * No labels are needed — the body is straight-line.
  */
 private val RESTORE_BODY = """
     new-instance v0, Ljava/util/ArrayList;
     invoke-direct {v0}, Ljava/util/ArrayList;-><init>()V
 
-    new-instance v1, Lcom/learnings/purchase/PurchaseData;
-    invoke-direct {v1}, Lcom/learnings/purchase/PurchaseData;-><init>()V
+    new-instance v1, Lwc/e;
+    invoke-direct {v1}, Lwc/e;-><init>()V
     const-string v2, "m_ads_remove"
-    invoke-virtual {v1, v2}, Lcom/learnings/purchase/PurchaseData;->setProductId(Ljava/lang/String;)V
+    invoke-virtual {v1, v2}, Lwc/e;->j(Ljava/lang/String;)V
     const-string v2, "morphe-token"
-    invoke-virtual {v1, v2}, Lcom/learnings/purchase/PurchaseData;->setToken(Ljava/lang/String;)V
+    invoke-virtual {v1, v2}, Lwc/e;->m(Ljava/lang/String;)V
     const-string v2, "GPA.morphe.no_ads"
-    invoke-virtual {v1, v2}, Lcom/learnings/purchase/PurchaseData;->setOrderId(Ljava/lang/String;)V
+    invoke-virtual {v1, v2}, Lwc/e;->i(Ljava/lang/String;)V
     const-string v2, "morphe-inner-no-ads"
-    invoke-virtual {v1, v2}, Lcom/learnings/purchase/PurchaseData;->setInnerOrderId(Ljava/lang/String;)V
+    invoke-virtual {v1, v2}, Lwc/e;->h(Ljava/lang/String;)V
     invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
     move-result-wide v3
-    invoke-virtual {v1, v3, v4}, Lcom/learnings/purchase/PurchaseData;->setPurchaseTime(J)V
+    invoke-virtual {v1, v3, v4}, Lwc/e;->k(J)V
     invoke-virtual {v0, v1}, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
 
-    new-instance v1, Lcom/learnings/purchase/PurchaseData;
-    invoke-direct {v1}, Lcom/learnings/purchase/PurchaseData;-><init>()V
+    new-instance v1, Lwc/e;
+    invoke-direct {v1}, Lwc/e;-><init>()V
     const-string v2, "sub_1_year_vm"
-    invoke-virtual {v1, v2}, Lcom/learnings/purchase/PurchaseData;->setProductId(Ljava/lang/String;)V
+    invoke-virtual {v1, v2}, Lwc/e;->j(Ljava/lang/String;)V
     const-string v2, "morphe-token"
-    invoke-virtual {v1, v2}, Lcom/learnings/purchase/PurchaseData;->setToken(Ljava/lang/String;)V
+    invoke-virtual {v1, v2}, Lwc/e;->m(Ljava/lang/String;)V
     const-string v2, "GPA.morphe.vip"
-    invoke-virtual {v1, v2}, Lcom/learnings/purchase/PurchaseData;->setOrderId(Ljava/lang/String;)V
+    invoke-virtual {v1, v2}, Lwc/e;->i(Ljava/lang/String;)V
     const-string v2, "morphe-inner-vip"
-    invoke-virtual {v1, v2}, Lcom/learnings/purchase/PurchaseData;->setInnerOrderId(Ljava/lang/String;)V
+    invoke-virtual {v1, v2}, Lwc/e;->h(Ljava/lang/String;)V
     invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
     move-result-wide v3
-    invoke-virtual {v1, v3, v4}, Lcom/learnings/purchase/PurchaseData;->setPurchaseTime(J)V
+    invoke-virtual {v1, v3, v4}, Lwc/e;->k(J)V
     invoke-virtual {v0, v1}, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
 
     new-instance v1, Lcom/learnings/unity/unikit/module/PurchaseModuleBridge${'$'}2;
@@ -80,7 +86,7 @@ private val RESTORE_BODY = """
 
 /**
  * Vita Mahjong — Restore Purchases
- * (`com.vitastudio.mahjong` 3.47.0 / versionCode 1951, XAPK).
+ * (`com.vitastudio.mahjong` 3.48.0, XAPK).
  *
  * ## What is forced
  *
@@ -123,7 +129,8 @@ private val RESTORE_BODY = """
  * ## Why `PurchaseModuleBridge` is not modified at all
  *
  * `c0` lives in the same package, `com.learnings.unity.unikit.module`, as
- * `PurchaseModuleBridge$2`, whose constructor is package-private. `c0.run()`
+ * `PurchaseModuleBridge$2`, whose constructor is package-private (unchanged in
+ * 3.48.0). `c0.run()`
  * can therefore `new-instance PurchaseModuleBridge$2` directly. The old
  * implementation added a `PurchaseModuleBridge.morpheRestore()` static helper;
  * that required patching a class that otherwise needed no changes, and is gone.

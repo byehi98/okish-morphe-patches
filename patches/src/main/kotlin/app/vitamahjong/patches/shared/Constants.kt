@@ -23,7 +23,7 @@ object Constants {
         packageName = "com.vitastudio.mahjong",
         apkFileType = ApkFileType.XAPK,
         targets = listOf(
-            AppTarget(version = "3.47.0")
+            AppTarget(version = "3.48.0")
         )
     )
 }
