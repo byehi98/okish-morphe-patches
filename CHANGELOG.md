@@ -1,3 +1,9 @@
+## [1.52.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.1-dev.3...v1.52.1-dev.4) (2026-11-21)
+
+### 🚀 Updated App Support
+
+* **fancade:** update target version to 1.15.27 ([27693b5](https://github.com/byehi98/okish-morphe-patches/commit/27693b5f4749edbb7ba6e427e93f04a787fb5060))
+
 ## [1.52.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.1-dev.2...v1.52.1-dev.3) (2026-11-21)
 
 ### 🚀 Updated App Support

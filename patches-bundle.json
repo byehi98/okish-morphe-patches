@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-21T11:36:09",
-  "description": "## [1.52.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.1-dev.2...v1.52.1-dev.3) (2026-11-21)\n\n### 🚀 Updated App Support\n\n* **magicsort:** update target version to 0.0.3536 ([11705d7](https://github.com/byehi98/okish-morphe-patches/commit/11705d7c8fecd54c0fb922276120f792d4a1a262))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.52.1-dev.3/patches-1.52.1-dev.3.mpp",
+  "created_at": "2026-11-21T11:50:26",
+  "description": "## [1.52.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.1-dev.3...v1.52.1-dev.4) (2026-11-21)\n\n### 🚀 Updated App Support\n\n* **fancade:** update target version to 1.15.27 ([27693b5](https://github.com/byehi98/okish-morphe-patches/commit/27693b5f4749edbb7ba6e427e93f04a787fb5060))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.52.1-dev.4/patches-1.52.1-dev.4.mpp",
   "signature_download_url": "",
-  "version": "1.52.1-dev.3"
+  "version": "1.52.1-dev.4"
 }
