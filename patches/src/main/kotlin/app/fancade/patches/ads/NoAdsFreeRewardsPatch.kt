@@ -10,7 +10,7 @@ import app.morphe.patches.all.misc.hex.HexPatchBuilder
 import app.morphe.patches.all.misc.hex.hexPatch
 
 /**
- * Fancade 1.15.26 (versionCode 190) — Remove ads & free rewards.
+ * Fancade 1.15.27 (versionCode 193) — Remove ads & free rewards.
  *
  * ============================================================
  * SHAPE OF THE FEATURE
@@ -104,8 +104,10 @@ import app.morphe.patches.all.misc.hex.hexPatch
  * throws a `PatchException` when an anchor is missing — so a stale anchor fails
  * the build instead of shipping an APK whose native half silently does nothing.
  *
- * 1.15.26 sites (file offset == vaddr in both binaries; executable LOAD segment
- * starts at offset 0):
+ * 1.15.27 sites (file offset == vaddr in both binaries; executable LOAD segment
+ * starts at offset 0). Every symbol kept its 1.15.26 address in both ABIs; only
+ * the PC-relative data references in the prologues moved, so the anchors below
+ * were re-derived byte-for-byte against 1.15.27:
  *
  *   | symbol                      | arm64-v8a              | armeabi-v7a (Thumb)  |
  *   |-----------------------------|------------------------|----------------------|
@@ -156,29 +158,29 @@ private const val PATCH_NAME = "Remove ads & free rewards"
 private val adSites: HexPatchBuilder.() -> Unit = {
     // ── arm64-v8a ────────────────────────────────────────────────────────────
     // ad_rewarded_is_loaded @0x3359d0 -> mov w0, #1 ; ret
-    "FD 7B BF A9 FD 03 00 91 46 06 0B 94 88 21 02 90 1F 00 00 72" asPatternTo
-        "20 00 80 52 C0 03 5F D6 46 06 0B 94 88 21 02 90 1F 00 00 72" inFile LIB_ARM64
+    "FD 7B BF A9 FD 03 00 91 7A 06 0B 94 88 21 02 90 1F 00 00 72" asPatternTo
+        "20 00 80 52 C0 03 5F D6 7A 06 0B 94 88 21 02 90 1F 00 00 72" inFile LIB_ARM64
 
     // app_gems_for_ad_available @0x33e270 -> mov w0, #1 ; ret
-    "FD 7B BF A9 FD 03 00 91 0A EF 0A 94 E8 03 00 2A E0 03 1F 2A" asPatternTo
-        "20 00 80 52 C0 03 5F D6 0A EF 0A 94 E8 03 00 2A E0 03 1F 2A" inFile LIB_ARM64
+    "FD 7B BF A9 FD 03 00 91 3E EF 0A 94 E8 03 00 2A E0 03 1F 2A" asPatternTo
+        "20 00 80 52 C0 03 5F D6 3E EF 0A 94 E8 03 00 2A E0 03 1F 2A" inFile LIB_ARM64
 
     // ad_rewarded_show @0x335a40: b.hi bail -> b 0x335a60 (set state 7 + call ad_rewarded_show_os)
-    "93 21 02 90 68 AE 46 B9 08 15 00 51 1F 05 00 71 68 07 00 54" asPatternTo
-        "93 21 02 90 68 AE 46 B9 08 15 00 51 1F 05 00 71 08 00 00 14" inFile LIB_ARM64
+    "93 21 02 90 68 7E 47 B9 08 15 00 51 1F 05 00 71 68 07 00 54" asPatternTo
+        "93 21 02 90 68 7E 47 B9 08 15 00 51 1F 05 00 71 08 00 00 14" inFile LIB_ARM64
 
     // ── armeabi-v7a (Thumb) ──────────────────────────────────────────────────
     // ad_rewarded_is_loaded @0x23a088 -> movs r0, #1 ; bx lr
-    "80 B5 6F 46 56 F2 E0 E8 05 49 06 22" asPatternTo
-        "01 20 70 47 56 F2 E0 E8 05 49 06 22" inFile LIB_ARM32
+    "80 B5 6F 46 56 F2 58 E9 05 49 06 22" asPatternTo
+        "01 20 70 47 56 F2 58 E9 05 49 06 22" inFile LIB_ARM32
 
     // app_gems_for_ad_available @0x241b78 -> movs r0, #1 ; bx lr
-    "80 B5 6F 46 51 F2 10 E9 01 46 00 20" asPatternTo
-        "01 20 70 47 51 F2 10 E9 01 46 00 20" inFile LIB_ARM32
+    "80 B5 6F 46 51 F2 88 E9 01 46 00 20" asPatternTo
+        "01 20 70 47 51 F2 88 E9 01 46 00 20" inFile LIB_ARM32
 
     // ad_rewarded_show @0x23a0d2: bhi bail -> b 0x23a0e6 (set state 7 + call ad_rewarded_show_os)
-    "20 68 05 38 01 28 2C D8 56 F2 BC E8" asPatternTo
-        "20 68 05 38 01 28 08 E0 56 F2 BC E8" inFile LIB_ARM32
+    "20 68 05 38 01 28 2C D8 56 F2 34 E9" asPatternTo
+        "20 68 05 38 01 28 08 E0 56 F2 34 E9" inFile LIB_ARM32
 }
 
 /**

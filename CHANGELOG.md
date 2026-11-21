@@ -1,3 +1,27 @@
+## [1.52.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.1-dev.3...v1.52.1-dev.4) (2026-11-21)
+
+### 🚀 Updated App Support
+
+* **fancade:** update target version to 1.15.27 ([27693b5](https://github.com/byehi98/okish-morphe-patches/commit/27693b5f4749edbb7ba6e427e93f04a787fb5060))
+
+## [1.52.1-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.1-dev.2...v1.52.1-dev.3) (2026-11-21)
+
+### 🚀 Updated App Support
+
+* **magicsort:** update target version to 0.0.3536 ([11705d7](https://github.com/byehi98/okish-morphe-patches/commit/11705d7c8fecd54c0fb922276120f792d4a1a262))
+
+## [1.52.1-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.1-dev.1...v1.52.1-dev.2) (2026-11-20)
+
+### 🚀 Updated App Support
+
+* **rodeosafari:** update target version to 4.27.0 ([4c20f1e](https://github.com/byehi98/okish-morphe-patches/commit/4c20f1e517048b030fdba966733862c1b6b53c58))
+
+## [1.52.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.0...v1.52.1-dev.1) (2026-11-20)
+
+### 🚀 Updated App Support
+
+* **dantheaman:** update target version to 1.14.13 ([aadeabd](https://github.com/byehi98/okish-morphe-patches/commit/aadeabd4c2ddc9ef8c31737092a1bb24e1441869))
+
 ## [1.52.0](https://github.com/byehi98/okish-morphe-patches/compare/v1.51.0...v1.52.0) (2026-11-20)
 
 ### 🐛 Bug Fixes

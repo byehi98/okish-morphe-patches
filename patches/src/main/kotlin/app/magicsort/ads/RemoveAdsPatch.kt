@@ -7,7 +7,7 @@ import app.magicsort.shared.applyLibil2cppEdits
 import app.morphe.patcher.patch.rawResourcePatch
 
 /**
- * Magic Sort 0.0.3497 — **Remove Ads** (static native patch, both ABIs).
+ * Magic Sort 0.0.3536 — **Remove Ads** (static native patch, both ABIs).
  *
  * Unity IL2CPP title: everything that decides whether an ad may be shown is C#
  * compiled into `lib/<abi>/libil2cpp.so` (see analysis/magicsort/). There is no
@@ -15,7 +15,7 @@ import app.morphe.patcher.patch.rawResourcePatch
  *
  * The single edit per ABI is the app's own local NoAds entitlement getter.
  *
- * arm64-v8a @ `0x24945F8` (95,840,400 B lib):
+ * arm64-v8a @ `0x2498090` (95,938,872 B lib):
  * ```
  * str  x30, [sp, #-0x10]!
  * ldr  x8, [x0, #0x18]      ; this->_model
@@ -26,7 +26,11 @@ import app.morphe.patcher.patch.rawResourcePatch
  * ```
  * Replacement `mov w0, #1 ; ret` (`20 00 80 52 C0 03 5F D6`).
  *
- * armeabi-v7a @ `0x20B19C4` (86,299,048 B lib, ARM/A32 mode):
+ * armeabi-v7a @ `0x20B24D4` (86,299,136 B lib, ARM/A32 mode) — re-derived for
+ * 0.0.3536 from the full split bundle (`config.armeabi_v7a.apk`). Some mirrors
+ * publish an arm64-only 3536 variant (the Uptodown XAPK without
+ * `config.armeabi_v7a.apk`, or the lib-less base APK alone); the set is skipped
+ * with a log line when the 32-bit split is absent:
  * ```
  * push {r4, lr}
  * ldr  r4, [r0, #0xc]       ; this->_model
@@ -81,38 +85,43 @@ val removeAdsPatch = rawResourcePatch(
 }
 
 /**
- * `InAppPurchaseHistoryService.HasNoAds()` → `true` (arm64-v8a, 0.0.3497).
+ * `InAppPurchaseHistoryService.HasNoAds()` → `true` (arm64-v8a, 0.0.3536).
  *
- * Original bytes (28 B, exactly one hit in 95,840,400 B):
+ * Original bytes (28 B, exactly one hit in 95,938,872 B):
  * `fe 0f 1f f8` = `str x30,[sp,#-0x10]!`, `08 0c 40 f9` = `ldr x8,[x0,#0x18]`,
  * `88 00 00 b4` = `cbz x8,<null path>`, `00 61 40 39` = `ldrb w0,[x8,#0x18]`,
  * `fe 07 41 f8` = `ldr x30,[sp],#0x10`, `c0 03 5f d6` = `ret`.
- * The next function's `bl` (`6c 1e b5 97`) extends the window to 28 B, which keeps
+ * The next function's `bl` (`ad 30 b5 97`) extends the window to 28 B, which keeps
  * it unique (the 24 B prefix alone occurs twice in the 64-bit lib).
+ *
+ * 0.0.3536 moved the whole `InAppPurchaseHistoryService` block to `0x2498090`
+ * (0.0.3534: `0x248DEC8`, 0.0.3497: `0x24945F8`); the three sibling getters around it
+ * (`GetAdsDisabledState` / float / `HasNoAds`) keep their relative layout and the
+ * model field offsets (`_model@0x18`, `_isAdsDisabled@0x18`) are unchanged.
  */
 private val HAS_NO_ADS_ARM64 = NativeAnchor(
     label = "InAppPurchaseHistoryService.HasNoAds -> true (banners + interstitials + no-ads offer)",
-    rva = 0x24945F8,
-    fileOffset = 0x24945F8,
-    verifyHex = "fe0f1ff8080c40f9880000b400614039fe0741f8c0035fd66c1eb597",
+    rva = 0x2498090,
+    fileOffset = 0x2498090,
+    verifyHex = "fe0f1ff8080c40f9880000b400614039fe0741f8c0035fd65310b597",
     replacementHex = "20008052c0035fd6",
 )
 
 /**
- * `InAppPurchaseHistoryService.HasNoAds()` → `true` (armeabi-v7a, 0.0.3497).
+ * `InAppPurchaseHistoryService.HasNoAds()` → `true` (armeabi-v7a, 0.0.3536).
  *
- * Original bytes (28 B, exactly one hit in 86,299,048 B — the 24 B form of the
+ * Original bytes (28 B, exactly one hit in 86,299,136 B — the 24 B form of the
  * getter body occurs **three** times in the 32-bit lib, so the window is extended
  * over the `NullReferenceException` path's `bl`):
  * `10 40 2d e9` = `push {r4,lr}`, `0c 40 90 e5` = `ldr r4,[r0,#0xc]`,
  * `00 00 54 e3` = `cmp r4,#0`, `01 00 00 0a` = `beq <null path>`,
  * `10 00 d4 e5` = `ldrb r0,[r4,#0x10]`, `10 80 bd e8` = `pop {r4,pc}`,
- * then the null-path `bl` (`45 32 a5 eb`).
+ * then the null-path `bl` (`c5 2f a5 eb` → `0x9FE408`).
  */
 private val HAS_NO_ADS_V7A = NativeAnchor(
     label = "InAppPurchaseHistoryService.HasNoAds -> true (banners + interstitials + no-ads offer)",
-    rva = 0x20B19C4,
-    fileOffset = 0x20B19C4,
-    verifyHex = "10402de90c4090e5000054e30100000a1000d4e51080bde84532a5eb",
+    rva = 0x20B24D4,
+    fileOffset = 0x20B24D4,
+    verifyHex = "10402de90c4090e5000054e30100000a1000d4e51080bde8c52fa5eb",
     replacementHex = "0100a0e31eff2fe1",
 )
