@@ -6,7 +6,7 @@ import app.morphe.patches.all.misc.hex.HexPatchBuilder
 import app.morphe.patches.all.misc.hex.hexPatch
 
 /**
- * Fancade 1.15.26 (versionCode 190) — Free IAP, native in-place hex patch.
+ * Fancade 1.15.27 (versionCode 193) — Free IAP, native in-place hex patch.
  *
  * WHY NATIVE: purchases are driven entirely by the custom C++ engine
  * (`libfancade.so`). The Java side (`com.martinmagni.fancade.Fancade`) only forwards
@@ -21,7 +21,7 @@ import app.morphe.patches.all.misc.hex.hexPatch
  * `PatchException` when an anchor is missing, so a stale anchor fails the build
  * instead of producing an APK whose native patches silently do nothing.
  *
- * BOTH ABIs: since 1.15.26 the XAPK ships `armeabi-v7a` as well as `arm64-v8a`, so
+ * BOTH ABIs: the XAPK ships `armeabi-v7a` as well as `arm64-v8a`, so
  * every site is patched twice — once with AArch64 encodings in
  * `lib/arm64-v8a/libfancade.so`, once with Thumb encodings in
  * `lib/armeabi-v7a/libfancade.so`. `ignoreMissingTargetFiles = true` makes the
@@ -32,8 +32,10 @@ import app.morphe.patches.all.misc.hex.hexPatch
  * Neither binary is stripped, so all sites are re-derivable by name:
  *   nm -D libfancade.so | rg 'menu_iap_can_buy|iap_is_ready|iap_purchase|iap_purchased'
  *
- * 1.15.26 sites (file offset == vaddr in both binaries; the executable LOAD
- * segment starts at offset 0):
+ * 1.15.27 sites (file offset == vaddr in both binaries; the executable LOAD
+ * segment starts at offset 0). Every symbol kept its 1.15.26 address in both
+ * ABIs; only the PC-relative data references in the prologues moved, so the
+ * anchors below were re-derived byte-for-byte against 1.15.27:
  *
  *   | symbol                  | arm64-v8a  | armeabi-v7a (Thumb) |
  *   |-------------------------|------------|---------------------|
@@ -85,16 +87,16 @@ private const val LIB_ARM32 = "lib/armeabi-v7a/libfancade.so"
 private val freeIapSites: HexPatchBuilder.() -> Unit = {
     // ── arm64-v8a ────────────────────────────────────────────────────────────
     // menu_iap_can_buy @0x3a342c -> mov w0, #1 ; ret
-    "88 14 00 90 08 39 42 F9 08 01 40 B9 1F 09 00 71 8B 02 00 54" asPatternTo
+    "88 14 00 90 08 A1 42 F9 08 01 40 B9 1F 09 00 71 8B 02 00 54" asPatternTo
         "20 00 80 52 C0 03 5F D6 08 01 40 B9 1F 09 00 71 8B 02 00 54" inFile LIB_ARM64
 
     // iap_is_ready @0x2d7160 -> mov w0, #1 ; ret
-    "C8 1A 00 F0 08 69 46 F9 08 01 40 B9 1F 05 00 71 0B 01 00 54" asPatternTo
+    "C8 1A 00 F0 08 D1 46 F9 08 01 40 B9 1F 05 00 71 0B 01 00 54" asPatternTo
         "20 00 80 52 C0 03 5F D6 08 01 40 B9 1F 05 00 71 0B 01 00 54" inFile LIB_ARM64
 
     // iap_purchase @0x2d701c -> b iap_purchased (@0x2d704c); w0 still holds the index
-    "C8 1A 00 F0 E9 1A 00 90 0A 17 80 52 08 6D 46 F9 29 15 40 F9" asPatternTo
-        "0C 00 00 14 E9 1A 00 90 0A 17 80 52 08 6D 46 F9 29 15 40 F9" inFile LIB_ARM64
+    "C8 1A 00 F0 E9 1A 00 90 0A 17 80 52 08 D5 46 F9 29 7D 40 F9" asPatternTo
+        "0C 00 00 14 E9 1A 00 90 0A 17 80 52 08 D5 46 F9 29 7D 40 F9" inFile LIB_ARM64
 
     // ── armeabi-v7a (Thumb) ──────────────────────────────────────────────────
     // menu_iap_can_buy @0x29f6d4 -> movs r0, #1 ; bx lr
