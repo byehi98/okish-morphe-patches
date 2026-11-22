@@ -1,3 +1,9 @@
+## [1.53.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.1...v1.53.0-dev.2) (2026-11-22)
+
+### 🚀 Updated App Support
+
+* **missiles:** update target version to 1.45 ([1aea6ce](https://github.com/byehi98/okish-morphe-patches/commit/1aea6cebb5937bab99549e202225e7d504d6140c))
+
 ## [1.53.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.1-dev.4...v1.53.0-dev.1) (2026-11-22)
 
 ### ✨ New Features
