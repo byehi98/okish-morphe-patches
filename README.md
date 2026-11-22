@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.52.1-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.52.1-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;161 patches total
+> **[v1.53.0-dev.1](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.53.0-dev.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;163 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -649,32 +649,34 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Alto's Adventure&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<summary>📦 Alto's Adventure&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.8.27 |
+| 1.8.34 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [IAP Unlock](#iap-unlock) | Unlocks all in-app purchases by faking Google Play billing query results. |  |
+| [Unlimited Coins](#unlimited-coins) | Sets your coin balance to 999,999,999 every time your profile loads or updates. Coins effectively never run out, so every character and upgrade is affordable. Applied to libil2cpp.so at the code level, so clearing app data does not reset it. |  |
 
 </details>
 
 <details>
-<summary>📦 Alto's Odyssey&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<summary>📦 Alto's Odyssey&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.0.42 |
+| 1.0.45 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [IAP Unlock](#iap-unlock) | Unlocks all in-app purchases in Alto's Odyssey by faking Google Play billing query results. |  |
+| [Unlimited Coins](#unlimited-coins) | Sets your coin balance to 999,999,999 every time your profile loads or updates. Coins effectively never run out, so every character and upgrade is affordable. Applied to libil2cpp.so at the code level, so clearing app data does not reset it. |  |
 
 </details>
 

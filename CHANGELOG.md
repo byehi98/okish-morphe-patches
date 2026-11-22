@@ -1,3 +1,10 @@
+## [1.53.0-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.1-dev.4...v1.53.0-dev.1) (2026-11-22)
+
+### ✨ New Features
+
+* **altosadventure:** add unlimited coins patch and update to v1.8.34 ([04a051e](https://github.com/byehi98/okish-morphe-patches/commit/04a051e0b91c4e2b52c0795dfa17123ae999bb42))
+* **altosodyssey:** add unlimited coins patch for v1.0.45 and update ([3bdbb17](https://github.com/byehi98/okish-morphe-patches/commit/3bdbb172c0d870d648285ee80690e52c9ac57da9))
+
 ## [1.52.1-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.52.1-dev.3...v1.52.1-dev.4) (2026-11-21)
 
 ### 🚀 Updated App Support
