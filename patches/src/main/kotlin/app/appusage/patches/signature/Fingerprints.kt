@@ -3,7 +3,7 @@ package app.appusage.patches.signature
 import app.morphe.patcher.Fingerprint
 import com.android.tools.smali.dexlib2.AccessFlags
 
-// ── Signing-certificate accessors (App Usage 6.19) ───────────────────────────
+// ── Signing-certificate accessors (App Usage 6.20) ───────────────────────────
 // The app never compares certificate *names*: it compares two derived integers
 // against constants baked into the DEX.
 //
@@ -15,45 +15,55 @@ import com.android.tools.smali.dexlib2.AccessFlags
 // v1 signature files). Re-signing with a different key therefore fails every
 // check, and app-wide that is not cosmetic:
 //
-//   * icr.onCreate / icr.onDestroy  → schedule an `Lhx` coroutine that sleeps
-//     1933 ms and then calls `Ly31;->ఓ()V`, i.e. Process.killProcess(myPid) +
+//   * the `icr`/`hx` path → schedules an `Lhx` coroutine that sleeps 1933 ms and
+//     then calls `Ly31;->ఓ()V`, i.e. Process.killProcess(myPid) +
 //     System.exit(10). This is the ~2 s anti-tamper kill that fires as soon as a
-//     window is destroyed (MainWnd → DashboardWnd), so a re-signed build dies a
-//     few seconds after launch.
-//   * LicWnd / hor / AppOpts2Wnd    → flip the `gln` free-version flag back on.
-//   * widget providers / workers, export, history queries → take degraded paths.
+//     window is destroyed (MainWnd → DashboardWnd).
+//   * LicWnd.ఓ / ixm.<init> / AppOpts2Wnd.onDestroy → flip the `Lbgc` free
+//     flag (魒) back on.
+//   * widget providers / workers, export, history queries → degraded paths.
 //
-// Returning the original DER from the two accessors below satisfies every one of
-// those checks at the source, so no per-call-site branch surgery is needed.
+// 6.20 re-mapped every DexGuard identifier (6.19: `Lgi0;->鷛` Signature accessor,
+// `Lv31;->襭` byte accessor, `Lp31` wrapper). The 6.20 chain is:
 //
-// Target A — jadx `p000.gi0.m13282` (the only Signature-returning method in gi0):
-//   smali classes/gi0.smali:137
-//     .method public static 鷛(Landroid/content/Context;)Landroid/content/pm/Signature;
-//   Callers: icr:380, LicWnd:523, gwd:146, bd2:319 (direct PackageManager path).
+//   Lrf0;->孌(Context)Signature        ← the only direct PackageManager accessor
+//     ↑
+//     Lj11;->灒(Context)[B             ← cert DER, cached in j11.齶
+//       ↑
+//       Le11;->ڡ(Context)[B            (raw bytes)   → Lyf2;->驔([B)String (SHA-1)
+//       Le11;->鶱(Context)Signature    (new Signature(bytes))
+//       Le11;->鱮()Z                   (cache non-null)
 //
-// Target B — jadx `p000.v31.m20142` (the only byte[]-returning method with a
-// Context parameter in v31):
-//   smali classes/v31.smali:2902
-//     .method public final 襭(Landroid/content/Context;)[B
-//   Everything that goes through `p31` funnels here: `p31.鷚` (m18345, bytes)
-//   and `p31.黂` (m18347, `new Signature(bytes)`), which is what the
-//   `lh2.m17369(...)` SHA-1 sites and the widget workers use.
+// Every one of the 21 hash-constant sites resolves through `Lrf0;->孌` (directly
+// or via `Lj11;->灒`), so returning the original DER at these two points satisfies
+// all of them at the source.
+//
+// Target A — smali classes/rf0.smali:7
+//     .method public static 孌(Landroid/content/Context;)Landroid/content/pm/Signature;
+//   Callers: kb2, ezg, bsz, tx0, LicWnd, and `Lj11;->灒` itself.
+//
+// Target B — smali classes/j11.smali:3899
+//     .method public final 灒(Landroid/content/Context;)[B
+//   Callers: e11.ڡ, e11.鶱, djy. `j11` is a DexGuard-merged class (it implements
+//   ~11 unrelated interfaces), but 灒 is the only cert-bytes accessor in it.
 //
 // Class/parameter names are DexGuard output, so the fingerprints intentionally
-// pin the 6.19 mapping (the patch is declared compatible with 6.19 only);
+// pin the 6.20 mapping (the patch is declared compatible with 6.20 only);
 // return type + parameter list keep them unambiguous inside their classes.
 
-/** `Lgi0;->鷛(Landroid/content/Context;)Landroid/content/pm/Signature;` */
+/** `Lrf0;->孌(Landroid/content/Context;)Landroid/content/pm/Signature;` */
 object GetSignatureFingerprint : Fingerprint(
-    definingClass = "Lgi0;",
+    definingClass = "Lrf0;",
+    name = "孌",
     returnType = "Landroid/content/pm/Signature;",
     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
     parameters = listOf("Landroid/content/Context;"),
 )
 
-/** `Lv31;->襭(Landroid/content/Context;)[B` — instance method of the cert singleton. */
+/** `Lj11;->灒(Landroid/content/Context;)[B` — cert DER, cached in `j11.齶`. */
 object GetSignatureBytesFingerprint : Fingerprint(
-    definingClass = "Lv31;",
+    definingClass = "Lj11;",
+    name = "灒",
     returnType = "[B",
     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
     parameters = listOf("Landroid/content/Context;"),
