@@ -1,3 +1,9 @@
+## [1.53.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.3...v1.53.0-dev.4) (2026-11-22)
+
+### 🚀 Updated App Support
+
+* **appusage:** update target version to 6.20 ([0190bea](https://github.com/byehi98/okish-morphe-patches/commit/0190bea45a18260d9690842f010cbdb675440ec7))
+
 ## [1.53.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.2...v1.53.0-dev.3) (2026-11-22)
 
 ### 🚀 Updated App Support

@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.53.0-dev.3](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.53.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;163 patches total
+> **[v1.53.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.53.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;163 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -126,13 +126,13 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 6.19 |
+| 6.20 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Bypass PairIP license check](#bypass-pairip-license-check) | Disables PairIP (com.pairip.licensecheck) verification: no install-source check, no Play licensing bind, no paywall/error dialog and no delayed process exit. Required for sideloaded or re-signed APKs, which PairIP would otherwise close after 30 seconds. |  |
-| [Spoof original signature](#spoof-original-signature) | Makes the app see the original developer certificate instead of the one used to re-sign the APK. Stops the ~2 second anti-tamper process kill (Process.killProcess + System.exit) scheduled from icr.onCreate/onDestroy, prevents the PRO flag from being reset to the free version, and restores the trusted paths used by widgets, export/backup and history queries. |  |
+| [Bypass PairIP license check](#bypass-pairip-license-check) | Disables PairIP (com.pairip.licensecheck) verification: no install-source check, no Play licensing bind, no paywall/error dialog, no retry loop and no delayed process exit. Required for sideloaded or re-signed APKs, which PairIP would otherwise close after a few seconds. |  |
+| [Spoof original signature](#spoof-original-signature) | Makes the app see the original developer certificate instead of the one used to re-sign the APK. Stops the ~2 second anti-tamper process kill (Process.killProcess + System.exit) scheduled from the window lifecycle, prevents the PRO flag from being reset to the free version, and restores the trusted paths used by widgets, export/backup and history queries. |  |
 | [Unlock premium](#unlock-premium) | Unlocks the PRO entitlement: isPro returns true, the free-build/paywall gate returns false, the "Upgrade to PRO" dialog is disabled and the free-version master flag is never set at startup (which also removes the PRO-only placeholders and limits in the widget configuration, usage history, export and backup windows). |  |
 
 </details>
