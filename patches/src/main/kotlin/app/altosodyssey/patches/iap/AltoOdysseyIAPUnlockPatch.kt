@@ -14,21 +14,29 @@ private const val ARRAY_LIST = "Ljava/util/ArrayList;"
 private const val LIST = "Ljava/util/List;"
 
 /**
- * Builds smali that, at the top of `zzaI`, fabricates an OK BillingResult and a
- * List<Purchase> containing a `new Purchase(json, "")` for EVERY SKU, then calls
+ * Builds smali that, at the top of `BillingClientImpl.queryPurchasesAsync(...)`,
+ * fabricates an OK BillingResult and a List<Purchase> containing a
+ * `new Purchase(json, "")` for EVERY SKU, then calls
  * `purchasesResponseListener.onQueryPurchasesResponse(okResult, list)` and
  * `return-void` (so the real Google Play query is skipped entirely).
  *
- * Register usage (method declares .registers 11 → v0..v10 are free):
+ * Register usage (`queryPurchasesAsync` declares `.registers 10`; params
+ * p0/p1/p2 occupy v7/v8/v9, so v0..v6 are free):
  *   v0  = OK BillingResult (then reused as builder scratch)
  *   v1  = ArrayList<Purchase>
  *   v2  = current SKU json string
  *   v3  = scratch (responseCode 0 / current Purchase instance)
  *   v4  = empty signature string (""), reused for every Purchase
  *
- * `p0` = this (BillingClientImpl), `p1` = String type, `p2` = PurchasesResponseListener.
- * After our injected block we `return-void`, so p0/p1 are never consumed by the
- * original body — only p2 (the listener) is passed to onQueryPurchasesResponse.
+ * `p0` = this (BillingClientImpl), `p1` = QueryPurchasesParams,
+ * `p2` = PurchasesResponseListener. After our injected block we `return-void`, so
+ * p0/p1 are never consumed by the original body — only p2 (the listener) is passed
+ * to onQueryPurchasesResponse.
+ *
+ * Billing 8.3.0 `Purchase` parses its JSON in `<init>(String,String)` and
+ * `getProducts()` accepts the single-`productId` form used here (the multi-SKU
+ * `productIds` array form is also supported). `BillingResult.newBuilder()` is
+ * public static and `Builder.setResponseCode(I)`/`build()` are unchanged.
  */
 private fun fakePurchasesSmali(): String {
     val json = { sku: String ->
@@ -77,6 +85,6 @@ val altoOdysseyIAPUnlockPatch = bytecodePatch(
     compatibleWith(COMPATIBILITY_ALTOSODYSSEY)
 
     execute {
-        QueryPurchasesFingerprint.method.addInstructions(0, fakePurchasesSmali())
+        QueryPurchasesAsyncFingerprint.method.addInstructions(0, fakePurchasesSmali())
     }
 }
