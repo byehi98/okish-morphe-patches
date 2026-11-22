@@ -1,3 +1,9 @@
+## [1.53.0-dev.3](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.2...v1.53.0-dev.3) (2026-11-22)
+
+### 🚀 Updated App Support
+
+* **sonicdash:** update target version to 10.8.0 ([0606bf7](https://github.com/byehi98/okish-morphe-patches/commit/0606bf714b7f5076c4c127a8e6f952f30116aedc))
+
 ## [1.53.0-dev.2](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.1...v1.53.0-dev.2) (2026-11-22)
 
 ### 🚀 Updated App Support
