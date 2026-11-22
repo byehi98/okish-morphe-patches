@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.53.0-dev.4](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.53.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;163 patches total
+> **[v1.53.0-dev.5](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.53.0-dev.5)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;166 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -400,6 +400,23 @@ Direct URL:
 | [Jetpack Joyride Billing Bypass](#jetpack-joyride-billing-bypass) | Intercepts all in-app purchases and reports instant success to the game engine. |  |
 | [Remove Ads](#remove-ads) | Stops the full-screen interstitial adverts Jetpack Joyride shows between runs. The game's own "no ad available" path is replayed, so the run continues immediately instead of freezing or waiting on a skipped advert. |  |
 | [Unlock Events](#unlock-events) | Unlocks every event (seasonal worlds, event missions and their pop-ups) by disabling the game's internal "IAP cheat" flag check. When a free-IAP patch forges a purchase the game's receipt validator marks the account as a cheater and locks all cheater-restricted events behind an 'Event Restricted' pop-up; this patch makes that check always answer 'not a cheat', so the events open normally. |  |
+
+</details>
+
+<details>
+<summary>📦 Ninja Arashi&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.9.3 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | Every "watch ad" button pays out immediately without playing an ad: the shop reward grants 2000 coins and 50 diamonds, and the in-level revive button revives you. Works offline and can be tapped repeatedly. |  |
+| [Free In-App Purchases](#free-in-app-purchases) | The four shop buttons grant their item directly instead of opening Google Play billing: 20,000 coins, 2,000 diamonds, Remove Ads and the Halo pack. No payment sheet appears and the purchases are saved normally. |  |
+| [Remove Ads](#remove-ads) | Makes the game start up ad-free: banners, interstitials and the app-open ad never load, and the shop already shows "Remove Ads" as owned. The game's own ad-free flag is set before Unity starts, so the setting survives restarts and clearing app data simply re-applies it on the next launch. |  |
 
 </details>
 

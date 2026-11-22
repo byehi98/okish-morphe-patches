@@ -1,3 +1,9 @@
+## [1.53.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.4...v1.53.0-dev.5) (2026-11-22)
+
+### ✨ New Features
+
+* **ninjaarashi:** Add Ninja Arashi patches for ads, IAP, and rewards ([518877c](https://github.com/byehi98/okish-morphe-patches/commit/518877c091e7e4b4ee7aea75f7cca807e52d5d95))
+
 ## [1.53.0-dev.4](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.3...v1.53.0-dev.4) (2026-11-22)
 
 ### 🚀 Updated App Support
