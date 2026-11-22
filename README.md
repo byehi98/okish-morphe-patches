@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.53.0-dev.5](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.53.0-dev.5)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;166 patches total
+> **[v1.53.0-dev.6](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.53.0-dev.6)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;169 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -417,6 +417,23 @@ Direct URL:
 | [Free Ad Rewards](#free-ad-rewards) | Every "watch ad" button pays out immediately without playing an ad: the shop reward grants 2000 coins and 50 diamonds, and the in-level revive button revives you. Works offline and can be tapped repeatedly. |  |
 | [Free In-App Purchases](#free-in-app-purchases) | The four shop buttons grant their item directly instead of opening Google Play billing: 20,000 coins, 2,000 diamonds, Remove Ads and the Halo pack. No payment sheet appears and the purchases are saved normally. |  |
 | [Remove Ads](#remove-ads) | Makes the game start up ad-free: banners, interstitials and the app-open ad never load, and the shop already shows "Remove Ads" as owned. The game's own ad-free flag is set before Unity starts, so the setting survives restarts and clearing app data simply re-applies it on the next launch. |  |
+
+</details>
+
+<details>
+<summary>📦 Ninja Arashi 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.9.6 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | Every "watch an ad" button pays out immediately without playing an ad: the main-menu gift grants 100 diamonds and the in-level revive button revives you. Works offline. The gift can be claimed repeatedly — the cooldown and availability checks are removed. |  |
+| [Free In-App Purchases](#free-in-app-purchases) | Every shop button grants its item directly instead of opening Google Play billing: Remove Ads and the four diamond packs (1 / 2 / 5 / 10). No payment sheet appears, the grant runs the game's own success handler, and the purchase is saved normally. |  |
+| [Remove Ads](#remove-ads) | Removes every ad from the game: banners, interstitials, the app-open ad and the rewarded-video prompts are all suppressed in native code, so the ad SDK is never asked to display anything. Works offline and needs no purchase. |  |
 
 </details>
 

@@ -1,3 +1,9 @@
+## [1.53.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.5...v1.53.0-dev.6) (2026-11-22)
+
+### ✨ New Features
+
+* **ninjaarashi2:** Add Ninja Arashi 2 patches ([f1045c8](https://github.com/byehi98/okish-morphe-patches/commit/f1045c875b07ad8ba273c51e022bc5b83e192647))
+
 ## [1.53.0-dev.5](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.4...v1.53.0-dev.5) (2026-11-22)
 
 ### ✨ New Features
