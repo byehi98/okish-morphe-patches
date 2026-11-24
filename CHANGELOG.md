@@ -1,3 +1,9 @@
+## [1.53.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.6...v1.53.0-dev.7) (2026-11-24)
+
+### ✨ New Features
+
+* **brotato:** Add Brotato patches for free IAP and PairIP bypass ([39e4eb2](https://github.com/byehi98/okish-morphe-patches/commit/39e4eb244116dfa1492df91d57b67b24ff756e73))
+
 ## [1.53.0-dev.6](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.5...v1.53.0-dev.6) (2026-11-22)
 
 ### ✨ New Features

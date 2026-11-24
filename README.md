@@ -35,7 +35,7 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.53.0-dev.6](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.53.0-dev.6)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;169 patches total
+> **[v1.53.0-dev.7](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.53.0-dev.7)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;171 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -167,6 +167,22 @@ Direct URL:
 |----------|----------------|-----------|
 | [Bypass PairIP license check](#bypass-pairip-license-check) | Disables the PairIP licence check (Play licensing service, signed-response validation, paywall/error dialog and the delayed System.exit) so the re-signed app launches instead of closing itself. Required for every other Ophelia's Paradise patch. |  |
 | [Unlock full version](#unlock-full-version) | Makes PremiumUpgrade.HasPremiumUpgrade() always return true, unlocking the full version: no lives/energy system, unlocked character and gem selection, and no out-of-lives ad popup. The check is a local PlayerPrefs flag with no server-side validation, so the entitlement persists. |  |
+
+</details>
+
+<details>
+<summary>📦 Brotato&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.3.951 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Bypass PairIP signature & license check](#bypass-pairip-signature-license-check) | Neutralises the PairIP v2 signature gate (SignatureTamperedException) and the Play licence flow (service bind, signed-response validation, paywall and its delayed System.exit) so a re-signed Brotato build launches. Required for every other Brotato patch. |  |
+| [Free IAP](#free-iap) | Every real-money shop, mall and DLC tile is granted locally the moment you tap it — no Play billing, no payment screen, no charge. Repeat purchases of the same tile keep working. Client-side only. |  |
 
 </details>
 
