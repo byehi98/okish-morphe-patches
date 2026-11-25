@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.53.0-dev.9",
+  "version": "1.53.0-dev.10",
   "patches": [
     {
       "name": "AD Instant Rewards",
@@ -534,13 +534,18 @@
           "packageName": "com.cv.docscanner",
           "name": "Document Scanner",
           "description": null,
-          "apkFileType": "XAPK",
+          "apkFileType": "APKM",
           "appIconColor": "#2196F3",
           "signatures": null,
           "targets": [
             {
-              "version": "6.9.14",
-              "versionCodes": null,
+              "version": "6.9.16",
+              "versionCodes": {
+                "ARM64_V8A": 70196,
+                "ARMEABI_V7A": 70196,
+                "X86_64": 70196,
+                "X86": 70196
+              },
               "isExperimental": false,
               "minSdk": null,
               "description": null

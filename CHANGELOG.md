@@ -1,3 +1,9 @@
+## [1.53.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.9...v1.53.0-dev.10) (2026-11-25)
+
+### 🚀 Updated App Support
+
+* **docscanner:** Update Document Scanner to 6.9.16 and APKM support ([059b5a1](https://github.com/byehi98/okish-morphe-patches/commit/059b5a1c62f10d8c1be80147f9be871a05b81356))
+
 ## [1.53.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.8...v1.53.0-dev.9) (2026-11-25)
 
 ### 🚀 Updated App Support
