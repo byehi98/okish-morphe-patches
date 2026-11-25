@@ -1,3 +1,9 @@
+## [1.53.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.7...v1.53.0-dev.8) (2026-11-25)
+
+### 🚀 Updated App Support
+
+* **intothedead2:** Update Into the Dead 2 to 1.89.0 and add armeabi-v7a ([6e2c648](https://github.com/byehi98/okish-morphe-patches/commit/6e2c648e144e343640e396f7ef66895030ff9a99))
+
 ## [1.53.0-dev.7](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.6...v1.53.0-dev.7) (2026-11-24)
 
 ### ✨ New Features
