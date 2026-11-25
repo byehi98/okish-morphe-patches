@@ -1,3 +1,9 @@
+## [1.53.0-dev.9](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.8...v1.53.0-dev.9) (2026-11-25)
+
+### 🚀 Updated App Support
+
+* **swampattack:** Update Swamp Attack to 4.9.0.0 and XAPK support ([643eb96](https://github.com/byehi98/okish-morphe-patches/commit/643eb963c1ba0788ee6dddc7329ced4a126d1195))
+
 ## [1.53.0-dev.8](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.7...v1.53.0-dev.8) (2026-11-25)
 
 ### 🚀 Updated App Support
