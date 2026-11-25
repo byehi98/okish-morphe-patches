@@ -6,7 +6,7 @@ import app.morphe.patches.all.misc.hex.HexPatchBuilder
 import app.morphe.patches.all.misc.hex.hexPatch
 
 /**
- * Static (on-disk) native IAP patch for Into the Dead 2 1.88.0.
+ * Static (on-disk) native IAP patch for Into the Dead 2 1.89.0.
  *
  * Replaces the old approach of shipping a helper .so that patched libil2cpp.so in memory at
  * runtime: the 12 decision points are rewritten directly in lib/arm64-v8a/libil2cpp.so while
@@ -38,9 +38,9 @@ import app.morphe.patches.all.misc.hex.hexPatch
 private const val LIB = "lib/arm64-v8a/libil2cpp.so"
 
 private val iapSites: HexPatchBuilder.() -> Unit = {
-        // verdict @ file 0x1d6cb38
-        "E8 03 00 2A 60 1A 40 F9 68 07 00 36 60 10 00 B4 54 10 00 B4" asPatternTo
-        "E8 03 00 2A 60 1A 40 F9 1F 20 03 D5 60 10 00 B4 54 10 00 B4" inFile LIB
+        // verdict @ file 0x1f66ee0
+            "E8 03 00 2A 60 36 40 F9 68 07 00 36 40 03 00 B4 E1 03 1F 2A 27 00 00 14" asPatternTo
+            "E8 03 00 2A 60 36 40 F9 1F 20 03 D5 40 03 00 B4 E1 03 1F 2A 27 00 00 14" inFile LIB
 
         // rcptst-dr2 @ file 0x1d6cb58
         "E8 17 9F 1A 08 79 1F 53 88 1A 00 B9 69 0F 00 B4 AA 25 01 D0" asPatternTo
