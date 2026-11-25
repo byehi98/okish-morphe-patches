@@ -17,7 +17,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.88.0",
+              "version": "1.89.0",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -1486,7 +1486,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.88.0",
+              "version": "1.89.0",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
@@ -2274,7 +2274,7 @@
           "signatures": null,
           "targets": [
             {
-              "version": "1.88.0",
+              "version": "1.89.0",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
