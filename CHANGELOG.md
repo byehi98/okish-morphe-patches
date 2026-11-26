@@ -1,3 +1,9 @@
+## [1.53.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.10...v1.53.0-dev.11) (2026-11-26)
+
+### 🚀 Updated App Support
+
+* **crazygames:** Update CrazyGames to 1.7.14 and APKS support ([b60f892](https://github.com/byehi98/okish-morphe-patches/commit/b60f892402ad02cac53fb010e2449608fa4c3a7e))
+
 ## [1.53.0-dev.10](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.9...v1.53.0-dev.10) (2026-11-25)
 
 ### 🚀 Updated App Support
