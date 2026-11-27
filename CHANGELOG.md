@@ -1,3 +1,9 @@
+## [1.53.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0...v1.53.1) (2026-11-27)
+
+### 🐛 Bug Fixes
+
+* **razygames:** add installer tamper patch and enable GMS auth by ([f1c8d55](https://github.com/byehi98/okish-morphe-patches/commit/f1c8d55a9457366e029230d29ba65a65a3032098))
+
 ## [1.53.1-dev.1](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0...v1.53.1-dev.1) (2026-11-27)
 
 ### 🐛 Bug Fixes
