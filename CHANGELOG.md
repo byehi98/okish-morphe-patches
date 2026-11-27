@@ -1,3 +1,9 @@
+## [1.53.0-dev.14](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.13...v1.53.0-dev.14) (2026-11-27)
+
+### 🚀 Updated App Support
+
+* **swamp-attack-2:** Update Swamp Attack 2 to 1.5.2 ([34fb2a6](https://github.com/byehi98/okish-morphe-patches/commit/34fb2a6b2796d5d63795ca0385656dafec649db3))
+
 ## [1.53.0-dev.13](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.12...v1.53.0-dev.13) (2026-11-27)
 
 ### 🚀 Updated App Support
