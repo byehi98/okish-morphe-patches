@@ -6,40 +6,33 @@ import com.android.tools.smali.dexlib2.AccessFlags
 
 /**
  * com.android.billingclient.api.BillingClientImpl
- *     private final void zzaI(String, PurchasesResponseListener)  (smali line 1609)
+ *     public final void queryPurchasesAsync(QueryPurchasesParams, PurchasesResponseListener)
  *
- * This is the real choke point behind `queryPurchasesAsync`. It guards on
- * `isReady()` and on every path calls
- * `purchasesResponseListener.onQueryPurchasesResponse(BillingResult, List<Purchase>)`.
+ * 1.8.34 bumped the bundled Play Billing Library to v7.x, which dropped the old
+ * internal `zzaI(String, PurchasesResponseListener)` choke point used by the
+ * previous patch. The public entry point is the one Unity IAP's C# layer
+ * (`GooglePlayStoreService`, confirmed present in global-metadata.dat) calls via
+ * AndroidJavaProxy, so it is the new single choke point for "what do I own?".
  *
- * The method name `zzaI` is obfuscated and NOT used here — the fingerprint is
- * pinned by stable, update-resistant characteristics instead:
- *   - defining class (BillingClientImpl, non-obfuscated)
- *   - private final, return void
- *   - exact parameter list (String, PurchasesResponseListener)
- *   - filter order: an `isReady()` call first, then a
- *     `PurchasesResponseListener.onQueryPurchasesResponse(...)` call.
- *
- * Verified against smali (classes/com/android/billingclient/api/BillingClientImpl.smali):
- *   .method private final zzaI(Ljava/lang/String;Lcom/android/billingclient/api/PurchasesResponseListener;)V
- *       .registers 11
- *       invoke-virtual {p0}, ...->isReady()Z            ; first instruction
+ * Verified against smali (classes2.dex → BillingClientImpl.smali):
+ *   .method public final queryPurchasesAsync(Lcom/android/billingclient/api/QueryPurchasesParams;Lcom/android/billingclient/api/PurchasesResponseListener;)V
+ *       .registers 10
  *       ...
  *       invoke-interface {p2, p1, v0}, ...PurchasesResponseListener->onQueryPurchasesResponse(...)V
+ *
+ * The name is a public, non-obfuscated Billing API, so it is pinned directly and
+ * additionally guarded by the `onQueryPurchasesResponse` call filter.
  */
 object QueryPurchasesFingerprint : Fingerprint(
     definingClass = "Lcom/android/billingclient/api/BillingClientImpl;",
+    name = "queryPurchasesAsync",
     returnType = "V",
-    accessFlags = listOf(AccessFlags.PRIVATE, AccessFlags.FINAL),
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
     parameters = listOf(
-        "Ljava/lang/String;",
+        "Lcom/android/billingclient/api/QueryPurchasesParams;",
         "Lcom/android/billingclient/api/PurchasesResponseListener;"
     ),
     filters = listOf(
-        methodCall(
-            definingClass = "Lcom/android/billingclient/api/BillingClientImpl;",
-            name = "isReady"
-        ),
         methodCall(
             definingClass = "Lcom/android/billingclient/api/PurchasesResponseListener;",
             name = "onQueryPurchasesResponse"

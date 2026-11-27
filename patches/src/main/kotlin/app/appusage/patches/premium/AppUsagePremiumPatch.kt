@@ -9,39 +9,39 @@ import app.morphe.util.indexOfFirstInstructionOrThrow
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 
 /**
- * Unlock the PRO features of App Usage 6.19 without buying anything.
+ * Unlock the PRO features of App Usage 6.20 without buying anything.
  *
  * Purchase verification is not worth emulating: the Play purchase token is
  * checked with two hardcoded MD5 digests plus an RSA check, and a replay of a
  * real token is the only thing that would pass. The entitlement is also not
- * stored — it is four in-memory AtomicBoolean flags in `Lgln` that are
+ * stored — it is four in-memory AtomicBoolean flags in `Lbgc` that are
  * recomputed from the licensing service on every launch. So this patch forces
  * the *outcome* instead of the *cause*:
  *
- *   1. Lgln->驄(Context)Z  →  return true      (isPro)
- *   2. Lgln->鷛(Context)Z  →  return false     (free-build / paywall gate)
- *   3. Lisc->躤(Activity)V →  return-void      (the "Upgrade to PRO" dialog)
- *   4. Lbob->onCreate()V   →  drop the unconditional `襭.set(true)` so the
+ *   1. Lbgc->驔(Context)Z  →  return true      (isPro, 6.19 `Lgln;->驄`)
+ *   2. Lbgc->孌(Context)Z  →  return false     (paywall gate, 6.19 `Lgln;->鷛`)
+ *   3. Ldfw->臡(Activity)V →  return-void      (the "Upgrade to PRO" dialog,
+ *                                               6.19 `Lisc;->躤`)
+ *   4. Lgs->onCreate()V    →  drop the unconditional `魒.set(true)` so the
  *                             "free version" master lock stays false
  *
- * Why (4) is needed even though (1) already answers `true`: `襭` (jadx
- * `gln.f36050`) is not only read through `驄`. ~30 UI sites read the field
- * directly (`if (gln.f36050.get())` → show the PRO-only placeholder / paywall),
- * e.g. all four widget configuration windows, `AboutWnd`, `AdFreeRewardedVideoWnd`
- * and `FindAppsWnd`. `Lbob.onCreate` (the Application) flips it to true on every
- * process start; the only other writers (`LicWnd.躚`, `hor.<init>`,
- * `AppOpts2Wnd.onDestroy`) sit behind the certificate hash check and are already
- * dead once "Spoof original signature" is applied. `LicWnd.躚` additionally
- * returns early because it calls `驄()` first, which this patch makes return true.
+ * Why (4) is needed even though (1) already answers `true`: `魒` is not only read
+ * through `驔`. ~30 UI sites read the field directly (`if (Lbgc.魒.get())` →
+ * show the PRO-only placeholder / paywall), e.g. all four widget configuration
+ * windows, `AboutWnd`, `AdFreeRewardedVideoWnd` and `FindAppsWnd`. `Lgs.onCreate`
+ * (the Application) flips it to true on every process start; the only other
+ * writers (`LicWnd.ఓ` ×2, `ixm.<init>`, `AppOpts2Wnd.onDestroy`) sit behind the
+ * certificate hash check and are already dead once "Spoof original signature" is
+ * applied.
  *
- * The `癰` (purchased) and `驄`/`鷛` (trial / sync) flags are deliberately left
- * alone: `m13413 == true` short-circuits every `m13413(...) || 癰.get() || 驄.get()`
+ * The `轛` (purchased) and `驔`/`孌` (trial / sync) flags are deliberately left
+ * alone: `驔 == true` short-circuits every `驔(...) || 轛.get() || 驔.get()`
  * chain, so faking a purchase would only add state that the licensing service
- * can contradict later (and `AppLogWnd` would start printing "PRO license: yes").
+ * can contradict later.
  *
  * Injections 1–3 are `return` prepends at index 0 and are verifier-safe: all
- * three methods have `.registers 4` / `.registers 12`, no try/catch region and no
- * monitor-enter before the first instruction, so no local or parameter has to be
+ * three methods have no try/catch region covering offset 0 and no monitor-enter
+ * before the first instruction, so no local or parameter has to be
  * re-established. Injection 4 is a single `invoke-virtual` removal (the call
  * returns void, so no `move-result` is orphaned), which avoids touching the `v6`
  * register that the rest of `onCreate` reuses as the literal `1`.
@@ -57,7 +57,7 @@ val appUsagePremiumPatch = bytecodePatch(
     compatibleWith(COMPATIBILITY_APP_USAGE)
 
     execute {
-        // 1. `Lgln;->驄(Context)Z` (isPro) → true.
+        // 1. `Lbgc;->驔(Context)Z` (isPro) → true.
         IsProFingerprint.method.addInstructions(
             0,
             """
@@ -66,9 +66,9 @@ val appUsagePremiumPatch = bytecodePatch(
             """,
         )
 
-        // 2. `Lgln;->鷛(Context)Z` (free build / paywall gate) → false.
+        // 2. `Lbgc;->孌(Context)Z` (free build / paywall gate) → false.
         //    Also makes the field copy of the same check agree: the first branch
-        //    of this method returns `襭.get()`, which is false after edit 4.
+        //    of this method returns `魒.get()`, which is false after edit 4.
         IsFreeBuildFingerprint.method.addInstructions(
             0,
             """
@@ -77,13 +77,13 @@ val appUsagePremiumPatch = bytecodePatch(
             """,
         )
 
-        // 3. `Lisc;->躤(Activity)V` ("Upgrade to PRO" dialog) → no-op.
+        // 3. `Ldfw;->臡(Activity)V` ("Upgrade to PRO" dialog) → no-op.
         ShowPurchaseDialogFingerprint.method.addInstructions(0, "return-void")
 
-        // 4. Remove the unconditional `襭.set(true)` from Application.onCreate.
+        // 4. Remove the unconditional `魒.set(true)` from Application.onCreate.
         //    It is the only AtomicBoolean.write in the method:
-        //      sget-object v7, Lgln;->豅:Lgln;
-        //      iget-object v7, v7, Lgln;->襭:Ljava/util/concurrent/atomic/AtomicBoolean;
+        //      sget-object v7, Lbgc;->瓘:Lbgc;
+        //      iget-object v7, v7, Lbgc;->魒:Ljava/util/concurrent/atomic/AtomicBoolean;
         //      invoke-virtual {v7, v6}, Ljava/util/concurrent/atomic/AtomicBoolean;->set(Z)V
         val onCreate = ApplicationOnCreateFingerprint.method
         val setIndex = onCreate.indexOfFirstInstructionOrThrow {

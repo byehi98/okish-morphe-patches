@@ -13,28 +13,40 @@ private const val PURCHASES_LISTENER = "Lcom/android/billingclient/api/Purchases
 private const val ARRAY_LIST = "Ljava/util/ArrayList;"
 private const val LIST = "Ljava/util/List;"
 
+private const val PACKAGE_NAME = "com.noodlecake.altosadventure"
+
 /**
- * Builds smali that, at the top of `zzaI`, fabricates an OK BillingResult and a
- * List<Purchase> containing a `new Purchase(json, "")` for EVERY SKU, then calls
- * `purchasesResponseListener.onQueryPurchasesResponse(okResult, list)` and
- * `return-void` (so the real Google Play query is skipped entirely).
+ * Builds smali that, at the top of `BillingClientImpl.queryPurchasesAsync`, fabricates an
+ * OK BillingResult and a List<Purchase> containing a `new Purchase(json, "")` for EVERY SKU,
+ * delivers it through `PurchasesResponseListener.onQueryPurchasesResponse(...)` and
+ * `return-void`s, so the real Play query never runs.
  *
- * Register usage (method declares .registers 11 → v0..v10 are free):
- *   v0  = OK BillingResult (then reused as builder scratch)
- *   v1  = ArrayList<Purchase>
- *   v2  = current SKU json string
- *   v3  = scratch (responseCode 0 / current Purchase instance)
- *   v4  = empty signature string (""), reused for every Purchase
+ * Register usage (method declares `.registers 10` with 3 params → v0..v6 free):
+ *   v0 = OK BillingResult (then reused as builder scratch)
+ *   v1 = ArrayList<Purchase>
+ *   v2 = current SKU json string
+ *   v3 = scratch (responseCode 0 / current Purchase instance)
+ *   v4 = empty signature string ("")
  *
- * `p0` = this (BillingClientImpl), `p1` = String type, `p2` = PurchasesResponseListener.
- * After our injected block we `return-void`, so p0/p1 are never consumed by the
- * original body — only p2 (the listener) is passed to onQueryPurchasesResponse.
+ * p0 = this (BillingClientImpl), p1 = QueryPurchasesParams, p2 = PurchasesResponseListener.
+ * We return before touching p0/p1, so only p2 (the listener) is consumed.
  */
 private fun fakePurchasesSmali(): String {
     val json = { sku: String ->
-        // Must escape the double-quotes for smali const-string.
-        "{\"productId\":\"$sku\",\"purchaseState\":1,\"purchaseTime\":0,\"orderId\":\"0\",\"acknowledged\":true}"
-            .replace("\"", "\\\"")
+        (
+            "{" +
+                "\"orderId\":\"GPA.0000-0000-0000-00000\"," +
+                "\"packageName\":\"$PACKAGE_NAME\"," +
+                "\"productId\":\"$sku\"," +
+                "\"productIds\":[\"$sku\"]," +
+                "\"purchaseTime\":1700000000000," +
+                "\"purchaseState\":1," +
+                "\"purchaseToken\":\"$sku\"," +
+                "\"acknowledged\":true," +
+                "\"autoRenewing\":false," +
+                "\"quantity\":1" +
+                "}"
+            ).replace("\"", "\\\"")
     }
 
     val sb = StringBuilder()
@@ -58,7 +70,7 @@ private fun fakePurchasesSmali(): String {
         sb.appendLine("const-string v2, \"${json(sku)}\"")
         sb.appendLine("new-instance v3, $PURCHASE")
         sb.appendLine("invoke-direct {v3, v2, v4}, $PURCHASE-><init>(Ljava/lang/String;Ljava/lang/String;)V")
-        sb.appendLine("invoke-interface {v1, v3}, $LIST->add(Ljava/lang/Object;)Z")
+        sb.appendLine("invoke-virtual {v1, v3}, $ARRAY_LIST->add(Ljava/lang/Object;)Z")
     }
 
     // --- Deliver the faked response and bail out before the real query ---

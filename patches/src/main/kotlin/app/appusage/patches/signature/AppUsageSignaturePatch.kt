@@ -5,13 +5,13 @@ import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.patch.bytecodePatch
 
 /**
- * Restore the original signing certificate (App Usage 6.19).
+ * Restore the original signing certificate (App Usage 6.20).
  *
  * The APK was signed by the upstream developer (CN=Sam Lu, OU=A0Soft). Two
  * integers derived from that certificate are hardcoded in the DEX and checked in
  * ~21 places, so any re-signed build looks tampered. The harshest consequence is
- * an anti-tamper kill switch: icr.onCreate / icr.onDestroy schedule an Lhx
- * coroutine that sleeps 1933 ms and calls Ly31;->ఓ()V (Process.killProcess +
+ * an anti-tamper kill switch: the window lifecycle schedules an `Lhx` coroutine
+ * that sleeps 1933 ms and calls `Ly31;->ఓ()V` (Process.killProcess +
  * System.exit(10)), which is why an otherwise working patched build dies a few
  * seconds after the first window transition.
  *
@@ -22,29 +22,31 @@ import app.morphe.patcher.patch.bytecodePatch
  *   DER length 774 bytes
  *   Arrays.hashCode(DER) = -1105923880        (matches Signature.hashCode())
  *   SHA-1                = 190D8057CD872B2F7EF67A2A7DEA5117E0CC8945
- *   String.hashCode(SHA-1) = 559284713        (matches the lh2.m17369() sites)
+ *   String.hashCode(SHA-1) = 559284713        (matches the Lyf2/Lj11 sites)
  *
  * Implementation: the DER is embedded as base64 and decoded at runtime, which is
  * two instructions plus a constructor instead of ~774 aput-byte instructions.
  * android.util.Base64 is already used by the app.
  *
- * Both targets are left otherwise untouched: v31 still caches into its 虆 field
- * lazily (the patch simply returns before the cache logic), and p31 is not
- * modified at all.
+ * Target B also writes the decoded array into the `j11.齶` cache field, which is
+ * exactly what the original method does on its first call. That keeps
+ * `Le11;->鱮()Z` (6.19 `p31;->糴()Z`, "cert already loaded") answering `true`
+ * like an unpatched install instead of `false` forever.
  */
 @Suppress("unused")
 val appUsageSignaturePatch = bytecodePatch(
     name = "Spoof original signature",
     description = "Makes the app see the original developer certificate instead of the one used " +
         "to re-sign the APK. Stops the ~2 second anti-tamper process kill (Process.killProcess + " +
-        "System.exit) scheduled from icr.onCreate/onDestroy, prevents the PRO flag from being reset " +
+        "System.exit) scheduled from the window lifecycle, prevents the PRO flag from being reset " +
         "to the free version, and restores the trusted paths used by widgets, export/backup and " +
         "history queries.",
 ) {
     compatibleWith(COMPATIBILITY_APP_USAGE)
 
     execute {
-        // Target A — Signature object (direct PackageManager consumers).
+        // Target A — Signature object (direct PackageManager consumers, and the
+        // source that `Lj11;->灒` converts to DER bytes).
         GetSignatureFingerprint.method.addInstructions(
             0,
             """
@@ -58,7 +60,10 @@ val appUsageSignaturePatch = bytecodePatch(
             """,
         )
 
-        // Target B — raw cert bytes (p31.鷚 / p31.黂, i.e. all SHA-1 and widget checks).
+        // Target B — raw cert bytes (Le11.ڡ / Le11.鶱, i.e. all SHA-1 and widget
+        // checks). Returns before the original monitor-enter, so the lock is
+        // never taken; the cache field is filled first so `鱮()` matches the
+        // unpatched first-call state.
         GetSignatureBytesFingerprint.method.addInstructions(
             0,
             """
@@ -66,6 +71,7 @@ val appUsageSignaturePatch = bytecodePatch(
                 const/4 v1, 0x0
                 invoke-static {v0, v1}, Landroid/util/Base64;->decode(Ljava/lang/String;I)[B
                 move-result-object v0
+                iput-object v0, p0, Lj11;->齶:Ljava/lang/Object;
                 return-object v0
             """,
         )
@@ -73,7 +79,7 @@ val appUsageSignaturePatch = bytecodePatch(
 }
 
 // Original signing certificate DER (774 bytes), recovered from the v2 APK
-// Signing Block of App Usage 6.19. Verified: Arrays.hashCode == -1105923880 and
+// Signing Block of App Usage 6.20. Verified: Arrays.hashCode == -1105923880 and
 // String.hashCode(SHA-1 hex) == 559284713, i.e. it satisfies both hardcoded
 // constants.
 private const val ORIGINAL_CERT_BASE64 =

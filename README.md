@@ -35,14 +35,14 @@ Direct URL:
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.52.0](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.52.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;161 patches total
+> **[v1.53.0-dev.14](https://github.com/byehi98/okish-morphe-patches/releases/tag/v1.53.0-dev.14)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;171 patches total
 <details>
 <summary>📦 Into the Dead 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.88.0 |
+| 1.89.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -75,7 +75,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 12.8.3 |
+| 12.8.5 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -126,13 +126,13 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 6.19 |
+| 6.20 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Bypass PairIP license check](#bypass-pairip-license-check) | Disables PairIP (com.pairip.licensecheck) verification: no install-source check, no Play licensing bind, no paywall/error dialog and no delayed process exit. Required for sideloaded or re-signed APKs, which PairIP would otherwise close after 30 seconds. |  |
-| [Spoof original signature](#spoof-original-signature) | Makes the app see the original developer certificate instead of the one used to re-sign the APK. Stops the ~2 second anti-tamper process kill (Process.killProcess + System.exit) scheduled from icr.onCreate/onDestroy, prevents the PRO flag from being reset to the free version, and restores the trusted paths used by widgets, export/backup and history queries. |  |
+| [Bypass PairIP license check](#bypass-pairip-license-check) | Disables PairIP (com.pairip.licensecheck) verification: no install-source check, no Play licensing bind, no paywall/error dialog, no retry loop and no delayed process exit. Required for sideloaded or re-signed APKs, which PairIP would otherwise close after a few seconds. |  |
+| [Spoof original signature](#spoof-original-signature) | Makes the app see the original developer certificate instead of the one used to re-sign the APK. Stops the ~2 second anti-tamper process kill (Process.killProcess + System.exit) scheduled from the window lifecycle, prevents the PRO flag from being reset to the free version, and restores the trusted paths used by widgets, export/backup and history queries. |  |
 | [Unlock premium](#unlock-premium) | Unlocks the PRO entitlement: isPro returns true, the free-build/paywall gate returns false, the "Upgrade to PRO" dialog is disabled and the free-version master flag is never set at startup (which also removes the PRO-only placeholders and limits in the widget configuration, usage history, export and backup windows). |  |
 
 </details>
@@ -143,7 +143,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.7.13 |
+| 1.7.14 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -167,6 +167,22 @@ Direct URL:
 |----------|----------------|-----------|
 | [Bypass PairIP license check](#bypass-pairip-license-check) | Disables the PairIP licence check (Play licensing service, signed-response validation, paywall/error dialog and the delayed System.exit) so the re-signed app launches instead of closing itself. Required for every other Ophelia's Paradise patch. |  |
 | [Unlock full version](#unlock-full-version) | Makes PremiumUpgrade.HasPremiumUpgrade() always return true, unlocking the full version: no lives/energy system, unlocked character and gem selection, and no out-of-lives ad popup. The check is a local PlayerPrefs flag with no server-side validation, so the entitlement persists. |  |
+
+</details>
+
+<details>
+<summary>📦 Brotato&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.3.951 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Bypass PairIP signature & license check](#bypass-pairip-signature-license-check) | Neutralises the PairIP v2 signature gate (SignatureTamperedException) and the Play licence flow (service bind, signed-response validation, paywall and its delayed System.exit) so a re-signed Brotato build launches. Required for every other Brotato patch. |  |
+| [Free IAP](#free-iap) | Every real-money shop, mall and DLC tile is granted locally the moment you tap it — no Play billing, no payment screen, no charge. Repeat purchases of the same tile keep working. Client-side only. |  |
 
 </details>
 
@@ -227,7 +243,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 6.9.14 |
+| 6.9.16 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -404,12 +420,46 @@ Direct URL:
 </details>
 
 <details>
+<summary>📦 Ninja Arashi&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.9.3 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | Every "watch ad" button pays out immediately without playing an ad: the shop reward grants 2000 coins and 50 diamonds, and the in-level revive button revives you. Works offline and can be tapped repeatedly. |  |
+| [Free In-App Purchases](#free-in-app-purchases) | The four shop buttons grant their item directly instead of opening Google Play billing: 20,000 coins, 2,000 diamonds, Remove Ads and the Halo pack. No payment sheet appears and the purchases are saved normally. |  |
+| [Remove Ads](#remove-ads) | Makes the game start up ad-free: banners, interstitials and the app-open ad never load, and the shop already shows "Remove Ads" as owned. The game's own ad-free flag is set before Unity starts, so the setting survives restarts and clearing app data simply re-applies it on the next launch. |  |
+
+</details>
+
+<details>
+<summary>📦 Ninja Arashi 2&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 1.9.6 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Free Ad Rewards](#free-ad-rewards) | Every "watch an ad" button pays out immediately without playing an ad: the main-menu gift grants 100 diamonds and the in-level revive button revives you. Works offline. The gift can be claimed repeatedly — the cooldown and availability checks are removed. |  |
+| [Free In-App Purchases](#free-in-app-purchases) | Every shop button grants its item directly instead of opening Google Play billing: Remove Ads and the four diamond packs (1 / 2 / 5 / 10). No payment sheet appears, the grant runs the game's own success handler, and the purchase is saved normally. |  |
+| [Remove Ads](#remove-ads) | Removes every ad from the game: banners, interstitials, the app-open ad and the rewarded-video prompts are all suppressed in native code, so the ad SDK is never asked to display anything. Works offline and needs no purchase. |  |
+
+</details>
+
+<details>
 <summary>📦 Sonic Dash Run&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 10.7.0 |
+| 10.8.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -426,7 +476,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.14.12 |
+| 1.14.14 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -445,7 +495,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.15.26 |
+| 1.15.27 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -476,7 +526,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 0.0.3497 |
+| 0.0.3536 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -529,7 +579,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 4.8.10.0 |
+| 4.9.0.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -649,32 +699,34 @@ Direct URL:
 </details>
 
 <details>
-<summary>📦 Alto's Adventure&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<summary>📦 Alto's Adventure&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.8.27 |
+| 1.8.34 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [IAP Unlock](#iap-unlock) | Unlocks all in-app purchases by faking Google Play billing query results. |  |
+| [Unlimited Coins](#unlimited-coins) | Sets your coin balance to 999,999,999 every time your profile loads or updates. Coins effectively never run out, so every character and upgrade is affordable. Applied to libil2cpp.so at the code level, so clearing app data does not reset it. |  |
 
 </details>
 
 <details>
-<summary>📦 Alto's Odyssey&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<summary>📦 Alto's Odyssey&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **🎯 Supported versions:**
 
-| 1.0.42 |
+| 1.0.45 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [IAP Unlock](#iap-unlock) | Unlocks all in-app purchases in Alto's Odyssey by faking Google Play billing query results. |  |
+| [Unlimited Coins](#unlimited-coins) | Sets your coin balance to 999,999,999 every time your profile loads or updates. Coins effectively never run out, so every character and upgrade is affordable. Applied to libil2cpp.so at the code level, so clearing app data does not reset it. |  |
 
 </details>
 
@@ -767,7 +819,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.43 |
+| 1.45 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -859,7 +911,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 4.26.0 |
+| 4.27.0 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -906,7 +958,7 @@ Direct URL:
 
 **🎯 Supported versions:**
 
-| 1.5.1 |
+| 1.5.2 |
 | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |

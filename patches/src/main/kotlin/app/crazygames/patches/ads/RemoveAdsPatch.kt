@@ -32,12 +32,17 @@ import app.morphe.patcher.patch.rawResourcePatch
  * and `portalBanner`/`preroll` are desktop/launch-flow gated), so *every* ad in this app
  * originates from a game `requestAd`. Cutting that one message removes all of them.
  *
- * WHY THIS INJECTION POINT: `MainActivity` registers `assets/ExternalPaymentScript.js`
- * with `WebViewCompat.addDocumentStartJavaScript(..., setOf("*"))`
- * (`smali/smali_classes2/gr0.smali:259`), so the file runs in every document of the
- * WebView - portal, gameframe and game iframes - before any page script. That lets us
- * add a capture-phase `message` listener that runs before the gameframe's own listener.
- * The asset also lives outside `webDir`, so a LiveUpdate OTA cannot overwrite it.
+ * WHY THIS INJECTION POINT: `MainActivity` reads `assets/ExternalPaymentScriptShared.js`
+ * and `assets/ExternalPaymentScript.js` and concatenates both into ONE document-start
+ * script, `(function () { const nativeValues = {...}; <shared> \n <payment> \n})();`,
+ * registered with `WebViewCompat.addDocumentStartJavaScript(..., pr0.f)` where `pr0.f`
+ * is `setOf("*")` (1.7.14: `smali_classes2/com/crazygames/crazygamesapp/MainActivity.smali`
+ * around the `addDocumentStartJavaScript` call; the origins set is built in
+ * `smali_classes2/pr0.smali`, `<clinit>`, last `sput-object` into `f`). So the file runs
+ * in every document of the WebView - portal, gameframe and game iframes - before any
+ * page script. That lets us add a capture-phase `message` listener that runs before the
+ * gameframe's own listener. The asset also lives outside `webDir`, so a LiveUpdate OTA
+ * cannot overwrite it.
  *
  * WHAT THE SHIM DOES: when a game posts `requestAd` (or the legacy
  * `window.Crazygames.requestAd`), the shim stops the event before the gameframe can
