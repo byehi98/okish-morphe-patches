@@ -1,3 +1,9 @@
+## [1.53.0-dev.12](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.11...v1.53.0-dev.12) (2026-11-27)
+
+### 🚀 Updated App Support
+
+* **adda247:** Update Adda247 to 12.8.5 ([f666f26](https://github.com/byehi98/okish-morphe-patches/commit/f666f26418107150edb8773f13a575097451aed9))
+
 ## [1.53.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.10...v1.53.0-dev.11) (2026-11-26)
 
 ### 🚀 Updated App Support

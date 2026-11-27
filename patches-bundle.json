@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-26T11:40:03",
-  "description": "## [1.53.0-dev.11](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.10...v1.53.0-dev.11) (2026-11-26)\n\n### 🚀 Updated App Support\n\n* **crazygames:** Update CrazyGames to 1.7.14 and APKS support ([b60f892](https://github.com/byehi98/okish-morphe-patches/commit/b60f892402ad02cac53fb010e2449608fa4c3a7e))",
-  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.53.0-dev.11/patches-1.53.0-dev.11.mpp",
+  "created_at": "2026-11-27T04:41:07",
+  "description": "## [1.53.0-dev.12](https://github.com/byehi98/okish-morphe-patches/compare/v1.53.0-dev.11...v1.53.0-dev.12) (2026-11-27)\n\n### 🚀 Updated App Support\n\n* **adda247:** Update Adda247 to 12.8.5 ([f666f26](https://github.com/byehi98/okish-morphe-patches/commit/f666f26418107150edb8773f13a575097451aed9))",
+  "download_url": "https://github.com/byehi98/okish-morphe-patches/releases/download/v1.53.0-dev.12/patches-1.53.0-dev.12.mpp",
   "signature_download_url": "",
-  "version": "1.53.0-dev.11"
+  "version": "1.53.0-dev.12"
 }
