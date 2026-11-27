@@ -152,7 +152,7 @@ val crazyGamesGmsCorePatch = bytecodePatch(
         "forces the legacy Google Sign-In flow, so \"Continue with Google\" works on a " +
         "re-signed build. Requires MicroG-RE installed and signed in; the patched app must " +
         "replace the Play install. Does not help with stock GMS; the email login needs no patch.",
-    default = false,
+    default = true,
 ) {
     compatibleWith(COMPATIBILITY_CRAZYGAMES)
 
